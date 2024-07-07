@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+   
+    <script src="./js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="./css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="./css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/myStyle.css" />
+  
+  </head>
+  <body>
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+
+
+    <main class="d-flex flex-nowrap">
+      <!-- الواجهه الي على اليمين -->
+      <%- include('../components/sidebar.ejs', {currentPage:"draft"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >
+        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+        <% if (arr.length ==0) { %> 
+         <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+        <% } %>
+
+        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+        <% if (arr.length > 0) { %>
+          
+        
+   
+
+
+
+  
+
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Full Name</th>
+              <th scope="col">Gender</th>
+              <th scope="col">branch</th>
+              <th scope="col">Age</th>
+              <th scope="col">Last updated</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+        <% } %>
+        <!--  -->
+       
+        <% arr.reverse().forEach((data, index) => { %>
+          <% data.orders.reverse().forEach((order) => { %>
+            <% if (order.salesEmployeeId === idUser && order.status ==="مسودة") { %>
+              <tr>
+                <th scope="row"><%= //index + 1 %></th>
+                <td><%=data.firstNamecustomer %> <%= data.lastNamecustomer %></td>
+                <td><%= data.lastNamecustomer %></td>
+                <td><%= order.branch %></td>
+                <td><%= order.status %></td>
+                <td><%= moment(order.updatedAt).fromNow(); %></td>
+                <!-- وباقي البيانات التي ترغب في عرضها -->
+
+                <td>   
+                   <a
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Edit user"
+                  data-bs-placement="top"
+                  class="btn btn-primary btn-sm mx-auto"
+                  href="../view/<%= data._id %>"
+                >
+                  <i class="bi bi-pencil"></i>
+                </a></td>
+              </tr>
+            <% } %>
+         
+        <% }) %>
+        <% }) %>
+
+        
+
+
+
+
+
+
+        
+      </section>
+    </main>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+
+    <script src="./js/sidebars.js"></script>
+
+    <script src="./js/main.js"></script>
+   
+  </body>
+
+
+ 
+</html>

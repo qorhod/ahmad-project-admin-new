@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto" >
+  <head>
+   
+    <script src="../js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="../css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+  
+  </head>
+  <body>
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+
+
+    <main class="d-flex flex-nowrap">
+      <!-- الواجهه الي على اليمين -->
+      <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+
+      <ul class="nav nav-tabs ">
+        <li class="nav-item">
+          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
+        </li>
+      
+        <li class="nav-item">
+          <a href="../total-meters/<%= arrR._id %>" class="nav-link active" aria-current="page"  >مجموع الأمتار</a>
+        </li>
+        <li class="nav-item">
+          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis"  href="#">التسعيرة</a>
+        </li>
+        <li class="nav-item">
+          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
+        </li>
+        <li class="nav-item">
+          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
+        </li>
+
+
+        <li class="nav-item">
+          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
+        </li>
+   
+        <li class="nav-item">
+          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
+        </li>
+
+      </ul>
+
+
+     <!-- form-control -->
+     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+
+      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
+      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+
+  </div>
+
+
+  <form   action="/total-meters/<%=arrR._id %>" method="post"  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+       
+    <input
+    name="confirming"
+     value="مؤكد" 
+      type="hidden"
+      class="form-control"
+     
+    />
+
+
+    <!-- <input type="submit" value="اعتماد الطلب" class="btn btn-success"> <i class="bi bi-check2"></i></input> -->
+    <%=//idCustomer?"hidden":"submit" %>
+<input type="submit"  value=" مؤقت وبحذفه" class="btn btn-success">
+</form>
+
+
+
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >
+        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+        <% //if (arr.length ==0) { %> 
+         <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+        <% //} %>
+
+        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+        <% //if (arr.length > 0) { %>
+          
+        
+   
+            <a
+           
+            class="btn btn-primary "
+            href="../measurement/<%= //arrR._id %>"
+             type="button"
+              class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
+
+
+
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">H</th>
+              <th scope="col">W</th>
+              <th scope="col">H*</th>
+              <th scope="col">W*</th>
+              <th scope="col">الأمتار</th>
+              <th scope="col">نوع القطاع</th>
+              <th scope="col">شفة</th>
+              <th scope="col">% </th>
+            </tr>
+          </thead>
+        <% //} %>
+        <!--  -->
+        <tbody id="kk">
+          <!-- .reverse() -->
+          <% arrR.measurement.forEach((item, index) => { %>  
+                 <tr>
+                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                   <td><%= item.H %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                   <td><%= item.W %>	</td>
+                   <td><%=item.totalMeters.H1 %></td>
+                   <td><%= item.totalMeters.W1 %></td>
+                   <td><%=item.totalMeters.totalMeters  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+                   <td><%=item.aluminumCode  %></td> 
+                   <td><%=item.lip  %></td> 
+                   <td>
+                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                  
+     
+                     <a
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Edit user"
+                       data-bs-placement="top"
+                       class="btn btn-primary btn-sm"
+                       href="./edit/<%=// item._id %>"
+                     >
+                       <i class="bi bi-pencil"></i>
+                     </a>
+                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+                     <button
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Delete user"
+                       data-bs-placement="top"
+                       class="btn btn-danger btn-sm"
+                     >
+                       <i class="bi bi-trash"></i>
+                     </button>
+                   </form>
+                   </td>
+                 </tr>
+               <% }) %>
+             
+      
+          </tbody>
+        </table>
+
+
+
+
+
+     
+
+
+      </section>
+    </main>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+
+    <script src="../js/main.js"></script>
+   
+  </body>
+
+
+ 
+</html>

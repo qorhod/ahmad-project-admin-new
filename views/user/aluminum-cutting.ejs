@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto" >
+  <head>
+   
+    <script src="../js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="../css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+  
+  </head>
+  <body>
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+
+
+    <main class="d-flex flex-nowrap">
+      <!-- الواجهه الي على اليمين -->
+      <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+
+      <ul class="nav nav-tabs ">
+        <li class="nav-item">
+          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
+        </li>
+      
+        <li class="nav-item">
+          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
+        </li>
+        <li class="nav-item">
+          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
+        </li>
+        <li class="nav-item">
+          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
+        </li>
+        <li class="nav-item">
+          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link  text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
+        </li>
+   
+        <li class="nav-item">
+          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link  active" aria-disabled="true">تقرير قص الألمنيوم </a>
+        </li>
+
+      </ul>
+
+
+     <!-- form-control -->
+     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+
+      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
+      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+
+  </div>
+
+
+
+  <div>
+   
+    <a
+   
+    class="btn btn-primary "
+    href="../measurement/<%= arrR._id %>"
+     type="button"
+      class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
+    </div>
+    
+<!-- ازرار اظهار قوائم انواع قطاعات الألمنيوم -->
+<div class="btn-group col-md-3 mt-5" role="group" aria-label="Basic radio toggle button group">
+  <input type="radio" class="btn-check" name="btnradio5" id="btnradio11" autocomplete="off" checked>
+  <label class="btn btn-outline-light" for="btnradio11"> الكل</label>
+
+  <input type="radio" class="btn-check" name="btnradio5" id="btnradio22" autocomplete="off">
+  <label class="btn btn-outline-light" for="btnradio22"> القص</label>
+
+  <input type="radio" class="btn-check" name="btnradio5" id="btnradio33" autocomplete="off">
+  <label class="btn btn-outline-light" for="btnradio33"> التجميع</label>
+</div>
+
+
+
+
+<div class="dropdown mt-2">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    اختر العملية
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li><a class="dropdown-item" href="#" onclick="selectOperation('قص')">قص </a></li>
+    <li><a class="dropdown-item" href="#" onclick="selectOperation('تجميع')">تجميع </a></li>
+    <!-- <li><a class="dropdown-item" href="#" onclick="selectOperation('عملية 3')">عملية 3</a></li> -->
+    <!-- يمكنك إضافة المزيد من العناصر حسب الحاجة -->
+  </ul>
+<!-- </div> -->
+
+
+
+
+
+<!-- <div class="dropdown"> -->
+<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+اختر الفني
+</button>
+<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+<li><a class="dropdown-item" href="#" onclick="selectOperation2('محمد')">محمد</a></li>
+<li><a class="dropdown-item" href="#" onclick="selectOperation2('احمد')">احمد</a></li>
+<li><a class="dropdown-item" href="#" onclick="selectOperation2('خالد2')">خالد</a></li>
+<!-- يمكنك إضافة المزيد من العناصر حسب الحاجة -->
+</ul>
+
+<button class="btn btn-primary" onclick="sendData()">تكليف</button>
+
+</div>
+
+
+
+
+
+        <table id="table110"
+          style="width: 99%"
+          class="text-center mx-auto table mt-1 table-striped table-bordered"
+        >
+        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+        <% //if (arr.length ==0) { %> 
+         <!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
+        <% //} %>
+
+        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+        <% //if (arr.length > 0) { %>
+          
+ 
+
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">The drawing</th>
+              <th scope="col">Aluminum code</th>
+              <th scope="col">color</th>
+              <th scope="col">H(A1)*2</th>
+              <th scope="col">W(A2)*2</th>
+              <th scope="col">(B1)*2</th>
+              <th scope="col">(B2)*4</th>
+              <th scope="col">(B3)*2</th>
+              <th scope="col">(N1)*2</th>
+              <th scope="col">(N2)*2</th>
+              <th scope="col">
+                <!-- زر تحديدي الكل  -->
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+                  <label class="form-check-label" for="select-all-checkbox">All</label>
+                </div>
+                <!-- //زر تحديدي الكل  //-->
+              </th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+        <% //} %>
+        <!--  -->
+        <tbody id="kk">
+          <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
+            <% arrR.measurement.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+              <!--  -->
+                 <tr>
+                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                   <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                   <td><%= item.aluminumCode %></td>
+                   <td ><%=item.aluminumColorCode %></td>
+                   <td><%= item.H %></td>
+                   <td><%= item.W %></td>
+                   <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
+                   <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
+                   <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
+                   <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
+                   <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
+                  
+                   <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
+                      <label class="form-check-label" for="check<%= index %>"></label>
+                    </div>
+                  </td>
+                   
+                   <td>
+                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                  
+     
+                     <a
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Edit user"
+                       data-bs-placement="top"
+                       class="btn btn-primary btn-sm"
+                       href="./edit/<%=// item._id %>"
+                     >
+                       <i class="bi bi-pencil"></i>
+                     </a>
+                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+                     <button
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Delete user"
+                       data-bs-placement="top"
+                       class="btn btn-danger btn-sm"
+                     >
+                       <i class="bi bi-trash"></i>
+                     </button>
+                   </form>
+                   </td>
+                 </tr>
+               <% }) %>
+             
+      
+          </tbody>
+        </table>
+
+<!-- 222222222222222222222222222222 -->
+
+
+<table id="table220"
+style="width: 99%"
+class="text-center mx-auto table mt-1 table-striped table-bordered"
+>
+<!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+<% //if (arr.length ==0) { %> 
+<!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
+<% //} %>
+
+<!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+<% //if (arr.length > 0) { %>
+
+
+
+<thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">The2222 drawing</th>
+    <th scope="col">Aluminum code</th>
+    <th scope="col">color</th>
+    <th scope="col">H(A1)*2</th>
+    <th scope="col">W(A2)*2</th>
+    <th scope="col">(B1)*2</th>
+    <th scope="col">(B2)*4</th>
+    <th scope="col">(B3)*2</th>
+    <th scope="col">(N1)*2</th>
+    <th scope="col">(N2)*2</th>
+    <th scope="col">
+      <!-- زر تحديدي الكل  -->
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+        <label class="form-check-label" for="select-all-checkbox">All</label>
+      </div>
+      <!-- //زر تحديدي الكل  //-->
+    </th>
+    <th scope="col">Action</th>
+  </tr>
+</thead>
+<% //} %>
+<!--  -->
+<tbody id="kk">
+<!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
+  <% arrR.measurement.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+    <!--  -->
+       <tr>
+         <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+         <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+         <td><%= item.aluminumCode %></td>
+         <td ><%=item.aluminumColorCode %></td>
+         <td><%= item.H %></td>
+         <td><%= item.W %></td>
+         <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
+         <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
+         <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
+         <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
+         <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
+        
+         <td>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
+            <label class="form-check-label" for="check<%= index %>"></label>
+          </div>
+        </td>
+         
+         <td>
+           <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+        
+
+           <a
+             data-bs-toggle="tooltip"
+             data-bs-title="Edit user"
+             data-bs-placement="top"
+             class="btn btn-primary btn-sm"
+             href="./edit/<%=// item._id %>"
+           >
+             <i class="bi bi-pencil"></i>
+           </a>
+           <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+           <button
+             data-bs-toggle="tooltip"
+             data-bs-title="Delete user"
+             data-bs-placement="top"
+             class="btn btn-danger btn-sm"
+           >
+             <i class="bi bi-trash"></i>
+           </button>
+         </form>
+         </td>
+       </tr>
+     <% }) %>
+   
+
+</tbody>
+</table>
+<!-- 3333333333333333333333333333333333333333333333 -->
+<table id="table330"
+style="width: 99%"
+class="text-center mx-auto table mt-1 table-striped table-bordered"
+>
+<!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+<% //if (arr.length ==0) { %> 
+<!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
+<% //} %>
+
+<!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+<% //if (arr.length > 0) { %>
+
+
+
+<thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">The33333 drawing</th>
+    <th scope="col">Aluminum code</th>
+    <th scope="col">color</th>
+    <th scope="col">H(A1)*2</th>
+    <th scope="col">W(A2)*2</th>
+    <th scope="col">(B1)*2</th>
+    <th scope="col">(B2)*4</th>
+    <th scope="col">(B3)*2</th>
+    <th scope="col">(N1)*2</th>
+    <th scope="col">(N2)*2</th>
+    <th scope="col">
+      <!-- زر تحديدي الكل  -->
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+        <label class="form-check-label" for="select-all-checkbox">All</label>
+      </div>
+      <!-- //زر تحديدي الكل  //-->
+    </th>
+    <th scope="col">Action</th>
+  </tr>
+</thead>
+<% //} %>
+<!--  -->
+<tbody id="kk">
+<!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
+  <% arrR.measurement.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+    <!--  -->
+       <tr>
+         <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+         <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+         <td><%= item.aluminumCode %></td>
+         <td ><%=item.aluminumColorCode %></td>
+         <td><%= item.H %></td>
+         <td><%= item.W %></td>
+         <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
+         <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
+         <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
+         <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
+         <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
+        
+         <td>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
+            <label class="form-check-label" for="check<%= index %>"></label>
+          </div>
+        </td>
+         
+         <td>
+           <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+        
+
+           <a
+             data-bs-toggle="tooltip"
+             data-bs-title="Edit user"
+             data-bs-placement="top"
+             class="btn btn-primary btn-sm"
+             href="./edit/<%=// item._id %>"
+           >
+             <i class="bi bi-pencil"></i>
+           </a>
+           <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+           <button
+             data-bs-toggle="tooltip"
+             data-bs-title="Delete user"
+             data-bs-placement="top"
+             class="btn btn-danger btn-sm"
+           >
+             <i class="bi bi-trash"></i>
+           </button>
+         </form>
+         </td>
+       </tr>
+     <% }) %>
+   
+
+</tbody>
+</table>
+
+
+
+      </section>
+    </main>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+
+    <script src="../js/main.js"></script>
+
+
+   
+  </body>
+
+
+
+
+
+
+
+  <script>
+
+
+
+
+  // الاقائمة
+  const table110 = document.getElementById("table110")
+            const table220 = document.getElementById("table220")
+            const table330 = document.getElementById("table330")
+
+            table220.style.display = 'none';
+            table330.style.display = 'none';
+
+            // كنترول الزر الأول
+            document.getElementById("btnradio11").addEventListener("change",function(){
+                
+                if (this.checked) {
+                console.log("Checkbox is checked1111..");
+                
+                table220.style.display = 'none';
+                table330.style.display = 'none';
+                table110.style.display = 'table';
+
+
+
+        
+
+
+              
+              } else  {
+                console.log("Checkbox is not checked..");
+
+              }
+
+
+            })
+
+
+
+            // كنترول الزر الثاني
+
+
+            document.getElementById("btnradio22").addEventListener("change",function(){
+              
+                if (this.checked) {
+                console.log("Checkbox is checked22222..");
+              
+              table110.style.display = 'none';
+                table330.style.display = 'none';
+                table220.style.display = 'table';
+                // document.getElementById("ok1").value="ok1"
+            
+
+        
+
+
+              } else  {
+                console.log("Checkbox is not checked..");
+               
+                
+              }
+
+
+            })
+
+
+
+
+
+
+            // كنترول الزر الثالث
+
+
+            document.getElementById("btnradio33").addEventListener("change",function(){
+              
+              if (this.checked) {
+              console.log("Checkbox is checked33333..");
+
+              table110.style.display = 'none';
+              table220.style.display = 'none';
+              table330.style.display = 'table';
+
+
+          
+            } else  {
+              console.log("Checkbox is not checked..");
+
+              
+            }
+
+
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// اختيار الفني  والتكليف
+    function selectOperation(operation) {
+                      // تحديث نص الزر بالعملية المحددة
+                      document.getElementById('dropdownMenuButton').innerText = operation;
+                    }
+    
+      function selectOperation2(operation) {
+        // تحديث نص الزر بالعملية المحددة
+        document.getElementById('dropdownMenuButton2').innerText = operation;
+      }
+    
+    
+    
+      var selectedOperation1 = '';
+      var selectedOperation2 = '';
+    
+      function selectOperation(operation) {
+        // تحديث قيمة المتغير
+        selectedOperation1 = operation;
+        // تحديث نص الزر بالعملية المحددة
+        document.getElementById('dropdownMenuButton').innerText = operation;
+      }
+    
+      function selectOperation2(operation) {
+        // تحديث قيمة المتغير
+        selectedOperation2 = operation;
+        // تحديث نص الزر بالعملية المحددة
+        document.getElementById('dropdownMenuButton2').innerText = operation;
+      }
+    
+      function sendData() {
+        // هنا يمكنك استخدام المتغيرين المحددين لإرسال البيانات أو استخدامها بأي طريقة تحتاجها
+        // على سبيل المثال، يمكنك استخدام selectedOperation1 و selectedOperation2 لجمع البيانات وإرسالها
+        var combinedData = selectedOperation1 + ' و ' + selectedOperation2;
+        alert('البيانات المحددة: ' + combinedData);
+      }
+    
+         // اختيار الفني  والتكليف//
+
+   
+
+
+
+
+
+// زر تحديد الكل للجدول الأساسي 
+document.getElementById('select-all-checkbox').addEventListener('change', function() {
+  var checkboxes = document.querySelectorAll('#kk input[type="checkbox"]');
+  checkboxes.forEach(function(checkbox) {
+    checkbox.checked = this.checked;
+  }, this);
+});
+
+// زر تحديد الكل للجدول الأساسي //
+
+
+
+
+</script>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

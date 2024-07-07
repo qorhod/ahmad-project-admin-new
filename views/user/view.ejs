@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <script src="../js/color-modes.js"></script>
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Edit page</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- استايل الي يغمق ويفتح الشاشة -->
+<link rel="stylesheet" href="../css/dark-light.css"/>
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+    <!-- <style>
+      #status{
+        background-color: blue; /* تحديد لون الخلفية باللون الأزرق */
+    padding: 10px; /* إضافة هامش داخلي بقيمة 10 بيكسل */
+    border-right-color: rgb(251, 35, 226); /* لون الهامش من الجانب الأيمن */
+    border-left-color: red; /* لون الهامش من الجانب الأيسر */
+      }
+
+      
+    </style> -->
+  </head>
+  <body>
+      <!-- الايقنات -->
+      <%- include('../components/dark-light.ejs') %>
+
+    <main class="d-flex flex-nowrap">
+      <!-- الواجهه الي على اليسار -->
+      <%- include('../components/sidebar.ejs', {currentPage:"view"}) %> 
+
+      <section class="w-100">
+        <%- include('../components/navbar.ejs') %>
+
+        <nav
+          style="width: 88%"
+          class="px-2 mt-4 d-flex flex-wrap justify-content-between"
+          aria-label="breadcrumb"
+        >
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <%= arrView.firstNamecustomer %>   <%= arrView.lastNamecustomer %>
+            </li>
+          </ol>
+
+          <p class=" ">
+           
+            <span class="fw-medium fs-6">Id :</span> <%=  arrView._id %>
+            
+          </p>
+        </nav>
+     
+         <a
+         data-bs-toggle="tooltip"
+         data-bs-title="Edit user"
+         data-bs-placement="top"
+         class="btn btn-primary "
+         href="../edit/<%= arrView._id %>"
+       > تعديل بيانات العميل <i class="bi bi-pencil"></i></a>
+        <table
+          style="width: 99%"
+          class="ms-1 table mt-3 table-striped table-bordered"
+        >
+       
+          <thead>
+            <tr>
+              <th scope="col">:الأسم الأول</th>
+              <th class="fw-normal" scope="col"><%= arrView.firstNamecustomer %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">:الإسم الأخير</th>
+              <td><%= arrView.lastNamecustomer %></td>
+            </tr>
+
+            <tr>
+              <th scope="row">:رقم الجوال</th>
+              <td><%= arrView.phoneNumber %></td>
+            </tr>
+
+           
+
+            <tr>
+              <th scope="row">:الجنس</th>
+              <td><%= arrView.gender %></td>
+            </tr>
+
+           
+
+            
+
+            <tr>
+              <th scope="row">Created on</th>
+              <td><%= moment(arrView.createdAt).fromNow();%></td>
+            </tr>
+
+            <tr>
+              <th scope="row">Last Update</th>
+              <td><%= moment(arrView.updatedAt).fromNow();%></td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+        <h1 style="text-align: center; margin-top: 4rem;">الطلبات </h1>
+
+    
+    <!-- اضافتي للاوردرات -->
+    <a
+    data-bs-toggle="tooltip"
+    data-bs-title="Edit user"
+    data-bs-placement="top"
+    class="btn btn-primary "
+    href="../basic-measurement/<%= arrView._id %>"
+    >إضافة طلب جديد <i class="bi bi-plus-lg"></i></a>
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <table
+    style="width: 99%"
+    class="text-center mx-auto table mt-5 table-striped table-bordered"
+  >
+
+  <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+  <% if (arrView.orders.length ==0) { %> 
+    <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+
+
+   <% } %>
+
+   <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+   <!-- <% if (arrView.orders.length > 0) { %> -->
+    
+
+
+
+
+
+
+
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">رقم الطلب</th>
+        <th scope="col">الفرع</th>
+        <th scope="col">الموقع</th>
+        <th scope="col">الحالة</th>
+        <!-- <th scope="col">Age</th> -->
+        <!-- <th scope="col">Last updated</th> -->
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+  <% } %>
+  <!--  -->
+  <tbody id="kk">
+ <!-- تم نقل الجدول في الجافا سكربت تحت -->
+        </tbody>
+   
+
+
+
+
+
+
+    
+    
+    
+    <!--// اضافتي للاوردرات //-->
+
+
+
+      </section>
+    </main>
+
+
+
+
+
+
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+    <script src="../js/main.js"></script>
+  </body>
+ <script>
+
+//     const element = document.getElementById('statusf');
+
+// // قم بتغيير الستايل مباشرة
+// element.style.color = 'red';
+// element.style.backgroundColor = 'yellow';
+
+
+
+
+
+
+
+
+document.getElementById("kk").innerHTML = 
+
+`
+<% arrView.orders.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+       
+           <tr>
+             <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+             <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
+             <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+             <td><%= item.location %>	</td>
+             <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
+             <!-- <td><%= //item.age %></td> -->
+             <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+             <td>
+          
+               <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+               <a
+                 data-bs-toggle="tooltip"
+                 data-bs-title="View details"
+                 data-bs-placement="top"
+                 class="btn btn-primary btn-sm"
+                 href="/review/<%= item._id%>" 
+                 ><i class="bi bi-eye"></i
+               ></a>
+
+               <a
+                 data-bs-toggle="tooltip"
+                 data-bs-title="Edit user"
+                 data-bs-placement="top"
+                 class="btn btn-primary btn-sm"
+                 href="./edit/<%= //item._id %>"
+               >
+                 <i class="bi bi-pencil"></i>
+               </a>
+               <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+               <button
+                 data-bs-toggle="tooltip"
+                 data-bs-title="Delete user"
+                 data-bs-placement="top"
+                 class="btn btn-danger btn-sm"
+               >
+                 <i class="bi bi-trash"></i>
+               </button>
+             </form>
+             </td>
+           </tr>
+         <% }) %>
+`
+
+
+
+
+  </script> 
+</html>

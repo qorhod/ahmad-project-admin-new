@@ -1,0 +1,47 @@
+<!-- راس الصفحة -->
+<nav class="navbar text-white">
+  <div class="container-fluid justify-content-between">
+    <form action="/search" method="post" class="d-flex" role="search">
+      <input name="searchText" class="form-control me-2" type="search" placeholder="بحث" aria-label="بحث" />
+      <button class="btn btn-outline-light" type="submit">بحث</button>
+    </form>
+    <label hidden class="ui-switch d-flex align-items-center"> <!-- إضافة d-flex align-items-center لضبط التخطيط -->
+      <span hidden id="themeToggleLabel" class="text-white me-2">الوضع النهاري</span> <!-- وضع النص على اليمين -->
+      <input hidden type="checkbox" id="themeToggle">
+      <div hidden class="slider">
+        <div hidden  class="circle"></div>
+      </div>
+    </label>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const themeToggle = document.querySelector('.ui-switch input');
+    const themeToggleLabel = document.getElementById('themeToggleLabel');
+
+    // تغيير الوضع حسب التفضيل المحفوظ في localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+      themeToggle.checked = true;
+      themeToggleLabel.textContent = 'الوضع الليلي';
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', 'light');
+      themeToggle.checked = false;
+      themeToggleLabel.textContent = 'الوضع النهاري';
+    }
+
+    themeToggle.addEventListener('change', () => {
+      if (themeToggle.checked) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+        themeToggleLabel.textContent = 'الوضع الليلي';
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeToggleLabel.textContent = 'الوضع النهاري';
+      }
+    });
+  });
+</script>

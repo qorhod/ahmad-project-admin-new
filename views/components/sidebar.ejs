@@ -1,0 +1,148 @@
+<div
+id="sidebarId"
+class="position-relative d-flex flex-column flex-shrink-0 p-3 text-bg-dark sidebar"
+>
+<span style="right: 10px; top: 2px" class="position-absolute">
+  <button class="btn" onclick="toggleSidebar()">
+    <i  class="bi bi-x-circle"></i>
+  </button>
+</span>
+
+<a
+  href="/home"
+  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+>
+  <!-- <i class="bi bi-lightning-charge"></i> -->
+  <img style="height: 75px; width: 50px;" src="/img/white.png" alt="">
+  <span class="fs-4 sidebar-text">
+    
+    <img style="height: 50%; width: 100% ;" src="/img/factory.png" alt="">
+
+  </span>
+
+</a>
+<hr />
+<ul class="nav nav-pills flex-column mb-auto">
+  <li class="nav-item">
+    <a href="/home" class="nav-link text-white <%= currentPage == "index"? "active":null %> " aria-current="page"> <!-- استديعناه من الصفحات الي هي الاندكس والاد حن كتبنها فيه عشان نعرف هو في اصفحة عشان نبني الفرق وطبقنا نفس الطريقه مع الاد تحت تقدر تشوفها currentPageهذي عشان تضهر اللون الزر اللي على القاءمة الي على اليسار وتخلي عليه اللون الازر اذا ضغطنا عليه طبعا المكتوب هنا اف الشرطية بشكلها المختصر طبعنا فيه متغير  -->
+      <svg class="bi pe-none me-2" width="16" height="16">
+        <use xlink:href="#home" />
+      </svg>
+      <span class="sidebar-text"> Home </span>
+    </a>
+  </li>
+
+  <li>
+    <a href="/user/add.html" class="nav-link text-white <%= currentPage == "add"? "active":null %>">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+      </svg>
+      <span class="sidebar-text"> Add Customers </span>
+    </a>
+  </li>
+
+  <li>
+    <a href="/draft" class="nav-link text-white <%= currentPage == "draft"? "active":null %>">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+      </svg>
+      <span class="sidebar-text"> المسودة </span>
+    </a>
+  </li>
+
+
+
+
+  <li>
+    <a href="" class="nav-link text-white <%= currentPage == "c"? "active":null %>">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+          <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+        </svg>
+       
+      <span class="sidebar-text">  العملاء </span>
+    </a>
+  </li>
+
+
+
+
+</ul>
+<hr />
+<div class="dropdown">
+  <a
+    href="#"
+    class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    <img
+    
+      src="<%= user.profileImage? user.profileImage : "../img/pin.png" %>"
+      alt=""
+      width="32"
+      height="32"
+      class="rounded-circle me-2"
+    />
+    <strong class="sidebar-text"><%= user.userName %></strong>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+    <li><a class="dropdown-item" href="#">New project...</a></li>
+    <li><a class="dropdown-item" href="#">Settings</a></li>
+    <li><button 
+      data-bs-toggle="modal"
+       data-bs-target="#exampleModal"
+       class="dropdown-item"
+        href="#">Profile Image</button>
+      </li>
+    <li><hr class="dropdown-divider" /></li>
+    <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+  </ul>
+</div>
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form
+    action="/update-profile" method="post" enctype="multipart/form-data"
+    class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Profile Image</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="px-4 modal-body d-flex justify-content-between align-items-center">
+<label class="btn btn-secondary" for="inputFile">+ Upload Img</label>
+        <input name="avatar" style="display: none;" id="inputFile" type="file">
+        <img
+         id="profileImage" 
+         style="border-radius: 50%;"
+         src="<%= user.profileImage? user.profileImage : "../img/pin.png" %>"
+           alt="" width="150"
+            height="150">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!--// Modal// -->
+<div class="b-example-divider b-example-vr"></div>
+
+
+<script>
+// هذا الكود عشان اذا اخترة صورة الروفايل يضهر علطو في رسالة المودل الدرس رقم 10 المستوى 3
+inputFile.addEventListener("change", (eo) => { // يعني اذا احد ضغظ زر اضافة ملف صورة تساوي تشنج
+  profileImage.src = URL.createObjectURL(eo.target.files[0]) // يعني تغير رابط الصورة 
+})
+
+</script>

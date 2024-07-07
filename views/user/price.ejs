@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto" >
+  <head>
+   
+    <script src="../js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="../css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+  
+
+    <style>
+      @media print {
+          /* إخفاء محتوى صفحة الويب عند الطباعة */
+          .web-content {
+              display: none;
+          }
+          /* إظهار محتوى الفاتورة عند الطباعة */
+          .print-content {
+              display: block !important;
+          }
+
+              /* إخفاء عمود Action عند الطباعة */
+              .no-print {
+                display: none !important;
+            }
+      }
+      /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+      .print-content {
+          display: none;
+      }
+      /* تنسيقات إضافية للفاتورة */
+      .invoice-header {
+          margin-bottom: 20px;
+          text-align: center;
+      }
+      .invoice-header h1 {
+          margin-bottom: 0;
+      }
+      .invoice-table th, .invoice-table td {
+          text-align: right;
+      }
+      .total {
+          font-weight: bold;
+      }
+/*  */
+.print-content {
+            display: none;
+        }
+    
+
+  </style>
+
+  </head>
+  <body>
+   <!-- عشان ماظهر في الفاتورة -->
+    <span class=" web-content"> 
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+  </span>
+
+    <main class="d-flex flex-nowrap ">
+      <!-- الواجهه الي على اليمين -->
+
+      <!-- عشان ماتظهر في الطباعة -->
+      <span class=" web-content">
+      <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+   
+    </span>
+
+    
+      <section class="w-100 ">
+
+        <!-- عشان ماتضهر في الطباعة -->
+        <span class=" web-content">
+      <%- include('../components/navbar.ejs') %>
+   
+
+      <ul class="nav nav-tabs ">
+        <li class="nav-item">
+          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
+        </li>
+      
+        <li class="nav-item">
+          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
+        </li>
+        <li class="nav-item">
+          <a href="../price/<%= arrR._id %>"class="nav-link  active"  href="#">التسعيرة</a>
+        </li>
+        <li class="nav-item">
+          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
+        </li>
+        <li class="nav-item">
+          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
+        </li>
+   
+        <li class="nav-item">
+          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
+        </li>
+
+      </ul>
+
+    
+     <!-- form-control -->
+     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+
+      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
+      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+
+  </div>
+  <!-- <a
+           
+  class="btn btn-primary "
+  href="../measurement/<%=// arrR._id %>"
+   type="button"
+    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> -->
+  
+<!-- زر الطباعة -->
+  <input type="button" id="t" value="القائمة المفصلة" class="btn btn-secondary " onclick="toggleTables()" >
+
+  <button id="print1" type="button" class="btn btn-secondary" onclick="window.print()" >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+</svg>
+</button>
+<!--// زر الطباعة //-->
+
+
+</span>
+
+
+<div class="container print-content">
+  <div class="invoice-header">
+      <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+      <h1>مصنع المعدن الأبيض لصناعة</h1>
+      <p>خميس مشيط المدينة الصناعية</p>
+      <p>هاتف: 123456789</p>
+      <p>البريد الإلكتروني: info@whitemetalfactory.com.sa</p>
+  </div>
+
+
+  
+</div>
+<div class="invoice-details print-content">
+  <br>
+    <p  style="display: flex;  justify-content: flex-end;"> <%= arrR.orderNumber %><strong>:رقم الطلب</strong></p>
+    <p  style="display: flex;  justify-content: flex-end;"> <%= moment(arrR.createdAt).format('YYYY-MM-DD') %><strong>:تاريخ الطلب</strong></p>
+    <p  style="display: flex;  justify-content: flex-end;"> <%= allData.firstNamecustomer %><%= allData.lastNamecustomer %><strong>:اسم العميل</strong></p>
+</div>
+
+
+        <table id="table1"
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >
+   
+   
+        <!-- let too = parseFloat(number.toFixed(2)); // لتقريب الارقام يضهر رقمين بعد الفاصله
+        let yy = parseFloat(number.toFixed(2));// لتقريب الارقام يضهر رقمين بعد الفاصله -->
+
+
+
+
+          <thead>
+
+   
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">الصنف</th>
+              <th scope="col">الكمية</th>
+              <th scope="col">الوحدة</th>
+              <th scope="col">السعر</th>
+              <th scope="col">الخصم</th>
+              <th scope="col">الإجمالي</th>
+              <!-- <th scope="col">اجمالي بعد الخصم خويش</th> -->
+              <th scope="col" class="no-print">Action</th>
+            </tr>
+          </thead>
+        <% //} %>
+        <!--  -->
+        <!-- <tbody id="table1" > -->
+          <!-- .reverse() -->
+          <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
+            <% arrR.measurement.forEach((item, index) => { %>  
+              <!--  -->
+              <tbody  id="kk" >
+                 <tr>
+                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                   <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                   <td><%= item.totalMeters.totalMeters %>	</td>
+                   <td>m2</td>
+                   <td><%= item.price.price %></td>
+                   <td><%=  parseFloat(item.price.discount.toFixed(2)) %></td>
+                   <td><%= parseFloat(item.price.total.toFixed(2)) %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+                   <!-- <td><%= //parseFloat( item.price.totalWithDiscount.toFixed(2)) %></td> -->
+                   <td class="no-print">
+                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                  
+     
+                     <a
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Edit user"
+                       data-bs-placement="top"
+                       class="btn btn-primary btn-sm"
+                       href="./edit/<%=// item._id %>"
+                     >
+                       <i class="bi bi-pencil"></i>
+                     </a>
+                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+                     <button
+                       data-bs-toggle="tooltip"
+                       data-bs-title="Delete user"
+                       data-bs-placement="top"
+                       class="btn btn-danger btn-sm"
+                     >
+                       <i class="bi bi-trash"></i>
+                     </button>
+                   </form>
+                   </td>
+                 </tr>
+                </tbody>
+
+
+
+
+     
+               <% }) %>
+  
+          <!-- </tbody> -->
+        </table>
+
+
+<!-- هذا جدول جمع الاصناف -->
+        <table  id="table2"
+        style="width: 99%"
+        class="text-center mx-auto table mt-5 table-striped table-bordered"
+      >
+  
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">الصنف</th>
+            <th scope="col">الكمية</th>
+            <th scope="col">الوحدة</th>
+            <th scope="col">السعر</th>
+            <th scope="col">الخصم</th>
+            <th scope="col">الإجمالي</th>
+            <th scope="col">الإجمالي بعد الخصم</th>
+            
+            <th scope="col" class="no-print">Action</th>
+         
+          </tr>
+        </thead>
+      <% //} %>
+
+
+      <%
+   let wordCount = 0;
+const resultMap = new Map(); // إنشاء Map خارج اللوب الخارجي
+
+arrR.measurement.forEach((item, index) => {
+    const itemm = { 
+        value1: item.totalMeters.totalMeters , 
+        value2: item.price.price, 
+        value3: item.price.total,
+        value4: item.price.discount,
+        value5: item.price.totalWithDiscount,  
+        
+        word: item.aluminumCode 
+    };
+
+
+    const key = `${itemm.word}`; // تكوين مفتاح يحتوي على الكلمة ورقم العمود
+
+    if (resultMap.has(key)) {
+        resultMap.set(key, {
+            value1: resultMap.get(key).value1 += itemm.value1,
+            value2: resultMap.get(key).value2 = itemm.value2,
+            value3: resultMap.get(key).value3 + itemm.value3,
+            value4: resultMap.get(key).value4 + itemm.value4,
+            value5: resultMap.get(key).value5 + itemm.value5,
+            word: resultMap.get(key).word + itemm.word, 
+          
+        });
+        
+        // resultMap.set(key, resultMap.get(key) ); //
+    } else {
+        resultMap.set(key, itemm);
+        // resultMap.set(key.length, 1);//
+    } 
+  
+});
+%>
+<% let index = 0; %>
+<!-- // عرض النتيجة -->
+
+<%  resultMap.forEach((value, key   ) => {%>
+
+ <% // console.log(`${key} تكرر ${value} مرات`); %>
+  <% index++; %>
+   <%  // console.log(`${key}: ${value.value1}, ${value.value2}, ${value.value3}, ${value.word}`);%>
+   <form style="display: inline;" action="/price/<%= arrR._id %>" method="post">
+
+   <tbody   >
+    <tr>
+      <th scope="row"><%=  index %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+      <td><%= key %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+      <td><%= value.value1 %>	</td>
+      <td>m2</td>
+      <td><%= value.value2 %></td>
+      <td  style="width: 15%;"><input disabled name="discount"  id="editableInput<%= index %>"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;" value="<%= parseFloat(value.value4.toFixed(2))%>"></td>
+<td><input  type="hidden" name="total" value="<%= value.value3 %>"><%= parseFloat(value.value3.toFixed(2))%></td>       <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+<td><input  type="hidden" name="d" value="<%= value.value5 %>"><%= parseFloat(value.value5.toFixed(2))%></td>       <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+
+      <td style="width: 5%;" class="no-print">
+        <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+     
+
+        <input
+        id="but<%= index %>"
+        onclick="toggleEditability()"
+          data-bs-toggle="tooltip"
+          data-bs-title="إضافة خصم"
+          data-bs-placement="top"
+          class="btn btn-primary btn-sm "
+          value="إضافة خصم"
+          
+          
+        >
+          <!-- <i class="bi bi-pencil"></i> -->
+      <!-- </a> -->
+        <!-- <form style="display: inline;" action="/price/<%=// arrR._id %>" method="post"> -->
+        <input
+       
+        style="width: 100%;  display: none;"
+        id="bb<%= index %>"
+       type="submit"
+          data-bs-toggle="tooltip"
+          data-bs-title="تأكيد"
+          data-bs-placement="top"
+          class="btn btn-success btn-sm"
+          value="تأكيد"
+        >
+          <!-- <i class="bi bi-trash"></i> -->
+        <!-- </button> -->
+
+        <input type="hidden" name="iid" value="<%= arrR._id %>">
+        <!-- <input id="discount<%= //index %>" type="hidden" name="discount" value=""> -->
+        <input type="hidden" name="aluminumCode" value="<%= key %>">
+      </form>
+      </td>
+    </tr>
+   </tbody>
+
+   <script>
+    // background-color: transparent; border: none; outline: none;
+    document.getElementById('but<%= index %>').addEventListener('click', function() {
+      document.getElementById('but<%= index %>').style.display = "none";
+      document.getElementById('bb<%= index %>').style.display = "block";
+
+      var input = document.getElementById('editableInput<%= index %>');
+      if (input.disabled) {
+        input.style="width: 60%; text-align: center; "
+        input.disabled = false; // جعل الإدخال قابل للتعديل
+      } else {
+        input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+  
+        input.disabled = true; // جعل الإدخال غير قابل للتعديل
+      }});
+
+  
+   
+  </script>
+    
+<%});%>
+
+
+      </table>
+<!-- //هذا جدول جمع الاصناف //-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <table
+        style="width: 99%"
+        class="text-center mx-auto table mt-5 table-striped table-bordered"
+      >
+        <thead>
+          <tr>
+           
+            <th scope="col">الإجمالي قبل الضريبة</th>
+            <th scope="col"><%=  arrR.totalPrice.totalBeforeTax ?parseFloat(arrR.totalPrice.totalBeforeTax.toFixed(2)):0 %></th>
+            <th scope="col">SR</th>
+          </tr>
+
+          <tr>
+            <th scope="col">الضريبة</th>
+            <th scope="col"><%= arrR.totalPrice.tax ? parseFloat(arrR.totalPrice.tax .toFixed(2)):0 %></th>
+            <th scope="col">SR</th>
+          </tr>
+
+          <tr>
+            <th scope="col">الإجمالي شامل الضريبة</th>
+            <th scope="col"><%=  arrR.totalPrice.totalWithTax ? parseFloat(arrR.totalPrice.totalWithTax.toFixed(2)):0 %></th>
+            <th scope="col">SR</th>
+          </tr>
+        </thead>
+      <tbody>
+    </tbody>
+  </table>
+     
+  
+
+      </section>
+    </main>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+
+    <script src="../js/main.js"></script>
+   
+ <!-- يظهر في الفاتورة بس -->
+    <p class="text-right print-content " style="display: block; text-align: right;">شكرًا لتعاملكم معنا!</p> 
+  </body>
+
+  <script>
+
+
+
+
+
+    table1.style.display = 'none';
+   
+
+
+    // دالة لتبديل الجدولين
+    function toggleTables() {
+      var table1 = document.getElementById('table1');
+      var table2 = document.getElementById('table2');
+    
+      document.getElementById("t").value="القائمة المفصلة"
+
+      // إذا كان الجدول الأول مرئيًا، قم بإخفاءه وإظهار الجدول الثاني، والعكس صحيح
+      if (table1.style.display !== 'none') {
+    
+        table1.style.display = 'none';
+        table2.style.display = 'table';
+
+       
+        
+      
+      } else {
+    
+
+        table1.style.display = 'table';
+        table2.style.display = 'none';
+
+        document.getElementById("t").value="القائمة المختصرة"
+
+      }
+    }
+  </script>
+ 
+
+ <!-- <script>
+  // background-color: transparent; border: none; outline: none;
+  function toggleEditability() {
+    var input = document.getElementById('editableInput');
+    if (input.disabled) {
+      input.style="width: 60%; text-align: center; "
+      input.disabled = false; // جعل الإدخال قابل للتعديل
+    } else {
+      input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+
+      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+    }
+  }
+
+ 
+</script> -->
+
+<!-- <script>
+function toggleEditability() {
+    var inputs = document.getElementsByClassName('editableInput');
+    var button = document.querySelector('button');
+
+    // Loop through all inputs
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].disabled) {
+            inputs[i].disabled = false; // Make input editable
+            button.textContent = "Disable Inputs"; // Change button text
+        } else {
+            inputs[i].disabled = true; // Make input non-editable
+            button.textContent = "Enable Inputs"; // Change button text
+        }
+    }
+}
+
+</script> -->
+
+
+</html>

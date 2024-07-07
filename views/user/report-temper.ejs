@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto" >
+  <head>
+   
+    <script src="../js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="../css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+  
+  </head>
+  <style>
+    @media print {
+        /* إخفاء محتوى صفحة الويب عند الطباعة */
+        .web-content {
+            display: none;
+        }
+        /* إظهار محتوى الفاتورة عند الطباعة */
+        .print-content {
+            display: block !important;
+        }
+
+            /* إخفاء عمود Action عند الطباعة */
+            .no-print {
+              display: none !important;
+          }
+    }
+    /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+    .print-content {
+        display: none;
+    }
+    /* تنسيقات إضافية للفاتورة */
+    .invoice-header {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .invoice-header h1 {
+        margin-bottom: 0;
+    }
+    .invoice-table th, .invoice-table td {
+        text-align: right;
+    }
+    .total {
+        font-weight: bold;
+    }
+/*  */
+.print-content {
+          display: none;
+      }
+  
+
+</style>
+<body>
+    <!-- عشان ماظهر في الفاتورة -->
+     <span class=" web-content"> 
+     <!--ايقونات  -->
+     <%- include('../components/dark-light.ejs') %> 
+   </span>
+ 
+     <main class="d-flex flex-nowrap ">
+       <!-- الواجهه الي على اليمين -->
+ 
+       <!-- عشان ماتظهر في الطباعة -->
+       <span class=" web-content">
+       <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+    
+     </span>
+
+      <section class="w-100">
+        <span class=" web-content">
+      <%- include('../components/navbar.ejs') %>
+
+
+      <ul class="nav nav-tabs ">
+        <li class="nav-item">
+          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
+        </li>
+      
+        <li class="nav-item">
+          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
+        </li>
+        <li class="nav-item">
+          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
+        </li>
+        <li class="nav-item">
+          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
+        </li>
+        <li class="nav-item">
+          <a href="../glass-cutting/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">تقرير قص الزجاج </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="../report-temper/<%= arrR._id %>" class="nav-link  active" aria-disabled="true">تقرير السكريت   </a>
+          </li>
+
+   
+        <li class="nav-item">
+          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
+        </li>
+
+      </ul>
+
+
+     <!-- form-control -->
+     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+
+      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
+      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+
+  </div>
+
+
+  <a
+           
+  class="btn btn-primary "
+  href="../measurement/<%= arrR._id %>"
+   type="button"
+    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
+
+
+
+
+    <br>
+    <br>
+
+<!-- زر الطباعة -->
+
+<button id="print1" type="button" class="btn btn-secondary" onclick="window.print()" >
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+</svg>
+</button>
+<!--// زر الطباعة //-->
+
+</span>
+
+<div class="container print-content">
+    <div class="invoice-header">
+        <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+        <h1>REPORT TEMPER</h1>
+
+    </div>
+  
+  
+    
+  </div>
+  <div class="invoice-details print-content">
+    <br>
+      <p>Order Number: <strong><%= arrR.orderNumber %></strong></p>
+      <p>Date:<strong><%= moment(arrR.createdAt).format('YYYY-MM-DD') %></strong></p>
+      <p>Customer Name:<strong><%= allData.firstNamecustomer %><%= allData.lastNamecustomer %></strong></p>
+      <p>Branch: <strong><%= arrR.branch %></strong></p>
+  </div>
+
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >
+
+        
+   
+ 
+
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Glass color</th>
+              <th scope="col">Aluminum code</th>
+              <th scope="col">H</th>
+              <th scope="col">W</th>
+              <th scope="col">Temper</th>
+            </tr>
+          </thead>
+        <% //} %>
+        <!--  -->
+        <tbody id="kk">
+          <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
+            <% arrR.measurement.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+             
+              <!-- شرط عشان ما يطلع إلى التمبر -->
+              <% if (item.temper==="YAS") { %> 
+               
+              
+                 <tr>
+                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                   <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                   <td><%= item.glassColorCode %>	</td>
+                   <td><%=item.glassCuttingReport.H %></td>
+                   <td><%= item.glassCuttingReport.W %></td>
+                   <td><%= item.glassCuttingReport.reportTemper %></td>
+                 </tr>
+                 <% } %>
+               <% }) %>
+             
+      
+          </tbody>
+        </table>
+
+
+
+
+
+     
+
+
+      </section>
+    </main>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+
+    <script src="../js/main.js"></script>
+   
+  </body>
+
+
+ 
+</html>

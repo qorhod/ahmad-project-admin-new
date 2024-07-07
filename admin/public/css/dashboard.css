@@ -1,0 +1,84 @@
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+.content {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.theme-toggle-container {
+    margin-bottom: 20px;
+}
+
+.btn-toggle {
+    margin-left: 10px;
+}
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: #121212;
+    --bs-body-color: #ffffff;
+}
+
+[data-bs-theme="light"] {
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #000000;
+}
+
+
+.sidebar-divider {
+    border-right: 2px solid #ccc;
+    height: 100vh; /* تأكد من أن الخط يمتد على طول الصفحة */
+}
+
+
+.sidebar-logo {
+    width: 50px; /* العرض المخصص للصورة */
+    height: auto; /* الارتفاع يتم ضبطه تلقائيًا للحفاظ على نسبة العرض إلى الارتفاع */
+  }
+  
+  .sidebar-small-logo {
+    width: 170px; /* العرض المخصص للصورة الصغيرة */
+    height: auto; /* الارتفاع يتم ضبطه تلقائيًا للحفاظ على نسبة العرض إلى الارتفاع */
+  }
+  
+
+
+
+
+
+  .small-sidebar {
+    width: 80px;
+  }
+  
+  .sidebar {
+    width: 250px;
+    transition: width 0.3s;
+  }
+  
+
+
+
+  .small-sidebar {
+    width: 80px;
+  }
+  
+  .sidebar {
+    width: 250px;
+    transition: width 0.3s;
+  }
+
+
+
+
+
+
+
+
+  
+  
