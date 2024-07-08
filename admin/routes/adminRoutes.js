@@ -1,20 +1,18 @@
 const express = require('express');
-const adminController = require('../controllers/adminController');
-
 const router = express.Router();
+const adminController = require('../controllers/adminController');
+const passport = require('passport');
 
-// مسار افتراضي لـ /admin
+// صفحة تسجيل الدخول للأدمن
 router.get('/', adminController.getLogin);
+
+// معالجة تسجيل الدخول للأدمن
 router.post('/', adminController.postLogin);
 
-// مسار لوحة التحكم
+// لوحة تحكم الأدمن
 router.get('/dashboard', adminController.getDashboard);
 
-
-
-
-router.get('/add-user', adminController.addUser);
-
-
+// صفحة إضافة مستخدم
+router.get('/addUser', adminController.addUser);
 
 module.exports = router;

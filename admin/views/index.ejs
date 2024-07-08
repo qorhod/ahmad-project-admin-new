@@ -7,10 +7,9 @@
     <meta name="author" content="">
 
     <link href="/admin/public/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link href="/admin/public/css/font-awesome.min.css" rel="stylesheet"> -->
     <link href="/admin/public/css/style.css" rel="stylesheet">
 
-    <title>صفحة تسجيل دخول تعليمية باستخدام Bootstrap 5</title>
+    <title>Admin</title>
     <style>
         body {
             direction: rtl;
@@ -27,7 +26,7 @@
         .ceo-title {
             font-size: 24px;
             font-weight: bold;
-            margin-top: 5px; /* تم تقليل المسافة من الأعلى */
+            margin-top: 5px;
             text-align: center;
         }
         .form-02-main {
@@ -54,27 +53,27 @@
                   <img src="/admin/public/images/user.png" alt="أيقونة المستخدم">
                   <div class="ceo-title">CEO</div>
                 </div>
-                <div class="form-group">
-                  <input type="email" name="email" class="form-control _ge_de_ol" placeholder="أدخل البريد الإلكتروني" required="" aria-required="true">
-                </div>
-
-                <div class="form-group">
-                  <input type="password" name="password" class="form-control _ge_de_ol" placeholder="أدخل كلمة المرور" required="" aria-required="true">
-                </div>
-
-                <div class="checkbox form-group">
-                </div>
-
-                <div class="form-group">
-                  <div class="_btn_04">
-                    <a href="#">تسجيل الدخول</a>
+                <form action="/admin" method="POST">
+                  <div class="form-group">
+                    <input type="email" name="email" class="form-control _ge_de_ol" placeholder="أدخل البريد الإلكتروني" required aria-required="true">
                   </div>
-                </div>
 
-                <div class="form-group pt-0">
-                  <div class="_social_04">
+                  <div class="form-group">
+                    <input type="password" name="password" class="form-control _ge_de_ol" placeholder="أدخل كلمة المرور" required aria-required="true">
                   </div>
-                </div>
+
+                  <div class="checkbox form-group"></div>
+
+                  <div class="form-group">
+                    <div class="_btn_04">
+                      <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                    </div>
+                  </div>
+
+                  <div class="form-group pt-0">
+                    <div class="_social_04"></div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
