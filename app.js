@@ -52,6 +52,7 @@ mongoose.connect(process.env.DATABASE_PASSWORD)
   .then(() => {
     // تهيئة الأدمن الافتراضي
     adminController.initializeAdmin();
+    adminController.initializeDefaultPermissions();
     
     app.listen(port, () => {
       console.log(`http://localhost:${port}/`);

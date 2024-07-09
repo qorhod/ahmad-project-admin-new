@@ -18,4 +18,11 @@ router.get('/addUser', adminController.addUser);
 // معالجة إضافة مستخدم جديد
 router.post('/addUser', adminController.postAddUser);
 
+
+
+router.get('/managePermissions', adminController.getPermissions);
+router.post('/managePermissions', adminController.postPermissions);
+router.post('/addPermission', adminController.addPermission);
+router.post('/deletePermission', adminController.deletePermission);
+
 module.exports = router;
