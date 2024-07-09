@@ -1,189 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <script src="./js/color-modes.js"></script>
-        <link
-          rel="stylesheet"
-          href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
-        />
-        <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="" />
-        <meta
-          name="author"
-          content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-        />
-        <meta name="generator" content="Hugo 0.112.5" />
-        <title>Home page</title>
-    
-        <link href="./css/bootstrap.min.css" rel="stylesheet" />
-        <!-- استايل الي يغمق ويفتح الشاشة -->
-        <link rel="stylesheet" href="./css/dark-light.css"/>
-       
-    
-        <!-- Custom styles for this template -->
-        <link href="./css/sidebars.css" rel="stylesheet" />
-        <link rel="stylesheet" href="./css/myStyle.css" />
+<head>
+    <script src="./js/color-modes.js"></script>
+    <link rel="stylesheet" href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
 
-        <style>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dark-light.css"/>
+    <link href="./css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/myStyle.css" />
 
-            
-/* Custom default button */
-.btn-light,
-.btn-light:hover,
-.btn-light:focus {
-  color: #333;
-  text-shadow: none; /* Prevent inheritance from `body` */
-}
+    <style>
+        body {
+            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+        }
 
+        .cover-container {
+            max-width: 42em;
+        }
 
-/*
- * Base structure
- */
-
-body {
-  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-}
-
-.cover-container {
-  max-width: 42em;
-}
-
-
-#passwordError,#emailError{
-  color: rgb(255, 0, 0);
-  margin-left: 0.rem;
-  font-weight:600;
-}
-        </style>
-      </head>
+        #passwordError, #emailError {
+            color: rgb(255, 0, 0);
+            margin-left: 0.rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
 <body class="d-flex h-100 text-center text-bg-dark">
-  
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <%- include('./header.ejs',{currentPage:"login"}) %>
 
-   
-    
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-<%- include('./header.ejs',{currentPage:"login"}) %>
+        <main class="px-3">
+            <h1>Log in</h1>
 
-  <main class="px-3">
-    <h1>Log in</h1>
+            <form id="signupForm" class="text-start mx-auto mt-5" style="max-width: 22em;">
+                <div class="form-group">
+                    <label for="exampleInputUserName">Username</label>
+                    <input name="userName" type="text" class="form-control" id="exampleInputUserName" placeholder="Enter username">
+                    <p id="userNameError"></p>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <p id="passwordError"></p>
+                </div>
 
-    <form 
-     id="signupForm"
-     class="text-start mx-auto mt-5"
-     style="max-width: 22em;">
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Log in</button>
+            </form>
+        </main>
 
-        <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
-          <input name="email" 
-          type="email"
-         class="form-control" 
-         id="exampleInputEmail1"
-           aria-describedby="emailHelp"
-          placeholder="Enter email">
-          <p id="emailError"></p>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input name="password" 
-          type="password"
-          class="form-control"
-           id="exampleInputPassword1"
-           placeholder="Password">
-           <p id="passwordError"></p>
-        </div>
+        <footer class="mt-auto text-white-50">
+            <p>جميع الحقوق محفوظة لبن قرهد ©2024</p>
+        </footer>
+    </div>
 
-        <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Log in</button>
-      </form>
+    <script>
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            userNameError.textContent = "";
+            passwordError.textContent = "";
 
+            const res = await fetch("login", {
+                method: "POST",
+                body: JSON.stringify({
+                    userName: exampleInputUserName.value,
+                    password: exampleInputPassword1.value,
+                }),
+                headers: { "Content-Type": "application/json" },
+            });
 
-    
-  </main>
+            const data = await res.json();
+            console.log(data);
 
-  <footer class="mt-auto text-white-50">
-    <p>جميع الحقوق محفوظة لبن قرهد ©2024 </p>
-  </footer>
-</div>
+            if (data.notFoundUser) {
+                userNameError.textContent = data.notFoundUser;
+            }
 
-<script>
+            if (data.id) {
+                location.assign("/home");
+            }
 
-
-
-// الدرس رقم 13 المستوى 2
-
-
-  signupForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    emailError.textContent = ""
-    passwordError.textContent = ""
-
-    const res = await fetch("login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: exampleInputEmail1.value,
-         password: exampleInputPassword1.value,
-         
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-    
-    const data = await res.json();
-console.log(data)
-
-if(data.notFoundEmail){
-  emailError.textContent = data.notFoundEmail
-}
-
-if(data.id){
-  location.assign("/home")
-}
-
-
-if(data.passwordError){
-  passwordError.textContent = data.passwordError
-}
-
-    // if (data.arrvalidationError) {
-    //   console.log(data.arrvalidationError)
-
-    //   data.arrvalidationError.forEach(item => {
-
-    //     if (item.path == "email") {
-    //       emailError.textContent = "please provide a valid email"
-    //     }
-
-
-    //     if (item.path == "password") {
-    //       passwordError.textContent = "Password must be at least 8 characters with 1 upper case letter and 1 number"
-    //     }
-        
-    //   });
-    // }
-
-
-    
-
-    // if (data.existEmail) {
-    //   console.log(data.existEmail)
-    //   emailError.textContent = "Email already exist, Try to login"
-    // }
-
-
-    
-    // if (data.id) {
-    //   console.log(data.id)
-    //   location.assign("/home")
-    // }
-      
-    
-  });
-</script> 
-<script src="./js/bootstrap.bundle.min.js"></script>
-    </body>
+            if (data.passwordError) {
+                passwordError.textContent = data.passwordError;
+            }
+        });
+    </script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

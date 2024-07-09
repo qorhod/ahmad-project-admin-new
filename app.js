@@ -9,7 +9,7 @@ const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
-const flash = require('connect-flash'); // استيراد connect-flash
+const flash = require('connect-flash');
 const adminController = require('./admin/controllers/adminController'); // استيراد وحدة تحكم الأدمن
 
 require('dotenv').config();
@@ -39,6 +39,7 @@ app.use(passport.session());
 // إعدادات live reload
 const liveReloadServer = livereload.createServer();
 liveReloadServer.watch(path.join(__dirname, 'public'));
+liveReloadServer.watch(path.join(__dirname, 'admin/public'));
 app.use(connectLivereload());
 liveReloadServer.server.once("connection", () => {
   setTimeout(() => {

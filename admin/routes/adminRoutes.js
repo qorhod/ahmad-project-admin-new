@@ -15,4 +15,7 @@ router.get('/dashboard', adminController.getDashboard);
 // صفحة إضافة مستخدم
 router.get('/addUser', adminController.addUser);
 
+// معالجة إضافة مستخدم جديد
+router.post('/addUser', adminController.postAddUser);
+
 module.exports = router;

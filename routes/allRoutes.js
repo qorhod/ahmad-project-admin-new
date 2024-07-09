@@ -249,11 +249,14 @@ console.log(result)
 
             });
 
-            router.get("/sign-up", (req, res) => {
 
-              res.render("auth/sign-up");
 
-            });
+            //تم الإستغناء عنه ويتم انشاء الحسابات في الادمن
+            // router.get("/sign-up", (req, res) => {
+
+            //   res.render("auth/sign-up");
+
+            // });
             
     
             
@@ -2352,53 +2355,53 @@ router.get("/total-materials/:id", (req, res) => {
 
 
 
+// تم إقافة لأن استغنينا عنه في الأدمن
+            // const { check, validationResult } = require("express-validator"); // تبع الي تحت حق التأكد من صحة الايميل و قوقة الباسورد
 
-            const { check, validationResult } = require("express-validator"); // تبع الي تحت حق التأكد من صحة الايميل و قوقة الباسورد
-
-            router.post('/sign-up', // هذا ركزس عادي حق تسجيل مستخدم جديد واضفنا معه الاكواد التالية عشان يتأكد من ان اليوزر والمز السري مكتوبة بشكل قوي طبعا فيه دالة حزمه ثبتناها وخذا الكواد هذي من مرجعها
-            check("email", "Please provide a valid email").isEmail(),
-            check("password", "Password must be at least 8 characters with 1 upper case letter and 1 number"
-            ).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/),
-            async(req, res) => { // هنا نكمل الركزست
-              //  console.log(req.body)
-              try{
-                const objError = validationResult(req);  // يجمع الاخطاء هنا
-                console.log(objError.errors)  // ملاحظة هذي تعتبر مصفوفةمن الأخطاء تصنعة حزمة التأكد من صحة الايمل و قوة الباسورد م
-                console.log("----------------------")
-                  if(objError.errors.length > 0 ){ // طبعا هنا مصفوة الأخطاء لاتنطبع إلى اذا فيه خطاء في الايميل او قوة الباسورد عشان كذا انشأنا هذ الشرط و نقول فيه اذا النث حق الاري اكبر من صف نفذ الشر يعني فيه اخطاء بختصار
-                    return   res.json({ arrvalidationError: objError.errors}) // app نرسل رسالة الخطاء للفرنت اند بستخدام صيغة الجيسون طبعا معرقين صيغة الجيسزن في ملف 
-                  }
-
-
+        //     router.post('/sign-up', // هذا ركزس عادي حق تسجيل مستخدم جديد واضفنا معه الاكواد التالية عشان يتأكد من ان اليوزر والمز السري مكتوبة بشكل قوي طبعا فيه دالة حزمه ثبتناها وخذا الكواد هذي من مرجعها
+        //     check("email", "Please provide a valid email").isEmail(),
+        //     check("password", "Password must be at least 8 characters with 1 upper case letter and 1 number"
+        //     ).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/),
+        //     async(req, res) => { // هنا نكمل الركزست
+        //       //  console.log(req.body)
+        //       try{
+        //         const objError = validationResult(req);  // يجمع الاخطاء هنا
+        //         console.log(objError.errors)  // ملاحظة هذي تعتبر مصفوفةمن الأخطاء تصنعة حزمة التأكد من صحة الايمل و قوة الباسورد م
+        //         console.log("----------------------")
+        //           if(objError.errors.length > 0 ){ // طبعا هنا مصفوة الأخطاء لاتنطبع إلى اذا فيه خطاء في الايميل او قوة الباسورد عشان كذا انشأنا هذ الشرط و نقول فيه اذا النث حق الاري اكبر من صف نفذ الشر يعني فيه اخطاء بختصار
+        //             return   res.json({ arrvalidationError: objError.errors}) // app نرسل رسالة الخطاء للفرنت اند بستخدام صيغة الجيسون طبعا معرقين صيغة الجيسزن في ملف 
+        //           }
 
 
-              const n = await AuthUser.findOne({email: req.body.email}) // عشان يبحث عن اليميل المراد تسجيله اذا هو موجد من قبل اولا في قاعدة البيانات
-              console.log(n)
+
+
+        //       const n = await AuthUser.findOne({email: req.body.email}) // عشان يبحث عن اليميل المراد تسجيله اذا هو موجد من قبل اولا في قاعدة البيانات
+        //       console.log(n)
                 
 
 
               
-              if(n){
-                return res.json({ existEmail: "Email already exist"}) // اذا موجود يرسل هذا النص إلى الفرنت اند هصيغة الجيسون يعني هذا الحساب مسجل مسبقاً و يوقف الاسطر الي بعدة
-                // res.redirect('/sign-up')
+        //       if(n){
+        //         return res.json({ existEmail: "Email already exist"}) // اذا موجود يرسل هذا النص إلى الفرنت اند هصيغة الجيسون يعني هذا الحساب مسجل مسبقاً و يوقف الاسطر الي بعدة
+        //         // res.redirect('/sign-up')
                   
 
-              }
-                const newUser = await AuthUser.create(req.body) // اذا كل ماسبق صحيح راح يوصل إيلا هذه النقطة وينشأ الحساب 
+        //       }
+        //         const newUser = await AuthUser.create(req.body) // اذا كل ماسبق صحيح راح يوصل إيلا هذه النقطة وينشأ الحساب 
 
-                  // اكواد التوكن جاهزة
-              var token = jwt.sign({ id: newUser._id , name: newUser.name, userName: newUser.userName }, "shhhhh"); // انشانا منتغير وطلمبنا مكتلة التوكن ونحط اي اسم للبينات الي راح نخليها تصير توكن وبعده نحط البينات الي تبغاه يحطها في في التوكن من الافضل وضع الرأيد فقط وعدم وضع اليوزر والباسورد للأمان فقط واخر شي تحط رمز سري على التوكن حطيته اي شي
-              res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // هذا يحفظ داخل الكوكيز الوكل كلمة بين الاقواس هذا الكي الي راح يحفظ به والي بعدة التوكن والي بين القواس المطعجة اول واحد خاص في الحماية تقدر تبحث عن في قوقل واخر شي كم مدة حفظ التوكن وبعدين ينحذف بالملي سكند طبعا مسجل انا يوم كامل
-              // res.redirect("/home") // هذي يحول عليه مايتأكد من التوكن اذا ماكتبت هذا الكود مارح يشتغل معك 
-         // ///اكواد التوكن جاهزة//
+        //           // اكواد التوكن جاهزة
+        //       var token = jwt.sign({ id: newUser._id , name: newUser.name, userName: newUser.userName }, "shhhhh"); // انشانا منتغير وطلمبنا مكتلة التوكن ونحط اي اسم للبينات الي راح نخليها تصير توكن وبعده نحط البينات الي تبغاه يحطها في في التوكن من الافضل وضع الرأيد فقط وعدم وضع اليوزر والباسورد للأمان فقط واخر شي تحط رمز سري على التوكن حطيته اي شي
+        //       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // هذا يحفظ داخل الكوكيز الوكل كلمة بين الاقواس هذا الكي الي راح يحفظ به والي بعدة التوكن والي بين القواس المطعجة اول واحد خاص في الحماية تقدر تبحث عن في قوقل واخر شي كم مدة حفظ التوكن وبعدين ينحذف بالملي سكند طبعا مسجل انا يوم كامل
+        //       // res.redirect("/home") // هذي يحول عليه مايتأكد من التوكن اذا ماكتبت هذا الكود مارح يشتغل معك 
+        //  // ///اكواد التوكن جاهزة//
                   
-                    res.json({ id: newUser._id }) // مثل ما تشوف فوق لازم تعلمه وين يروح بعد حفظ التوكن ولاكن راح يخرب تسجيل الدخول لذالك قنا له بعد ما تخلص انرسل هذا الجيسون
-                   }
-                    catch(err){
-                    console.log(err)
-                  }
+        //             res.json({ id: newUser._id }) // مثل ما تشوف فوق لازم تعلمه وين يروح بعد حفظ التوكن ولاكن راح يخرب تسجيل الدخول لذالك قنا له بعد ما تخلص انرسل هذا الجيسون
+        //            }
+        //             catch(err){
+        //             console.log(err)
+        //           }
                 
-                })
+        //         })
 
 
 
@@ -2452,40 +2455,34 @@ router.get("/total-materials/:id", (req, res) => {
 
 
 
-            router.post("/login", async (req, res) => {
-              console.log("__________________________________________");
-            
-  try {
-              const loginUser = await AuthUser.findOne({ email: req.body.email });
-                      
+        router.post("/login", async (req, res) => {
+          console.log("__________________________________________");
+      
+          try {
+              const loginUser = await AuthUser.findOne({ userName: req.body.userName });
+      
               if (loginUser == null) {
-                console.log("this email not found in DATABASE");
-
-                res.json({ notFoundEmail: "Emile not found, try to sign up" });
-
-                res.redirect("/login");
-
+                  console.log("this username not found in DATABASE");
+                  return res.json({ notFoundUser: "Username not found, try to sign up" });
               } else {
-                const match = await bcrypt.compare(req.body.password, loginUser.password);
-                if (match) {
-                  console.log("correct email & password");
-                  var token = jwt.sign({ id: loginUser._id }, "shhhhh");
-                  console.log(token);
-            
-                  res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
-                  res.json({ id: loginUser._id });
-                } else {
-                  console.log("wrong password");
-                  res.json({ passwordError: "incorrect password" });
-
-                  
-                }
+                  const match = await bcrypt.compare(req.body.password, loginUser.password);
+                  if (match) {
+                      console.log("correct username & password");
+                      var token = jwt.sign({ id: loginUser._id }, "shhhhh");
+                      console.log(token);
+      
+                      res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+                      return res.json({ id: loginUser._id });
+                  } else {
+                      console.log("wrong password");
+                      return res.json({ passwordError: "incorrect password" });
+                  }
               }
-  } catch (error) {
-                   console.log(error);
-
-  }
-            });
+          } catch (error) {
+              console.log(error);
+              res.status(500).json({ error: "Internal server error" });
+          }
+      });
 
 
 

@@ -6,7 +6,6 @@
     <link rel="shortcut icon" href="/admin/public/img/ali.png" type="image/x-icon">
     <meta charset="utf-8" />
     <title>إضافة مستخدم</title>
-    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="/admin/public/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/admin/public/css/dark-light.css"/>
@@ -82,7 +81,7 @@
     </header>
     <main>
         <div id="sidebar-divider" class="sidebar-divider"></div> <!-- الفاصل -->
-        <%- include('components/sidebar.ejs', {currentPage:"add"}) %>
+        <%- include('components/sidebar.ejs', {currentPage:"add", user: user}) %>
         <section id="content" class="content p-4 mt-4">
             <div class="theme-toggle-container text-end">
                 <button class="btn btn-light btn-toggle" data-bs-theme-value="light">
@@ -93,19 +92,30 @@
                 </button>
             </div>
             <h1 class="mt-4">إضافة مستخدم جديد</h1>
-            <form>
-                <!-- هنا يمكنك إضافة حقول النموذج لإضافة مستخدم جديد -->
+            <% if (error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+            <% } %>
+            <form action="/admin/addUser" method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label">اسم المستخدم</label>
-                    <input type="text" class="form-control" id="username" name="username">
+                    <input type="text" class="form-control" id="username" name="username" required>
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">البريد الإلكتروني</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <label for="name" class="form-label">الاسم الكامل</label> <!-- إضافة حقل الاسم الكامل -->
+                    <input type="text" class="form-control" id="name" name="name" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">كلمة المرور</label>
-                    <input type="password" class="form-control" id="password" name="password">
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">نوع الحساب</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="salesManager">مدير المبيعات</option>
+                        <option value="salesMan">مندوب مبيعات</option>
+                        <option value="IndustrialManager">مدير صناعي</option>
+                        <option value="factoryWorker">عامل مصنع</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn btn-primary">إضافة</button>
             </form>
