@@ -50,7 +50,7 @@ liveReloadServer.server.once("connection", () => {
 // الاتصال بقاعدة البيانات
 mongoose.connect(process.env.DATABASE_PASSWORD)
   .then(() => {
-    // تهيئة الأدمن الافتراضي
+    // تهيئة الأدمن الافتراضي والصلاحيات الافتراضية
     adminController.initializeAdmin();
     adminController.initializeDefaultPermissions();
     

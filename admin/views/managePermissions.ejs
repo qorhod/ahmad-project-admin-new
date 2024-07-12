@@ -155,27 +155,76 @@
                 </button>
             </div>
             <h1 class="mt-4">إدارة الصلاحيات</h1>
+            <% if (messages.success) { %>
+                <div class="alert alert-success"><%= messages.success %></div>
+            <% } %>
+            <% if (messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
             <form action="/admin/managePermissions" method="POST">
+                <div class="mb-3">
+                    <label for="role" class="form-label">اختر نوع الحساب</label>
+                    <select class="form-select" id="role" name="role">
+                        <% for (let role in userPermissions) { %>
+                            <option value="<%= role %>"><%= role %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="permissionName" class="form-label">اسم الصلاحية للحذف</label>
+                    <input type="text" class="form-control" id="permissionName" name="deletePermission">
+                    <button type="submit" formaction="/admin/deletePermission" class="btn btn-danger mt-2" name="role">حذف صلاحية</button>
+                </div>
+                <div class="mb-3">
+                    <label for="newRole" class="form-label">اختر نوع الحساب لإضافة صلاحية جديدة</label>
+                    <select class="form-select" id="newRole" name="newRole">
+                        <% for (let role in userPermissions) { %>
+                            <option value="<%= role %>"><%= role %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="newPermission" class="form-label">اسم الصلاحية الجديدة</label>
+                    <input type="text" class="form-control" id="newPermission" name="newPermission">
+                </div>
+                <div class="mb-3">
+                    <label for="newDescription" class="form-label">وصف الصلاحية الجديدة</label>
+                    <input type="text" class="form-control" id="newDescription" name="newDescription">
+                </div>
+                <button type="submit" formaction="/admin/addPermission" class="btn btn-success mt-2">إضافة صلاحية</button>
+                <hr>
                 <% for (let role in userPermissions) { %>
                     <h3><%= role %></h3>
                     <% userPermissions[role].forEach(permission => { %>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="<%= role %>Permissions" value="<%= permission %>" <%= userPermissions[role] && userPermissions[role].includes(permission) ? 'checked' : '' %>>
-                            <label class="form-check-label"><%= permission %></label>
+                            <input class="form-check-input" type="checkbox" name="<%= role %>Permissions" value="<%= permission.name %>" <%= permission.default ? 'checked' : '' %> onchange="toggleDefault('<%= role %>', '<%= permission.name %>', this.checked)">
+                            <label class="form-check-label"><%= permission.name %> - <%= permission.description %></label>
                         </div>
                     <% }) %>
-                    <div class="mb-3">
-                        <label for="newPermission<%= role %>" class="form-label">إضافة صلاحية جديدة لـ <%= role %></label>
-                        <input type="text" class="form-control" id="newPermission<%= role %>" name="newPermission<%= role %>">
-                    </div>
-                    <button type="submit" formaction="/admin/addPermission" class="btn btn-success" name="role" value="<%= role %>">إضافة صلاحية</button>
-                    <button type="submit" formaction="/admin/deletePermission" class="btn btn-danger" name="role" value="<%= role %>">حذف صلاحية</button>
-                    <hr>
                 <% } %>
-                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                <button type="submit" class="btn btn-primary mt-4">حفظ التعديلات</button>
             </form>
         </section>
     </main>
     <script src="/admin/public/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleDefault(role, permissionName, isDefault) {
+            const url = '/admin/updatePermissionDefault';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ role, permission: permissionName, isDefault })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>

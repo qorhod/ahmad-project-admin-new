@@ -20,9 +20,18 @@ router.post('/addUser', adminController.postAddUser);
 
 
 
+// عرض صفحة إدارة الصلاحيات
 router.get('/managePermissions', adminController.getPermissions);
+
+// معالجة طلب تعديل الصلاحيات
 router.post('/managePermissions', adminController.postPermissions);
+
+// إضافة صلاحية جديدة
 router.post('/addPermission', adminController.addPermission);
+
+// حذف صلاحية
 router.post('/deletePermission', adminController.deletePermission);
 
+router.post('/deletePermission', adminController.deletePermission);
+router.post('/updatePermissionDefault', adminController.updatePermissionDefault);
 module.exports = router;
