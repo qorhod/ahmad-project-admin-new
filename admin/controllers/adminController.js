@@ -86,7 +86,7 @@ exports.postAddUser = async (req, res) => {
 
         await newUser.save();
 
-        res.redirect('/admin/dashboard');
+        res.redirect('/admin/manageUsers');
     } catch (error) {
         console.error('Error adding user:', error);
         res.render(path.join(__dirname, '../views/addUser'), {
@@ -329,6 +329,7 @@ exports.getEditUser = async (req, res) => {
     }
 };
 
+
 // معالجة طلب حذف مستخدم
 exports.deleteUser = async (req, res) => {
     if (req.isAuthenticated()) {
@@ -347,3 +348,75 @@ exports.deleteUser = async (req, res) => {
 };
 
 
+
+
+
+
+// عرض صفحة تعديل المستخدم
+exports.getEditUserWithPermissions = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const userId = req.params.id;
+        const user = await AuthUser.findById(userId);
+        const allPermissions = await Permissions.findOne({ role: user.role });
+        
+        res.render(path.join(__dirname, '../views/editUser'), {
+            user: req.user,
+            currentPage: 'editUser',
+            editUser: user,
+            allPermissions: allPermissions.permissions,
+            userPermissions: user.permissions,
+            messages: req.flash() // تمرير رسائل الفلاش إلى القالب
+        });
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+
+// معالجة طلب تعديل المستخدم
+exports.postEditUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { username, name, password, role, permissions } = req.body;
+
+        // تحقق من أن اسم المستخدم يتكون فقط من أحرف إنجليزية بدون فراغات
+        if (!/^[a-zA-Z]+$/.test(username)) {
+            req.flash('error', 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية فقط ولا يحتوي على فراغات');
+            return res.redirect('/admin/editUser/' + userId);
+        }
+
+        // تحقق من أن اسم المستخدم غير موجود مسبقًا
+        const existingUser = await AuthUser.findOne({ userName: username, _id: { $ne: userId } });
+        if (existingUser) {
+            req.flash('error', 'اسم المستخدم موجود مسبقًا');
+            return res.redirect('/admin/editUser/' + userId);
+        }
+
+        // تحديث بيانات المستخدم
+        const updateUser = {
+            userName: username,
+            name: name,
+            role: role,
+            permissions: Array.isArray(permissions) ? permissions.map(permission => ({
+                name: permission,
+                description: '',
+                default: false
+            })) : []
+        };
+
+        // إذا كانت كلمة المرور مُدخلة، نقوم بتحديثها
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateUser.password = hashedPassword;
+        }
+
+        await AuthUser.findByIdAndUpdate(userId, updateUser);
+
+        req.flash('success', 'تم تحديث المستخدم بنجاح');
+        res.redirect('/admin/manageUsers');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        req.flash('error', 'حدث خطأ أثناء تحديث المستخدم');
+        res.redirect('/admin/editUser/' + req.params.id);
+    }
+};

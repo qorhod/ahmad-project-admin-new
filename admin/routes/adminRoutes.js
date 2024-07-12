@@ -38,6 +38,11 @@ router.post('/updatePermissionDefault', adminController.updatePermissionDefault)
 
 
 router.get('/manageUsers', adminController.getManageUsers);
-router.get('/editUser/:id', adminController.getEditUser);
+router.get('/editUser/:id', adminController.getEditUserWithPermissions);
 router.post('/deleteUser', adminController.deleteUser);
+
+
+router.get('/editUser/:id', adminController.getEditUser);
+router.post('/editUser/:id', adminController.postEditUser);
+
 module.exports = router;
