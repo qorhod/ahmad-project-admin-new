@@ -34,4 +34,10 @@ router.post('/deletePermission', adminController.deletePermission);
 
 router.post('/deletePermission', adminController.deletePermission);
 router.post('/updatePermissionDefault', adminController.updatePermissionDefault);
+
+
+
+router.get('/manageUsers', adminController.getManageUsers);
+router.get('/editUser/:id', adminController.getEditUser);
+router.post('/deleteUser', adminController.deleteUser);
 module.exports = router;

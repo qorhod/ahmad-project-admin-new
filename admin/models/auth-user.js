@@ -49,7 +49,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const permissionSchema = new Schema({
     name: { type: String, required: true },
-    description: { type: String, required: true }
+    description: { type: String }
 });
 
 const authUserSchema = new Schema({

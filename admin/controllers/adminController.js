@@ -40,9 +40,19 @@ exports.addUser = (req, res) => {
 };
 
 // معالجة طلب إضافة مستخدم
+// معالجة طلب إضافة مستخدم
 exports.postAddUser = async (req, res) => {
     try {
         const { username, name, password, role } = req.body;
+
+        // تحقق من أن اسم المستخدم يتكون فقط من أحرف إنجليزية بدون فراغات
+        if (!/^[a-zA-Z]+$/.test(username)) {
+            return res.render(path.join(__dirname, '../views/addUser'), {
+                user: req.user,
+                currentPage: 'add',
+                error: 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية فقط ولا يحتوي على فراغات'
+            });
+        }
 
         const existingUser = await AuthUser.findOne({ userName: username });
         if (existingUser) {
@@ -79,7 +89,11 @@ exports.postAddUser = async (req, res) => {
         res.redirect('/admin/dashboard');
     } catch (error) {
         console.error('Error adding user:', error);
-        res.redirect('/admin/addUser');
+        res.render(path.join(__dirname, '../views/addUser'), {
+            user: req.user,
+            currentPage: 'add',
+            error: 'حدث خطأ أثناء إضافة المستخدم'
+        });
     }
 };
 
@@ -270,3 +284,66 @@ exports.getPermissionsForRole = async (req, res) => {
         res.json({ success: false, error: 'حدث خطأ أثناء جلب الصلاحيات' });
     }
 };
+
+
+
+
+// عرض صفحة إدارة المستخدمين
+// عرض صفحة إدارة المستخدمين
+exports.getManageUsers = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const users = await AuthUser.find({});
+        const usersByRole = users.reduce((acc, user) => {
+            if (!acc[user.role]) {
+                acc[user.role] = [];
+            }
+            acc[user.role].push(user);
+            return acc;
+        }, {});
+
+        res.render(path.join(__dirname, '../views/manageUsers'), {
+            user: req.user,
+            currentPage: 'manageUsers',
+            usersByRole,
+            messages: req.flash()
+        });
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+// عرض صفحة تعديل المستخدم
+exports.getEditUser = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const { id } = req.params;
+        const user = await AuthUser.findById(id);
+
+        res.render(path.join(__dirname, '../views/editUser'), {
+            user: req.user,
+            currentPage: 'editUser',
+            editUser: user,
+            messages: req.flash()
+        });
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+// معالجة طلب حذف مستخدم
+exports.deleteUser = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const { userId } = req.body;
+        try {
+            await AuthUser.findByIdAndDelete(userId);
+            req.flash('success', 'تم حذف المستخدم بنجاح');
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            req.flash('error', 'حدث خطأ أثناء حذف المستخدم');
+        }
+        res.redirect('/admin/manageUsers');
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+
