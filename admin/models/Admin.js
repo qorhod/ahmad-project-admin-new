@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 
 // تعريف مخطط الأدمن
 const AdminSchema = new mongoose.Schema({
-  email: {
+  username: {
     type: String,
     required: true,
     unique: true

@@ -45,4 +45,10 @@ router.post('/deleteUser', adminController.deleteUser);
 router.get('/editUser/:id', adminController.getEditUser);
 router.post('/editUser/:id', adminController.postEditUser);
 
+
+// اعدادات الادمن 
+router.get('/manageAdmin', adminController.getManageAdmin);
+router.post('/manageAdmin', adminController.postManageAdmin);
+
+
 module.exports = router;

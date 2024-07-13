@@ -45,12 +45,12 @@ exports.postAddUser = async (req, res) => {
     try {
         const { username, name, password, role } = req.body;
 
-        // تحقق من أن اسم المستخدم يتكون فقط من أحرف إنجليزية بدون فراغات
-        if (!/^[a-zA-Z]+$/.test(username)) {
+        // تحقق من أن اسم المستخدم يتكون من أحرف إنجليزية أو أرقام أو بريد إلكتروني بدون فراغات
+        if (!/^[a-zA-Z0-9@.]+$/.test(username)) {
             return res.render(path.join(__dirname, '../views/addUser'), {
                 user: req.user,
                 currentPage: 'add',
-                error: 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية فقط ولا يحتوي على فراغات'
+                error: 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية أو أرقام أو بريد إلكتروني فقط ولا يحتوي على فراغات'
             });
         }
 
@@ -104,10 +104,9 @@ exports.initializeAdmin = async () => {
     try {
         const adminCount = await Admin.countDocuments();
         if (adminCount === 0) {
-            const hashedPassword = await bcrypt.hash('password', 10);
             const defaultAdmin = new Admin({
-                email: 'admin@example.com',
-                password: hashedPassword
+                username: '1',
+                password: '1' // سيتم تشفير كلمة المرور قبل الحفظ
             });
             await defaultAdmin.save();
             console.log('Default admin user created with email: admin@example.com and password: password');
@@ -379,9 +378,9 @@ exports.postEditUser = async (req, res) => {
         const userId = req.params.id;
         const { username, name, password, role, permissions } = req.body;
 
-        // تحقق من أن اسم المستخدم يتكون فقط من أحرف إنجليزية بدون فراغات
-        if (!/^[a-zA-Z]+$/.test(username)) {
-            req.flash('error', 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية فقط ولا يحتوي على فراغات');
+        // تحقق من أن اسم المستخدم يتكون من أحرف إنجليزية، أرقام، أو بريد إلكتروني بدون فراغات
+        if (!/^[a-zA-Z0-9@.]+$/.test(username)) {
+            req.flash('error', 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية، أرقام، أو بريد إلكتروني فقط ولا يحتوي على فراغات');
             return res.redirect('/admin/editUser/' + userId);
         }
 
@@ -420,3 +419,66 @@ exports.postEditUser = async (req, res) => {
         res.redirect('/admin/editUser/' + req.params.id);
     }
 };
+
+
+
+
+
+// تغير اليوزر و الباسورد للأدمن 
+
+// عرض صفحة إدارة حساب الأدمن
+exports.getManageAdmin = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const admin = await Admin.findOne(); // افتراض أن هناك أدمن واحد فقط
+        res.render(path.join(__dirname, '../views/manageAdmin'), {
+            user: req.user,
+            currentPage: 'manageAdmin',
+            admin: admin,
+            messages: req.flash()
+        });
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+
+
+
+// معالجة طلب تعديل حساب الأدمن
+exports.postManageAdmin = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const admin = await Admin.findOne();
+
+        // تحقق من أن اسم المستخدم يتكون فقط من أحرف إنجليزية وأرقام بدون فراغات
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+            req.flash('error', 'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية وأرقام فقط ولا يحتوي على فراغات');
+            return res.redirect('/admin/manageAdmin');
+        }
+
+        // تحقق من عدم وجود اسم مستخدم آخر بنفس الاسم
+        const existingAdmin = await Admin.findOne({ username: username });
+        if (existingAdmin && existingAdmin._id.toString() !== admin._id.toString()) {
+            req.flash('error', 'اسم المستخدم موجود بالفعل');
+            return res.redirect('/admin/manageAdmin');
+        }
+
+        admin.username = username;
+
+        if (password) {
+            admin.password = password; // سيتم تشفير كلمة المرور في المخطط
+        }
+
+        await admin.save();
+
+        req.flash('success', 'تم تحديث بيانات الأدمن بنجاح');
+        res.redirect('/admin/manageAdmin');
+    } catch (error) {
+        console.error('Error updating admin:', error);
+        req.flash('error', 'حدث خطأ أثناء تحديث بيانات الأدمن');
+        res.redirect('/admin/manageAdmin');
+    }
+};
+
+
+
