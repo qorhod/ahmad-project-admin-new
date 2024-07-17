@@ -10,6 +10,11 @@ const commands = require("../models/commands")
 var moment = require('moment'); // مكتبة لتعديل شكل التاريخ والوقت الوجودة في الداتا وعن طريق المنقوز
 const bcrypt = require('bcrypt');  // تحضير مكتبة تشفير الباسورد
 var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
+
+const AsyncLock = require('async-lock'); //هذا ولي تحت كود عشان يعمل قفلعلى الداتا يمنع من تكرار البينات عطاني اياه الذاكاء الصناعي عسانمشكلة تكرار مجموع المواد في الداتا
+const lock = new AsyncLock();
+
+
 const {requireAuth} = require("../middleware/middleware.js") // تسيما الحسابات اليوزرات
 
 const {checkIfUser} = require("../middleware/middleware.js")
@@ -25,6 +30,8 @@ const {motherEquation} = require("../middleware/equations.js")
 const {totalMotherEquation} = require("../middleware/equations.js")
 const {calculateValues} = require("../middleware/equations.js")
 const {aluminumCuttingReport} = require("../middleware/equations.js")
+const {updatetotalMotherEquation} = require("../middleware/equations.js")
+const { numberAllMeasurementsForOrder } = require('../middleware/sequenceNumberHelper'); // استدعاء دالة الترقيم
 
 // router.get("/calculator",calculator) // يعي تنفذ هذاي الداة على جميع الاكواد النجمه يعين جميع الاكواد
 // router.post("*",calculator)
@@ -497,6 +504,16 @@ return res.json({ id:"done" })
                 );
                 console.log('تمت إضافة البيانات بنجاح:', updatedUser);
         
+
+
+//==============دالة الترقيم للقياسات بشرط ان يكون الأورد مؤكد======================
+// var userId =
+var orderId =v.id
+const bbbf=   await numberAllMeasurementsForOrder(orderId);
+/////==============دالة الترقيم للقياسات بشرط ان يكون الأورد مؤكد======================
+
+
+
                 return    res.redirect(`/view/${v.idCustomer}`)   //res.json({ id: "done" });
               }else{
                 return    res.redirect(`/review/${v.id}`) 
@@ -788,7 +805,32 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
   
   try {
     const decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
-    
+
+
+    // خاص باترقيم القياسات يعني اذا كان القياس الاخير مرقم فجمع عليه رقم 1 وكتب الترقيم لهاذا القياس واذا كان  غير ذالك فلا تفعل شي
+    const user = await User.findOne({ "orders._id": v.iid });
+
+    if (!user) {
+        console.log('User not found');
+        return res.status(404).send('User not found');
+    }
+
+    const order = user.orders.id(v.iid);
+
+    if (!order) {
+        console.log('Order not found');
+        return res.status(404).send('Order not found');
+    }
+
+    // إضافة المنطق للترقيم
+    let sequenceNumber = null;
+    if (order.measurement.length > 0) {
+        const lastMeasurement = order.measurement[order.measurement.length - 1];
+        if (lastMeasurement.sequenceNumber && !isNaN(lastMeasurement.sequenceNumber)) {
+            sequenceNumber = lastMeasurement.sequenceNumber + 1;
+        }
+    }
+    ////خاص للترقيم
     const n = {
       iid: v.iid,
       status: 'مسودة',
@@ -810,7 +852,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
       temper: v.temper,
       lip: v.lip,
       comments: v.comments,
-      
+      sequenceNumber: sequenceNumber, // إضافة الترقيم
       totalMeters:{
         H1: resultH,
         W1: resultW,
@@ -1362,7 +1404,7 @@ const cvx = await User.updateOne(
 
 
 
-// ========================تقرير قص الألمنيوم===============================//
+//// ========================تقرير قص الألمنيوم===============================//
 
 
       if (y) {
@@ -1382,6 +1424,12 @@ const cvx = await User.updateOne(
   }
 });
 
+
+
+
+
+
+
 // //// تم دمج ركوستات البوست التابعة لصفحة المقاس ركوست من رفع قياس جديد والأخر من تعديل القياس // // 
 
 
@@ -1399,57 +1447,331 @@ const cvx = await User.updateOne(
 
 
 
-// DELETE مس القياس
+// DELETE مسح القياس
 
-router.delete('/review/:ids',requireAuth,async (req, res) => { 
-  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
-  const ids = req.params.ids.split('-'); // هذا عشان اضفنان ايديين في الرابط وفصلناهم فبشرطة من الفرونت اند طبعا
-  // res.json({ ids: ids });
-  console.log(ids[1])
-  try{
-    const gg = await User.findOne({'orders._id': ids[1]})
-    const h =  gg
-    const idToFind = ids[1]; // من الرابط id 
-    const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-    
-    const measurementmm = foundObject.measurement.find(item => item.id === ids[0]); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-    
-     let aluminumCode= measurementmm.aluminumCode
-    
-  // User.deleteOne({_id:req.params.id} ) //طريقة ثانية للحذف تحط كي وفاليو 
-  // AuthUser.findByIdAndDelete(req.params.id) // هذي عشان نحذف الايدي كامل بس حن نبغى نحذف من داخل اري داخل الرمستخدم لذالك راح نستخدم بطريقة الي تحت عن طريق الاب ديت 
-   const re = await User.updateOne(
+// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
+//   try {
+//     const { measurementId, orderId } = req.params;
 
-    { "orders.measurement._id": ids[0] }
-, {$pull: {"orders.$.measurement":{ _id:ids[0]}}} // هذي الطريقة والي تحت كلها صحيحة بدال ما نبحث عن ايدي المستخد ون ثم ايدي العميل نبحث عن ايدي العميل على طول
-  )
-  // AuthUser.updateOne({_id:decoded.id}, {$pull: {customerInfo:{ _id: req.params.id}}} // نفس فكرة الي فوق بس تختلف في البحث عن العميل بحيث نبحث عن ايدي المستخدم ثم عن ادي العميل
-  // )
+//     const user = await User.findOne({ 'orders._id': orderId });
+//     if (!user) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     const order = user.orders.id(orderId);
+//     if (!order) {
+//       return res.status(404).send('Order not found');
+//     }
+
+//     const measurement = order.measurement.id(measurementId);
+//     if (!measurement) {
+//       return res.status(404).send('Measurement not found');
+//     }
+
+//     if (order.status === 'مؤكد') {
+//       measurement.delete = !measurement.delete;
+//     } else {
+//       order.measurement.pull(measurementId);
+//     }
+
+//     // حفظ التغييرات باستخدام findOneAndUpdate
+//     await User.findOneAndUpdate(
+//       { 'orders._id': orderId, 'orders.measurement._id': measurementId },
+//       { $set: { 'orders.$.measurement': order.measurement } }
+//     );
+
+//     // تحديث الخصم والإجمالي والضريبة
+//     let dataIdd = {
+//       iid: orderId,
+//       aluminumCodeFront: measurement.aluminumCode // تأكد من استخدام الكود الصحيح هنا
+//     };
+
+//     await refreshDiscount(dataIdd);
+//     await updateTotal(orderId);
+
+//     res.status(200).json({ message: 'Measurement delete status updated successfully.' });
+//   } catch (error) {
+//     console.error('Error updating measurement:', error);
+//     res.status(500).send('An error occurred while updating the measurement.');
+//   }
+// });
 
 
-  // دالة تحديث الخصم
-let dataIdd ={
 
-  iid:ids[1] ,
-  // id:ids[0],
-      aluminumCodeFront:aluminumCode
+// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
+//   try {
+//     const { measurementId, orderId } = req.params;
+
+//     const user = await User.findOne({ 'orders._id': orderId });
+//     if (!user) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     const order = user.orders.id(orderId);
+//     if (!order) {
+//       return res.status(404).send('Order not found');
+//     }
+
+//     const measurement = order.measurement.id(measurementId);
+//     if (!measurement) {
+//       return res.status(404).send('Measurement not found');
+//     }
+
+//     if (order.status === 'مؤكد') {
+//       measurement.delete = !measurement.delete;
+//     } else {
+//       order.measurement.pull(measurementId);
+//     }
+
+//     // حفظ التغييرات باستخدام findOneAndUpdate
+//     await User.findOneAndUpdate(
+//       { 'orders._id': orderId, 'orders.measurement._id': measurementId },
+//       { $set: { 'orders.$.measurement': order.measurement } }
+//     );
+
+//     // تحديث الخصم والإجمالي والضريبة
+//     let dataIdd = {
+//       iid: orderId,
+//       aluminumCodeFront: measurement.aluminumCode // تأكد من استخدام الكود الصحيح هنا
+//     };
+
+//     await refreshDiscount(dataIdd);
+//     await updateTotal(orderId);
+
+//     // إعادة حساب دوال المعادلات الأم
+//     const { resultsArrayBefore, resultsArrayAfter } = totalMotherEquation(order);
+//     await updatetotalMotherEquation(resultsArrayAfter, orderId);
+
+//     // إعادة حساب تقارير القص
+//     const foundObjectgc = order.measurement.find(item => item._id === measurementId);
+
+//     if (foundObjectgc) {
+//       const C4 = foundObjectgc.aluminumCode;
+//       const B10 = foundObjectgc.H;
+//       const C10 = foundObjectgc.W;
+
+//       const glassResults = calculateValues(C4, B10, C10);
+//       const glassCuttingReportSchema = {
+//         H: glassResults.valueB,
+//         W: glassResults.valueA,
+//         reportTemper: glassResults.valueC,
+//       };
+
+//       await User.updateOne(
+//         { 'orders._id': orderId },
+//         { $set: { 'orders.$[orderElem].measurement.$[measurementElem].glassCuttingReport': glassCuttingReportSchema } },
+//         { arrayFilters: [{ 'orderElem._id': orderId }, { 'measurementElem._id': measurementId }], new: true }
+//       );
+
+//       const aluminumResults = aluminumCuttingReport(C4, B10, C10);
+//       const aluminumCuttingReportSchema = {
+//         Q4: aluminumResults.Q4.toFixed(2),
+//         R4: aluminumResults.R4.toFixed(2),
+//         S4: aluminumResults.S4.toFixed(2),
+//         T4: aluminumResults.T4.toFixed(2),
+//         U4: aluminumResults.U4.toFixed(2),
+//       };
+
+//       await User.updateOne(
+//         { 'orders._id': orderId },
+//         { $set: { 'orders.$[orderElem].measurement.$[measurementElem].aluminumCuttingReport': aluminumCuttingReportSchema } },
+//         { arrayFilters: [{ 'orderElem._id': orderId }, { 'measurementElem._id': measurementId }], new: true }
+//       );
+//     }
+
+//     res.status(200).json({ message: 'Measurement delete status updated successfully.' });
+//   } catch (error) {
+//     console.error('Error updating measurement:', error);
+//     res.status(500).send('An error occurred while updating the measurement.');
+//   }
+// });
+
+
+
+// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
+//   console.log(`Request received for measurementId: ${req.params.measurementId}, orderId: ${req.params.orderId}`);
+//   try {
+//       const { measurementId, orderId } = req.params;
+
+//       const user = await User.findOne({ 'orders._id': orderId });
+//       if (!user) {
+//           return res.status(404).send('User not found');
+//       }
+
+//       const order = user.orders.id(orderId);
+//       if (!order) {
+//           return res.status(404).send('Order not found');
+//       }
+
+//       const measurement = order.measurement.id(measurementId);
+//       if (!measurement) {
+//           return res.status(404).send('Measurement not found');
+//       }
+
+//       console.log('Current measurement before toggle:', measurement);
+
+//       if (order.status === 'مؤكد') {
+//           measurement.delete = !measurement.delete;
+//           console.log('Toggled delete status:', measurement.delete);
+//       } else {
+//           order.measurement.pull(measurementId);
+//           console.log('Measurement removed:', measurementId);
+//       }
+
+//       await User.findOneAndUpdate(
+//           { 'orders._id': orderId },
+//           { $set: { 'orders.$.measurement': order.measurement } }
+//       );
+
+//       console.log(`Updated measurement for order id: ${orderId}`);
+//       console.log('Updated order measurements:', order.measurement);
+
+//       let dataIdd = {
+//           iid: orderId,
+//           aluminumCodeFront: measurement.aluminumCode
+//       };
+
+//       await refreshDiscount(dataIdd);
+//       await updateTotal(orderId);
+
+//       const gg = await User.findOne({ 'orders._id': orderId });
+//       const foundObject = gg.orders.find(item => item._id.equals(orderId));
+
+//       var { resultsArrayBefore, resultsArrayAfter } = totalMotherEquation(foundObject);
+//       console.log("Before:", resultsArrayBefore);
+//       console.log("After:", resultsArrayAfter);
+
+//       await updatetotalMotherEquation(resultsArrayAfter, orderId);
+
+//       const finalUser = await User.findOne({ 'orders._id': orderId });
+//       const finalOrder = finalUser.orders.id(orderId);
+//       const finalMeasurement = finalOrder.measurement.id(measurementId);
+//       console.log('Final measurement after all updates:', finalMeasurement);
+
+//       res.status(200).json({ message: 'Measurement delete status updated successfully.' });
+//   } catch (error) {
+//       console.error('Error updating measurement:', error);
+//       res.status(500).send('An error occurred while updating the measurement.');
+//   }
+// });
+
+
+
+
+router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
+  console.log(`Request received for measurementId: ${req.params.measurementId}, orderId: ${req.params.orderId}`);
+  try {
+      const { measurementId, orderId } = req.params;
+
+      const user = await User.findOne({ 'orders._id': orderId });
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+
+      const order = user.orders.id(orderId);
+      if (!order) {
+          return res.status(404).send('Order not found');
+      }
+
+      const measurement = order.measurement.id(measurementId);
+      if (!measurement) {
+          return res.status(404).send('Measurement not found');
+      }
+
+      console.log('Current measurement before toggle:', measurement);
+
+      if (order.status === 'مؤكد') {
+          measurement.delete = !measurement.delete;
+          console.log('Toggled delete status:', measurement.delete);
+      } else {
+          order.measurement.pull(measurementId);
+          console.log('Measurement removed:', measurementId);
+      }
+
+      await User.findOneAndUpdate(
+          { 'orders._id': orderId },
+          { $set: { 'orders.$.measurement': order.measurement } }
+      );
+
+      console.log(`Updated measurement for order id: ${orderId}`);
+      console.log('Updated order measurements:', order.measurement);
+
+      let dataIdd = {
+          iid: orderId,
+          aluminumCodeFront: measurement.aluminumCode
+      };
+
+      await refreshDiscount(dataIdd);
+      await updateTotal(orderId);
+
+      const gg = await User.findOne({ 'orders._id': orderId });
+      const foundObject = gg.orders.find(item => item._id.equals(orderId));
+
+      var { resultsArrayBefore, resultsArrayAfter } = totalMotherEquation(foundObject);
+      console.log("Before:", resultsArrayBefore);
+      console.log("After:", resultsArrayAfter);
+
+      await updatetotalMotherEquation(resultsArrayAfter, orderId);
+
+      const finalUser = await User.findOne({ 'orders._id': orderId });
+      const finalOrder = finalUser.orders.id(orderId);
+      const finalMeasurement = finalOrder.measurement.id(measurementId);
+      console.log('Final measurement after all updates:', finalMeasurement);
+
+      res.status(200).json({ message: 'Measurement delete status updated successfully.' });
+  } catch (error) {
+      console.error('Error updating measurement:', error);
+      res.status(500).send('An error occurred while updating the measurement.');
   }
-  await refreshDiscount(dataIdd)
-// دالة تحديث الخصم//
+});
 
-await updateTotal(ids[1])// معادلة تحديث الجمالي والضريبة
 
-      res.redirect(`/review/${ids[1]}`); // بعد ما تخلص حولني على هذا الرابط طبعا الرابط الموجود هو نفسه رابط الصفحة
-      // console.log(result)
-   
-     
-    } catch (error) {
-      console.log(error)
-    }
- 
- 
 
-})
+
+
+
+
+
+// طلب جديد للتحديث
+router.post('/update-measurement', async (req, res) => {
+  const { measurementId, orderId, updatedMeasurement } = req.body;
+
+  try {
+      // البحث عن العميل الذي يحتوي على الطلب
+      const user = await User.findOne({ 'orders._id': orderId });
+      if (!user) {
+          return res.status(404).send('Order not found');
+      }
+
+      // البحث عن الطلب داخل بيانات العميل
+      const order = user.orders.id(orderId);
+      if (!order) {
+          return res.status(404).send('Order not found');
+      }
+
+      // البحث عن القياس داخل بيانات الطلب
+      const measurement = order.measurement.id(measurementId);
+      if (!measurement) {
+          return res.status(404).send('Measurement not found');
+      }
+
+      // تحديث بيانات القياس
+      Object.assign(measurement, updatedMeasurement);
+
+      // حفظ التحديثات
+      await user.save();
+      res.send('Measurement updated successfully');
+  } catch (error) {
+      console.error('Error updating measurement:', error);
+      res.status(500).send('Error updating measurement');
+  }
+});
+
+
+
+
+
+
 
 
 
@@ -2638,7 +2960,19 @@ router.get("/total-materials/:id", (req, res) => {
 
 
 
+// مسار لاستدعاء دالة الترقيم
 
+router.post('/number-measurements/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+      await numberAllMeasurementsForOrder(orderId);
+      res.status(200).send('Measurements have been numbered successfully.');
+  } catch (error) {
+      console.error('Error numbering measurements:', error);
+      res.status(500).send('An error occurred while numbering measurements.');
+  }
+});
 
 
 

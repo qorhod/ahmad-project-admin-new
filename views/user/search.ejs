@@ -17,6 +17,7 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Search page</title>
+    <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
 
@@ -28,6 +29,8 @@
     <link rel="stylesheet" href="../css/myStyle.css" />
   </head>
   <body>
+    <%- include('../components/overlay.ejs') %>
+
     <!-- الايقنات -->
     <%- include('../components/dark-light.ejs') %>
 
@@ -111,5 +114,7 @@
 
     <script src="../js/sidebars.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../js/overlay.js"></script>
+
   </body>
 </html>

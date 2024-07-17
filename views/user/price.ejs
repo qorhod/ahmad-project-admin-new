@@ -18,6 +18,7 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
+    <script src="../js/overlay.js"></script>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -73,6 +74,9 @@
 
   </head>
   <body>
+
+    <%- include('../components/overlay.ejs') %>
+
    <!-- عشان ماظهر في الفاتورة -->
     <span class=" web-content"> 
     <!--ايقونات  -->
@@ -210,8 +214,9 @@
             <% arrR.measurement.forEach((item, index) => { %>  
               <!--  -->
               <tbody  id="kk" >
-                 <tr>
-                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+                 <tr class="<%= item.delete ? 'strikethrough' : '' %>"> 
+                   <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                    <td><%= item.totalMeters.totalMeters %>	</td>
                    <td>m2</td>
@@ -455,7 +460,8 @@ arrR.measurement.forEach((item, index) => {
     <script src="../js/sidebars.js"></script>
 
     <script src="../js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
  <!-- يظهر في الفاتورة بس -->
     <p class="text-right print-content " style="display: block; text-align: right;">شكرًا لتعاملكم معنا!</p> 
   </body>

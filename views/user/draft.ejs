@@ -18,6 +18,7 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
+    <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -30,6 +31,8 @@
   
   </head>
   <body>
+    <%- include('../components/overlay.ejs') %>
+
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
 
@@ -117,7 +120,8 @@
     <script src="./js/sidebars.js"></script>
 
     <script src="./js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
   </body>
 
 

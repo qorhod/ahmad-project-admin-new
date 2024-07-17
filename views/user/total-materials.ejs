@@ -18,6 +18,8 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
+  <script src="../js/overlay.js"></script>
+  <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -40,6 +42,9 @@
 
   </head>
   <body>
+
+    <%- include('../components/overlay.ejs') %>
+
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
 
@@ -151,7 +156,8 @@
              <% arrR.motherEquationTotal.reverse().forEach((item, index) => { %> <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها -->
               <!--  -->
 <%             if (item.aluminumCode === "ROYAL 2" || item.aluminumCode === "ROYAL 3" || item.aluminumCode === "Sliding D12" || item.aluminumCode === "GOLF10" || item.aluminumCode === "Sliding S" || item.aluminumCode === "GOLF12" || item.aluminumCode === "Sliding D10+" || item.aluminumCode === "Sliding D10") {  %>
-                 <tr>
+                  <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+                 <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                    <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                    <td><%= item.E10TF %>	</td>
@@ -252,7 +258,8 @@
            <% arrR.motherEquationTotal.reverse().forEach((item, index) => { %> <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها -->
             <!--  -->
             <% if (item.aluminumCode === "Fixed D10" || item.aluminumCode === "Fixed D4" || item.aluminumCode === "Fixed S4" || item.aluminumCode === "Fixed S10"){ %>
-               <tr>
+        <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+               <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                  <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                  <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                  <td><%= item.E10TF %>	</td>
@@ -312,7 +319,8 @@
     <script src="../js/sidebars.js"></script>
 
     <script src="../js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
   </body>
 
 

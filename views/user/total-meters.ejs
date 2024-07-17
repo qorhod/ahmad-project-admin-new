@@ -18,6 +18,7 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
+    <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -30,6 +31,8 @@
   
   </head>
   <body>
+    <%- include('../components/overlay.ejs') %>
+
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
 
@@ -141,7 +144,7 @@
         <tbody id="kk">
           <!-- .reverse() -->
           <% arrR.measurement.forEach((item, index) => { %>  
-                 <tr>
+                 <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                    <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.H %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                    <td><%= item.W %>	</td>
@@ -195,7 +198,8 @@
     <script src="../js/sidebars.js"></script>
 
     <script src="../js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
   </body>
 
 

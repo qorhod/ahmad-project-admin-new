@@ -260,7 +260,8 @@
     />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
-   
+    <link rel="stylesheet" href="../css/overlay.css">
+
     
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -274,6 +275,10 @@
     <link rel="stylesheet" href="../css/imgCheckbox.css">
   </head>
   <body>
+
+
+    <%- include('../components/overlay.ejs') %>
+
     <!-- اخزن فيه اليدي عشان نطعة في الجافا سكربت الي في هذي الصفحة -->
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
@@ -1099,6 +1104,7 @@
 
     <script src="../js/main.js"></script>
 
+    <script src="../js/overlay.js"></script>
 
 
 

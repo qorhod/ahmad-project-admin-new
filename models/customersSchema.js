@@ -47,6 +47,8 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
       
                     measurement:[{
+                        sequenceNumber: Number, // ترقيم القياس عند تأكيده
+                        delete: Boolean, // حالة القياس هل هو محذوف طبعا لا بد ان يكون الطلب مؤكد
                         iid:String,
                         id_id:String,
                             H: Number,
