@@ -83,7 +83,8 @@
         <a <%= arrR.orderNumber ? "hidden" : '' %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">البقاء في المسودة <i class="bi bi-journal-text"></i></a>
         <a <%= arrR.orderNumber ? '' : "hidden" %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">العودة إلى صفحة العميل <i class="bi bi-arrow-left"></i></a>
         <form action="/review/<%= arrR._id %>" method="post" class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
-          <input name="confirming" value="مؤكد" type="hidden" class="form-control" />
+          <!-- <input name="confirming" value="مؤكد" type="hidden" class="form-control" /> -->
+          <!-- <input name="confirming2" value="قيد التصنيع" type="hidden" class="form-control" /> -->
           <input name="id" value="<%= arrR._id %>" type="hidden" class="form-control" />
           <input name="idCustomer" value="<%= idCustomer %>" type="hidden" class="form-control" />
           <input id="submitButton" type="<%= arrR.orderNumber ? 'hidden' : 'submit' %>" value="اعتماد الطلب" class="btn btn-success">

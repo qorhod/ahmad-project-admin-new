@@ -24,6 +24,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
     orders: [{
         orderNumber: Number,
             status: String,
+            status2: String,
             branch: String,
             location: String,
             salesEmployeeId: String,

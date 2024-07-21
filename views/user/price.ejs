@@ -218,7 +218,7 @@
                  <tr class="<%= item.delete ? 'strikethrough' : '' %>"> 
                    <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.totalMeters.totalMeters %>	</td>
+                   <td><%=  parseFloat(item.totalMeters.totalMeters.toFixed(2))%>	</td>
                    <td>m2</td>
                    <td><%= item.price.price %></td>
                    <td><%=  parseFloat(item.price.discount.toFixed(2)) %></td>
@@ -289,6 +289,11 @@
 const resultMap = new Map(); // إنشاء Map خارج اللوب الخارجي
 
 arrR.measurement.forEach((item, index) => {
+
+  if (item.delete === true) {
+        return; // Skip this iteration if delete is true
+    }
+
     const itemm = { 
         value1: item.totalMeters.totalMeters , 
         value2: item.price.price, 
@@ -335,7 +340,7 @@ arrR.measurement.forEach((item, index) => {
     <tr>
       <th scope="row"><%=  index %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
       <td><%= key %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-      <td><%= value.value1 %>	</td>
+      <td><%=  parseFloat(value.value1.toFixed(2)) %>	</td>
       <td>m2</td>
       <td><%= value.value2 %></td>
       <td  style="width: 15%;"><input disabled name="discount"  id="editableInput<%= index %>"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;" value="<%= parseFloat(value.value4.toFixed(2))%>"></td>

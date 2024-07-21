@@ -111,6 +111,81 @@ router.post("/user/measurement", async (req, res) => {
 //GET اكواد كلها 
 
 
+
+// قيد التصنيع
+router.get('/in-production', requireAuth, (req, res) => {
+  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+  User.find()
+    .then((users) => {
+      res.render('user/inProduction', { arr: users, moment: moment,jwt:decoded });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+
+
+
+
+// قيد التركيب
+router.get('/in-installation', requireAuth, (req, res) => {
+  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+  User.find()
+    .then((users) => {
+      res.render('user/inInstallation', { arr: users, moment: moment,jwt:decoded });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// تم التسليم
+router.get('/delivered', requireAuth, (req, res) => {
+  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+  User.find()
+    .then((users) => {
+      res.render('user/delivered', { arr: users, moment: moment,jwt:decoded });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// ملغي
+// router.get('/canceled', requireAuth, (req, res) => {
+//   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+//   User.findById(decoded.id)
+//     .then((user) => {
+//       // استرجاع العملاء ملغي
+//       // const canceledCustomers = user.customerInfo.filter(customer => customer.status === 'Canceled');
+//       res.render('user/canceled', { arr: user, moment: moment });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
+
+// ////
+router.get('/canceled',requireAuth, (req, res, ) => {
+  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+  User.find()
+    .then((users) => {
+      res.render('user/canceled', { arr: users, moment: moment,jwt:decoded });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})
+
+
+
+
+
+
+
+
+
 //Level 1
 
 
@@ -292,24 +367,14 @@ console.log(result)
 
 
             router.get('/draft',requireAuth, (req, res, ) => {
-              // res.send('<h1>Hello World!</h1>') // هذا الأمر يطبع في المتصفح وتقدر تكتب فيه اش تي ام ال
-              // res.sendFile("./views/home.html", {root: __dirname}); // لعرض التصميم من ملفي اتش تي امل ال
-              // AuthUser.find()//هذا يستدعي قاعدة البينات
-          
-            var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
-            console.log(decoded.id)
-          
-              // AuthUser.findById(decoded.id)//نبعث بال ايدي وجبنا الايد من التوكن بطريقة الي فوق 
-              User.find({"orders.status":"مسودة","orders.salesEmployeeId":decoded.id})
-          
-            .then((result)=>{
-            console.log(result)
-            // res.render("index",  {arr:result.customerInfo , moment:moment } ) // هذا حنا اشأنه في الداتا عطريقاكسيما محمل بأري فيه العملاء الي على اسم المستخدم customerInfoنقول له اطبعلنا طفحة الاندكس في في الامتداد الرايسب وحطينا فاصلة وكتبنا متغير محمل بداتا وارسلناه لصفحة الاندكس عشان يرتبون في الاجدول هناك طبعا حطينا
-            res.render("user/draft", { arr: result,idUser:decoded.id, moment: moment });
-          
-            }).catch((err)=>{
-              console.log(err)
-            })
+              var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+              User.find()
+                .then((users) => {
+                  res.render('user/draft', { arr: users, moment: moment,jwt:decoded });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             })
 
 
@@ -335,8 +400,8 @@ const n = await {
   branch: v.branch,
   location: v.location,
   salesEmployeeId: decoded.id,
-  salesEmployeeName: 'String',
-  salesEmployeeUserName: 'String',
+  salesEmployeeName: decoded.name,
+  salesEmployeeUserName: decoded.userName,
 
   aluminumCode0:v.aluminumCode0,
   aluminumThickness0: v.aluminumThickness0,
@@ -460,7 +525,8 @@ return res.json({ id:"done" })
                 // إنشاء مثيل جديد من المودل مع ترقيم البيانات
                 const n = new YourModel({
                   
-                    status:v.confirming,
+                    // status:v.confirming,
+                    status:"مؤكد",
                     // branch: v.branch,
                     // location: v.location,
                     // salesEmployeeId: decoded.id,
@@ -482,7 +548,7 @@ return res.json({ id:"done" })
                 )
                 const foundObject =await g.orders.find(item => item.id === v.id); // عشان اجيب الوبجكة الذي يحمل هذا الايدي 
                 // console.log("fffffffff")
-                // console.log(foundObject.status)
+                // console.log(v.confirming2)
                 // console.log("fffffffff")
 
                 if(foundObject.status=="مسودة"){ // اشترط ان يكون مسودة لكي لايوكون موكد ونزيد نهب رقم طلب جديد
@@ -497,7 +563,7 @@ return res.json({ id:"done" })
                 // تحديث مستخدم معين في مودل User بإضافة البيانات الجديدة إلى حقل الأوامر
                 const updatedUser = await User.updateOne(
                     { "orders._id": v.id },
-                    { $set: { "orders.$[orderElem].status": n.status, "orders.$[orderElem].orderNumber": n.orderNumber } },
+                    { $set: { "orders.$[orderElem].status": n.status,"orders.$[orderElem].status2": 'قيد التصنيع',"orders.$[orderElem].orderNumber": n.orderNumber } },
                     // { $set: { orders: n } }, // انتبه هنا، لا تحتاج إلى array brackets لأن n هو بالفعل كائن واحد
                     { arrayFilters: [{ "orderElem._id": v.id }], new: true, upsert: true }
 
@@ -1732,40 +1798,7 @@ router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) =
 
 
 
-// طلب جديد للتحديث
-router.post('/update-measurement', async (req, res) => {
-  const { measurementId, orderId, updatedMeasurement } = req.body;
 
-  try {
-      // البحث عن العميل الذي يحتوي على الطلب
-      const user = await User.findOne({ 'orders._id': orderId });
-      if (!user) {
-          return res.status(404).send('Order not found');
-      }
-
-      // البحث عن الطلب داخل بيانات العميل
-      const order = user.orders.id(orderId);
-      if (!order) {
-          return res.status(404).send('Order not found');
-      }
-
-      // البحث عن القياس داخل بيانات الطلب
-      const measurement = order.measurement.id(measurementId);
-      if (!measurement) {
-          return res.status(404).send('Measurement not found');
-      }
-
-      // تحديث بيانات القياس
-      Object.assign(measurement, updatedMeasurement);
-
-      // حفظ التحديثات
-      await user.save();
-      res.send('Measurement updated successfully');
-  } catch (error) {
-      console.error('Error updating measurement:', error);
-      res.status(500).send('Error updating measurement');
-  }
-});
 
 
 
@@ -2478,6 +2511,41 @@ router.post('/test', requireAuth, async function (req, res, next) {
     });
 
 
+// مسار للحصول على تفاصيل طلب القطع
+// مسار للحصول على تفاصيل طلب القطع
+// router.get("/aluminum-cutting/:id", (req, res) => {
+//   User.findOne({'orders._id': req.params.id})
+//     .then((result) => {
+//       const user = result;
+//       const idCustomer = user._id; // استخدم _id للحصول على معرف العميل
+//       const idToFind = req.params.id; // الحصول على المعرف من الرابط
+//       const foundObject = user.orders.find(item => item._id.toString() === idToFind); // إيجاد الطلب باستخدام المعرف
+
+//       if (!foundObject) {
+//         return res.status(404).send('Order not found');
+//       }
+
+//       // إضافة الجزء الخاص بجلب الفنيين
+//       Worker.find().then((workers) => {
+//         res.render('user/aluminum-cutting', {
+//           arrR: foundObject,
+//           idCustomer: idCustomer,
+//           workers: workers,
+//           moment: moment
+//         });
+//       }).catch((err) => {
+//         console.log(err);
+//         res.status(500).send('Server Error');
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).send('Server Error');
+//     });
+// });
+
+
+
 
 
 // تقرير السكريت
@@ -2778,33 +2846,49 @@ router.get("/total-materials/:id", (req, res) => {
 
 
         router.post("/login", async (req, res) => {
+          // طباعة خط فاصل في وحدة التحكم للوضوح
           console.log("__________________________________________");
       
           try {
+              // البحث عن المستخدم في قاعدة البيانات بناءً على اسم المستخدم المدخل
               const loginUser = await AuthUser.findOne({ userName: req.body.userName });
       
+              // إذا لم يتم العثور على المستخدم، طباعة رسالة وإرجاع استجابة تفيد بأن المستخدم غير موجود
               if (loginUser == null) {
                   console.log("this username not found in DATABASE");
                   return res.json({ notFoundUser: "Username not found, try to sign up" });
               } else {
+                  // مقارنة كلمة المرور المدخلة مع كلمة المرور المخزنة في قاعدة البيانات باستخدام bcrypt
                   const match = await bcrypt.compare(req.body.password, loginUser.password);
                   if (match) {
+                      // إذا كانت كلمة المرور صحيحة، طباعة رسالة وإنشاء توكن JWT يحتوي على معرف المستخدم واسم المستخدم والاسم
                       console.log("correct username & password");
-                      var token = jwt.sign({ id: loginUser._id }, "shhhhh");
+                      var token = jwt.sign(
+                          {
+                              id: loginUser._id,
+                              userName: loginUser.userName,
+                              name: loginUser.name
+                          },
+                          "shhhhh"
+                      );
                       console.log(token);
       
+                      // إعداد كوكي تحتوي على التوكن وإرسالها في الاستجابة
                       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
                       return res.json({ id: loginUser._id });
                   } else {
+                      // إذا كانت كلمة المرور غير صحيحة، طباعة رسالة وإرجاع استجابة تفيد بأن كلمة المرور غير صحيحة
                       console.log("wrong password");
                       return res.json({ passwordError: "incorrect password" });
                   }
               }
           } catch (error) {
+              // في حالة حدوث خطأ أثناء العملية، طباعة الخطأ وإرجاع استجابة خطأ
               console.log(error);
               res.status(500).json({ error: "Internal server error" });
           }
       });
+      
 
 
 
@@ -2973,6 +3057,77 @@ router.post('/number-measurements/:orderId', async (req, res) => {
       res.status(500).send('An error occurred while numbering measurements.');
   }
 });
+
+
+
+
+
+
+
+
+
+// مسار لتعديل الحالة
+router.post('/update-status/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  try {
+      // ابحث عن المستخدم الذي يحتوي على الطلب المطلوب
+      const user = await User.findOne({ "orders._id": orderId });
+      if (user) {
+          // ابحث عن الطلب وقم بتحديث الحالة
+          const order = user.orders.id(orderId);
+          if (order) {
+              order.status2 = status;
+              await user.save();
+              const referrer = req.get('Referrer');
+              res.redirect(referrer); // إعادة التوجيه إلى الصفحة السابقة
+          } else {
+              res.status(404).send('Order not found');
+          }
+      } else {
+          res.status(404).send('User not found');
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+  }
+});
+
+
+
+
+
+// مسح الواوردر بشرط يكون مسودة
+
+// مسار لحذف الطلبات التي حالتها "مسودة"
+router.delete('/delete-order/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+      // ابحث عن المستخدم الذي يحتوي على الطلب المطلوب
+      const user = await User.findOne({ "orders._id": orderId });
+      if (user) {
+          // ابحث عن الطلب وقم بفحص الحالة قبل الحذف
+          const order = user.orders.id(orderId);
+          if (order && order.status === 'مسودة') {
+              user.orders.pull(orderId); // استخدم pull لإزالة العنصر
+              await user.save();
+              res.redirect(req.get('Referrer')); // إعادة التوجيه إلى الصفحة السابقة
+          } else {
+              res.status(400).send('Order status is not "مسودة" or Order not found');
+          }
+      } else {
+          res.status(404).send('User not found');
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+  }
+});
+
+
+
 
 
 

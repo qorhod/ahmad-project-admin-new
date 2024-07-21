@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+   
+    <script src="./js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+    <link rel="stylesheet" href="../css/overlay.css">
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="./css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="./css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/myStyle.css" />
+  
+  </head>
+  <body>
+    <%- include('../components/overlay.ejs') %>
+
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+
+
+    <main class="d-flex flex-nowrap">
+      <!-- الواجهه الي على اليمين -->
+      <%- include('../components/sidebar.ejs', {currentPage:"in-installation"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+      <table
+      style="width: 99%"
+      class="text-center mx-auto table mt-5 table-striped table-bordered"
+    >
+      <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+      <% if (arr.length == 0) { %> 
+        <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+      <% } %>
+    
+      <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+      <% if (arr.length > 0) { %>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Order Number</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Branch</th>
+            <th>Sales Employee Name</th>
+            <th>Sales Employee Username</th>
+            <th scope="col">to customer</th>
+            <th scope="col">to Order</th>
+            <th scope="col">Go to Location</th> <!-- عمود جديد للزر -->
+          </tr>
+        </thead>
+      <% } %>
+    
+      <% arr.reverse().forEach(user => { %>
+        <% if (user.orders && user.orders.length > 0) { %>
+          <% user.orders.reverse().forEach(order => { %>
+            <% if (order.status2==="قيد التركيب"&&order.status==="مؤكد") { %>
+              <tr>
+              <td>
+                <form action="/update-status/<%= order._id %>" method="post" class="d-flex align-items-center">
+                  <select name="status" class="form-select form-select-sm" style="width: 150px;">
+                    <option value="قيد التصنيع" <%= order.status2 === 'قيد التصنيع' ? 'selected' : '' %>>قيد التصنيع</option>
+                    <option value="قيد التركيب" <%= order.status2 === 'قيد التركيب' ? 'selected' : '' %>>قيد التركيب</option>
+                    <option value="تم التسليم" <%= order.status2 === 'تم التسليم' ? 'selected' : '' %>>تم التسليم</option>
+                    <option style="color: brown;" value="ملغي" <%= order.status2 === 'ملغي' ? 'selected' : '' %>>ملغي</option>
+
+                  </select>
+                  <button type="submit" class="btn btn-sm btn-secondary ms-2">إرسال</button>
+                </form>
+              </td>
+              <td><%= order.orderNumber %></td>
+              <td><%= user.firstNamecustomer %></td>
+              <td><%= user.lastNamecustomer %></td>
+              <td><%= user.phoneNumber %></td>
+              <td><%= order.branch %></td>
+              <td><%= order.salesEmployeeName %></td>
+              <td><%= order.salesEmployeeUserName %></td>
+              <td>
+                <a
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Edit user"
+                  data-bs-placement="top"
+                  class="btn btn-primary btn-sm mx-auto"
+                  href="../view/<%= user._id %>"
+                >
+                  <i class="bi bi-person-fill"></i>
+                </a>
+              </td>
+              <td>
+                <a
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Edit user"
+                  data-bs-placement="top"
+                  class="btn btn-primary btn-sm mx-auto"
+                  href="../review/<%= order._id %>"
+                >
+                  <i class="bi bi-receipt-cutoff"></i>
+                </a>
+              </td>
+              <td>
+                <a
+                  data-bs-toggle="tooltip"
+                  data-bs-title="Go to Location"
+                  data-bs-placement="top"
+                  class="btn btn-success btn-sm mx-auto"
+                  href="<%= order.location %>" 
+                  target="_blank"
+                >
+                  <i class="bi bi-geo-alt-fill"></i>
+                </a>
+              </td>
+            </tr>
+            <% } %>
+          <% }) %>
+        <% } %>
+      <% }) %>
+    </table>
+    
+
+        
+      </section>
+    </main>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+
+    <script src="./js/sidebars.js"></script>
+
+    <script src="./js/main.js"></script>
+    <script src="../js/overlay.js"></script>
+
+  </body>
+
+
+ 
+</html>

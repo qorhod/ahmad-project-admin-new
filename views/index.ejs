@@ -64,9 +64,9 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Full Name</th>
-              <th scope="col">Gender</th>
+              <!-- <th scope="col">Gender</th> -->
               <th scope="col">branch</th>
-              <th scope="col">Age</th>
+              <!-- <th scope="col">Age</th> -->
               <th scope="col">Last updated</th>
               <th scope="col">Action</th>
             </tr>
@@ -80,9 +80,9 @@
                  <tr>
                    <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.firstNamecustomer %>	<%= item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.gender %>	</td>
-                   <td><%= item.branch %></td>
-                   <td><%= item.age %></td>
+                   <td><%= item.branch %>	</td>
+                   <!-- <td><%= //item.branch %></td> -->
+                   <!-- <td><%=// item.age %></td> -->
                    <td><%= moment(item.updatedAt).fromNow();  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
                    <td>
                      <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
