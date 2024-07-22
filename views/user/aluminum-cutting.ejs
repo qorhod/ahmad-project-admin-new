@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto" >
   <head>
@@ -28,7 +33,46 @@
     <!-- Custom styles for this template -->
     <link href="../css/sidebars.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/myStyle.css" />
-  
+    <style>
+        .status-btn {
+            padding: 5px 10px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .status-btn.false {
+            background-color: red;
+        }
+        .status-btn.true {
+            background-color: green;
+        }
+        .table-container {
+            display: none; /* Hide tables by default */
+            margin-top: 20px;
+        }
+        .table-container.active {
+            display: block; /* Show active table */
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function showTable(tableId) {
+            const tables = document.querySelectorAll('.table-container');
+            tables.forEach(table => {
+                table.classList.remove('active');
+            });
+            document.getElementById(tableId).classList.add('active');
+            localStorage.setItem('activeTable', tableId); // Save the active table
+        }
+
+        // Show the last active table on page load
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const activeTable = localStorage.getItem('activeTable') || 'all-table';
+            showTable(activeTable);
+        });
+    </script>
   </head>
   <body>
 
@@ -40,404 +84,233 @@
 
     <main class="d-flex flex-nowrap">
       <!-- الواجهه الي على اليمين -->
-      <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+      <%- include('../components/sidebar.ejs', {currentPage:"aluminum-cutting"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
 
       <section class="w-100">
       <%- include('../components/navbar.ejs') %>
-
-
-      <ul class="nav nav-tabs ">
+      <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
-        </li>
-      
+            <a href="/review/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
+          </li>
         <li class="nav-item">
-          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
+          <a href="../total-meters/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-current="page" >مجموع الأمتار</a>
         </li>
         <li class="nav-item">
-          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
+          <a href="../price/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
         </li>
         <li class="nav-item">
-          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
+          <a href="../total-materials/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
         </li>
         <li class="nav-item">
-          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link  text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
+          <a href="../glass-cutting/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج</a>
         </li>
-
         <li class="nav-item">
-          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
+          <a href="../report-temper/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت</a>
         </li>
-   
         <li class="nav-item">
-          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link  active" aria-disabled="true">تقرير قص الألمنيوم </a>
-        </li>
-
+            <a class="nav-link active" aria-current="page">تقرير قص الألمنيوم</a>
+          </li>
       </ul>
+      <div class="container mt-4">
+       
+        <h1>Aluminum Cutting</h1>
+        <div class="btn-group mb-4" role="group">
+            <button type="button" class="btn btn-primary" onclick="showTable('all-table')">All</button>
+            <button type="button" class="btn btn-primary" onclick="showTable('cutting-table')">Cutting</button>
+            <button type="button" class="btn btn-primary" onclick="showTable('assembly-table')">Assembly</button>
+        </div>
 
+        <div id="all-table" class="table-container active">
+            <form action="/aluminum-cutting/assign" method="POST">
+                <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
 
-     <!-- form-control -->
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
-      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            
+                            <th>Select</th>
+                            <th>Sequence Number</th>
+                            <th>Cutting Technician</th>
+                            <th>Cutting Status</th>
+                            <th>Assembly Technician</th>
+                            <th>Assembly Status</th>
+                            
+                            <th>Aluminum Code</th>
+                            <th>Color Code</th>
+                            <th>H(A1)*2</th>
+                            <th>W(A2)*2</th>
+                            <th>(B1)*2</th>
+                            <th>(B2)*4</th>
+                            <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (foundOrder.measurement && Array.isArray(foundOrder.measurement)) { %>
+                            <% foundOrder.measurement.forEach(measurement => { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
 
-      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
-      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+                                    <td><input type="checkbox" name="selectedMeasurements" value="<%= measurement._id %>"></td>
+                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.cuttingTechnician ? technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name : '--' %></td>
+                                    <td>
+                                        <button type="button" class="status-btn <%= measurement.cuttingStatus %>">
+                                            <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                        </button>
+                                    </td>
+                                    <td><%= measurement.assemblyTechnician ? technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name : '--' %></td>
+                                    <td>
+                                        <button type="button" class="status-btn <%= measurement.assemblyStatus %>">
+                                            <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                        </button>
+                                    </td>
+                                    
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="15">No measurements found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
 
-  </div>
-
-
-
-  <div>
-   
-    <a
-   
-    class="btn btn-primary "
-    href="../measurement/<%= arrR._id %>"
-     type="button"
-      class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
-    </div>
-    
-<!-- ازرار اظهار قوائم انواع قطاعات الألمنيوم -->
-<div class="btn-group col-md-3 mt-5" role="group" aria-label="Basic radio toggle button group">
-  <input type="radio" class="btn-check" name="btnradio5" id="btnradio11" autocomplete="off" checked>
-  <label class="btn btn-outline-light" for="btnradio11"> الكل</label>
-
-  <input type="radio" class="btn-check" name="btnradio5" id="btnradio22" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio22"> القص</label>
-
-  <input type="radio" class="btn-check" name="btnradio5" id="btnradio33" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio33"> التجميع</label>
-</div>
-
-
-
-
-<div class="dropdown mt-2">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-    اختر العملية
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <li><a class="dropdown-item" href="#" onclick="selectOperation('قص')">قص </a></li>
-    <li><a class="dropdown-item" href="#" onclick="selectOperation('تجميع')">تجميع </a></li>
-    <!-- <li><a class="dropdown-item" href="#" onclick="selectOperation('عملية 3')">عملية 3</a></li> -->
-    <!-- يمكنك إضافة المزيد من العناصر حسب الحاجة -->
-  </ul>
-<!-- </div> -->
-
-
-
-
-
-<!-- <div class="dropdown"> -->
-<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-اختر الفني
-</button>
-<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-<li><a class="dropdown-item" href="#" onclick="selectOperation2('محمد')">محمد</a></li>
-<li><a class="dropdown-item" href="#" onclick="selectOperation2('احمد')">احمد</a></li>
-<li><a class="dropdown-item" href="#" onclick="selectOperation2('خالد2')">خالد</a></li>
-<!-- يمكنك إضافة المزيد من العناصر حسب الحاجة -->
-</ul>
-
-<button class="btn btn-primary" onclick="sendData()">تكليف</button>
-
-</div>
-
-
-
-
-
-        <table id="table110"
-          style="width: 99%"
-          class="text-center mx-auto table mt-1 table-striped table-bordered"
-        >
-        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
-        <% //if (arr.length ==0) { %> 
-         <!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
-        <% //} %>
-
-        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-        <% //if (arr.length > 0) { %>
-          
- 
-
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">The drawing</th>
-              <th scope="col">Aluminum code</th>
-              <th scope="col">color</th>
-              <th scope="col">H(A1)*2</th>
-              <th scope="col">W(A2)*2</th>
-              <th scope="col">(B1)*2</th>
-              <th scope="col">(B2)*4</th>
-              <th scope="col">(B3)*2</th>
-              <th scope="col">(N1)*2</th>
-              <th scope="col">(N2)*2</th>
-              <th scope="col">
-                <!-- زر تحديدي الكل  -->
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="select-all-checkbox">
-                  <label class="form-check-label" for="select-all-checkbox">All</label>
+                <div class="form-group">
+                    <label for="taskType">Select Task Type:</label>
+                    <select name="taskType" id="taskType" class="form-control">
+                        <option value="cutting">Cutting</option>
+                        <option value="assembly">Assembly</option>
+                    </select>
                 </div>
-                <!-- //زر تحديدي الكل  //-->
-              </th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-        <% //} %>
-        <!--  -->
-        <tbody id="kk">
-          <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
-            <% arrR.measurement.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
-              <!--  -->
-              <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
-                 <tr class="<%= item.delete ? 'strikethrough' : '' %>">
-                   <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
-                   <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.aluminumCode %></td>
-                   <td ><%=item.aluminumColorCode %></td>
-                   <td><%= item.H %></td>
-                   <td><%= item.W %></td>
-                   <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
-                   <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
-                   <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
-                   <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
-                   <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
-                  
-                   <td>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
-                      <label class="form-check-label" for="check<%= index %>"></label>
-                    </div>
-                  </td>
-                   
-                   <td>
-                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-                  
-     
-                     <a
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Edit user"
-                       data-bs-placement="top"
-                       class="btn btn-primary btn-sm"
-                       href="./edit/<%=// item._id %>"
-                     >
-                       <i class="bi bi-pencil"></i>
-                     </a>
-                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-                     <button
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Delete user"
-                       data-bs-placement="top"
-                       class="btn btn-danger btn-sm"
-                     >
-                       <i class="bi bi-trash"></i>
-                     </button>
-                   </form>
-                   </td>
-                 </tr>
-               <% }) %>
-             
-      
-          </tbody>
-        </table>
 
-<!-- 222222222222222222222222222222 -->
+                <div class="form-group">
+                    <label for="technicianId">Select Technician:</label>
+                    <select name="technicianId" id="technicianId" class="form-control">
+                        <% technicians.forEach(technician => { %>
+                            <option value="<%= technician._id %>"><%= technician.name %> - <%= technician.role %></option>
+                        <% }) %>
+                    </select>
+                </div>
 
+                <button type="submit" class="btn btn-primary mt-3">Assign</button>
+            </form>
+        </div>
 
-<table id="table220"
-style="width: 99%"
-class="text-center mx-auto table mt-1 table-striped table-bordered"
->
-<!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
-<% //if (arr.length ==0) { %> 
-<!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
-<% //} %>
+        <div id="cutting-table" class="table-container">
+            <h2>Cutting Status</h2>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Sequence Number</th>
+                        <th>Aluminum Code</th>
+                        <th>Color Code</th>
+                        <th>Technician</th>
+                        <th>H(A1)*2</th>
+                        <th>W(A2)*2</th>
+                        <th>(B1)*2</th>
+                        <th>(B2)*4</th>
+                        <th>(B3)*2</th>
+                        <th>(N1)*2</th>
+                        <th>(N2)*2</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% foundOrder.measurement.forEach(measurement => { if (measurement.cuttingTechnician) { %>
+                        <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
 
-<!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-<% //if (arr.length > 0) { %>
+                            <td><%= measurement.sequenceNumber || '--' %></td>
+                            <td><%= measurement.aluminumCode || '--' %></td>
+                            <td><%= measurement.aluminumColorCode || '--' %></td>
+                            <td><%= technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name %></td>
+                            <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                            <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                            <td>
+                                <form action="/aluminum-cutting/update-status" method="POST">
+                                    <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                                    <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
+                                    <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                    <input type="hidden" name="taskType" value="cutting">
+                                    <button type="submit" class="status-btn <%= measurement.cuttingStatus %>">
+                                        <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% } }) %>
+                </tbody>
+            </table>
+        </div>
 
+        <div id="assembly-table" class="table-container">
+            <h2>Assembly Status</h2>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Sequence Number</th>
+                        <th>Aluminum Code</th>
+                        <th>Color Code</th>
+                        <th>Technician</th>
+                        <th>H(A1)*2</th>
+                        <th>W(A2)*2</th>
+                        <th>(B1)*2</th>
+                        <th>(B2)*4</th>
+                        <th>(B3)*2</th>
+                        <th>(N1)*2</th>
+                        <th>(N2)*2</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% foundOrder.measurement.forEach(measurement => { if (measurement.assemblyTechnician) { %>
+                        <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
 
+                            <td><%= measurement.sequenceNumber || '--' %></td>
+                            <td><%= measurement.aluminumCode || '--' %></td>
+                            <td><%= measurement.aluminumColorCode || '--' %></td>
+                            <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name %></td>
+                            <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                            <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                            <td>
+                                <form action="/aluminum-cutting/update-status" method="POST">
+                                    <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                                    <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
+                                    <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                    <input type="hidden" name="taskType" value="assembly">
+                                    <button type="submit" class="status-btn <%= measurement.assemblyStatus %>">
+                                        <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% } }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<thead>
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">The2222 drawing</th>
-    <th scope="col">Aluminum code</th>
-    <th scope="col">color</th>
-    <th scope="col">H(A1)*2</th>
-    <th scope="col">W(A2)*2</th>
-    <th scope="col">(B1)*2</th>
-    <th scope="col">(B2)*4</th>
-    <th scope="col">(B3)*2</th>
-    <th scope="col">(N1)*2</th>
-    <th scope="col">(N2)*2</th>
-    <th scope="col">
-      <!-- زر تحديدي الكل  -->
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="select-all-checkbox">
-        <label class="form-check-label" for="select-all-checkbox">All</label>
-      </div>
-      <!-- //زر تحديدي الكل  //-->
-    </th>
-    <th scope="col">Action</th>
-  </tr>
-</thead>
-<% //} %>
-<!--  -->
-<tbody id="kk">
-<!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
-  <% arrR.measurement.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
-    <!--  -->
-                     <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
-                     <tr class="<%= item.delete ? 'strikethrough' : '' %>">
-         <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
-         <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-         <td><%= item.aluminumCode %></td>
-         <td ><%=item.aluminumColorCode %></td>
-         <td><%= item.H %></td>
-         <td><%= item.W %></td>
-         <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
-         <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
-         <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
-         <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
-         <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
-        
-         <td>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
-            <label class="form-check-label" for="check<%= index %>"></label>
-          </div>
-        </td>
-         
-         <td>
-           <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-        
-
-           <a
-             data-bs-toggle="tooltip"
-             data-bs-title="Edit user"
-             data-bs-placement="top"
-             class="btn btn-primary btn-sm"
-             href="./edit/<%=// item._id %>"
-           >
-             <i class="bi bi-pencil"></i>
-           </a>
-           <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-           <button
-             data-bs-toggle="tooltip"
-             data-bs-title="Delete user"
-             data-bs-placement="top"
-             class="btn btn-danger btn-sm"
-           >
-             <i class="bi bi-trash"></i>
-           </button>
-         </form>
-         </td>
-       </tr>
-     <% }) %>
-   
-
-</tbody>
-</table>
-<!-- 3333333333333333333333333333333333333333333333 -->
-<table id="table330"
-style="width: 99%"
-class="text-center mx-auto table mt-1 table-striped table-bordered"
->
-<!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
-<% //if (arr.length ==0) { %> 
-<!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
-<% //} %>
-
-<!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-<% //if (arr.length > 0) { %>
-
-
-
-<thead>
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">The33333 drawing</th>
-    <th scope="col">Aluminum code</th>
-    <th scope="col">color</th>
-    <th scope="col">H(A1)*2</th>
-    <th scope="col">W(A2)*2</th>
-    <th scope="col">(B1)*2</th>
-    <th scope="col">(B2)*4</th>
-    <th scope="col">(B3)*2</th>
-    <th scope="col">(N1)*2</th>
-    <th scope="col">(N2)*2</th>
-    <th scope="col">
-      <!-- زر تحديدي الكل  -->
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="select-all-checkbox">
-        <label class="form-check-label" for="select-all-checkbox">All</label>
-      </div>
-      <!-- //زر تحديدي الكل  //-->
-    </th>
-    <th scope="col">Action</th>
-  </tr>
-</thead>
-<% //} %>
-<!--  -->
-<tbody id="kk">
-<!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
-  <% arrR.measurement.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
-    <!--  -->
-                     <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
-                     <tr class="<%= item.delete ? 'strikethrough' : '' %>">
-         <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
-         <td><%= //item.aluminumCode %><%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-         <td><%= item.aluminumCode %></td>
-         <td ><%=item.aluminumColorCode %></td>
-         <td><%= item.H %></td>
-         <td><%= item.W %></td>
-         <td><%= item.aluminumCuttingReport.U4 == 0 ? '-' : item.aluminumCuttingReport.U4 %></td>
-         <td><%= item.aluminumCuttingReport.T4== 0 ? '-' : item.aluminumCuttingReport.T4  %></td>
-         <td><%= item.aluminumCuttingReport.S4== 0 ? '-' : item.aluminumCuttingReport.S4 %></td>
-         <td><%=item.aluminumCuttingReport.R4== 0 ? '-' : item.aluminumCuttingReport.R4 %></td>
-         <td><%= item.aluminumCuttingReport.Q4== 0 ? '-' : item.aluminumCuttingReport.Q4 %></td>
-        
-         <td>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="check<%= index %>" value="<%= index %>">
-            <label class="form-check-label" for="check<%= index %>"></label>
-          </div>
-        </td>
-         
-         <td>
-           <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-        
-
-           <a
-             data-bs-toggle="tooltip"
-             data-bs-title="Edit user"
-             data-bs-placement="top"
-             class="btn btn-primary btn-sm"
-             href="./edit/<%=// item._id %>"
-           >
-             <i class="bi bi-pencil"></i>
-           </a>
-           <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-           <button
-             data-bs-toggle="tooltip"
-             data-bs-title="Delete user"
-             data-bs-placement="top"
-             class="btn btn-danger btn-sm"
-           >
-             <i class="bi bi-trash"></i>
-           </button>
-         </form>
-         </td>
-       </tr>
-     <% }) %>
-   
-
-</tbody>
-</table>
-
-
+    <script src="../js/bootstrap.bundle.min.js"></script>
 
       </section>
     </main>
@@ -645,3 +518,29 @@ document.getElementById('select-all-checkbox').addEventListener('change', functi
 
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2459,56 +2459,364 @@ router.post('/test', requireAuth, async function (req, res, next) {
 
     // تقرير قص الزجاج
 
-    router.get("/glass-cutting/:id", (req, res) => {
-      User.findOne({'orders._id': req.params.id})
+//     router.get("/glass-cutting/:id", (req, res) => {
+//       User.findOne({'orders._id': req.params.id})
 
       
-      .then((result)=>{
+//       .then((result)=>{
        
 
-        const h =  result
+//         const h =  result
 
-       const idCustomer = h.id // ارسلت له ايدي العميل لاني احتجة في الفرنت اند
+//        const idCustomer = h.id // ارسلت له ايدي العميل لاني احتجة في الفرنت اند
 
-      const idToFind = req.params.id; // من الرابط id 
-      const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+//       const idToFind = req.params.id; // من الرابط id 
+//       const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
 
-        res.render('user/glass-cutting',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-      }).catch((err)=>{
-          console.log(err)
- })
+//         res.render('user/glass-cutting',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+//       }).catch((err)=>{
+//           console.log(err)
+//  })
      
 
-    });
+//     });
+
+router.get("/glass-cutting/:id", async (req, res) => {
+  try {
+      console.log("Request ID:", req.params.id);
+      
+      // البحث عن المستخدم باستخدام معرف الطلب
+      const result = await User.findOne({ 'orders._id': req.params.id });
+      
+      if (!result) {
+          console.log("No user found with the given order ID using orders._id");
+
+          // البحث عن المستخدمين وإظهار جزء من البيانات لتصحيح الأخطاء
+          const allUsers = await User.find({}, { orders: 1 }).lean();
+          allUsers.forEach(user => {
+              console.log("User ID:", user._id);
+              user.orders.forEach(order => {
+                  console.log("Order ID:", order._id);
+                  order.measurement.forEach(measurement => {
+                      console.log("Measurement ID:", measurement._id);
+                  });
+              });
+          });
+
+          return res.status(404).send('Order not found');
+      }
+
+      const h = result;
+      const idCustomer = h._id; // معرف العميل
+      console.log("User ID:", idCustomer);
+      
+      const orderId = req.params.id; // معرف الطلب من الرابط
+      const foundOrder = h.orders.find(order => order._id.toString() === orderId);
+      
+      if (!foundOrder) {
+          console.log("No order found with the given order ID in the orders");
+          return res.status(404).send('Order not found');
+      }
+      
+      const foundMeasurement = foundOrder.measurement;
+      console.log("Found Measurements:", foundMeasurement);
+
+      // جلب الفنيين من قاعدة البيانات بدور factoryWorker
+      const technicians = await AuthUser.find({ role: 'factoryWorker' });
+      console.log("Technicians:", technicians);
+
+      res.render('user/glass-cutting', { arrR: foundMeasurement, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians, moment: moment });
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
 
 
+
+
+router.post("/glass-cutting/assign", async (req, res) => {
+    const { idCustomer, orderId, technicianId, taskType } = req.body;
+    let { selectedMeasurements } = req.body;
+
+    try {
+        const user = await User.findOne({ _id: idCustomer });
+        if (user) {
+            const order = user.orders.id(orderId);
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+
+            // تأكد من أن selectedMeasurements هو مصفوفة
+            if (!Array.isArray(selectedMeasurements)) {
+                selectedMeasurements = [selectedMeasurements];
+            }
+
+            selectedMeasurements.forEach(measurementId => {
+                const measurement = order.measurement.id(measurementId);
+                if (measurement) {
+                    if (taskType === 'cutting') {
+                        measurement.cuttingTechnicianGlass = technicianId;
+                        measurement.cuttingStatusGlass = false;
+                    } else if (taskType === 'double') {
+                        measurement.assemblyTechnicianGlass = technicianId;
+                        measurement.assemblyStatusGlass = false;
+                    }
+                }
+            });
+
+            await user.save();
+            res.redirect(`/glass-cutting/${orderId}`);
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+
+
+router.post("/glass-cutting/update-status", async (req, res) => {
+  const { idCustomer, orderId, measurementId, taskType } = req.body;
+
+  try {
+      const user = await User.findOne({ _id: idCustomer });
+      if (user) {
+          const order = user.orders.id(orderId);
+          if (!order) {
+              return res.status(404).send('Order not found');
+          }
+
+          const measurement = order.measurement.id(measurementId);
+          if (measurement) {
+              if (taskType === 'cutting') {
+                  measurement.cuttingStatusGlass = !measurement.cuttingStatusGlass;
+              } else if (taskType === 'double') {
+                  measurement.assemblyStatusGlass = !measurement.assemblyStatusGlass;
+              }
+          }
+
+          await user.save();
+          res.redirect(`/glass-cutting/${orderId}`);
+      } else {
+          res.status(404).send('User not found');
+      }
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
 
 
     // تقرير قص الألمنيوم
 
 
 
-    router.get("/aluminum-cutting/:id", (req, res) => {
-      User.findOne({'orders._id': req.params.id})
+//     router.get("/aluminum-cutting/:id", (req, res) => {
+//       User.findOne({'orders._id': req.params.id})
 
       
-      .then((result)=>{
+//       .then((result)=>{
        
 
-        const h =  result
+//         const h =  result
 
-       const idCustomer = h.id // ارسلت له ايدي العميل لاني احتجة في الفرنت اند
+//        const idCustomer = h.id // ارسلت له ايدي العميل لاني احتجة في الفرنت اند
 
-      const idToFind = req.params.id; // من الرابط id 
-      const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+//       const idToFind = req.params.id; // من الرابط id 
+//       const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
 
-        res.render('user/aluminum-cutting',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-      }).catch((err)=>{
-          console.log(err)
- })
+//         res.render('user/aluminum-cutting',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+//       }).catch((err)=>{
+//           console.log(err)
+//  })
      
 
-    });
+//     });
+
+
+
+
+router.get("/aluminum-cutting/:id", async (req, res) => {
+  try {
+      console.log("Request ID:", req.params.id);
+      
+      // البحث عن المستخدم باستخدام معرف الطلب
+      const result = await User.findOne({ 'orders._id': req.params.id });
+      
+      if (!result) {
+          console.log("No user found with the given order ID using orders._id");
+
+          // البحث عن المستخدمين وإظهار جزء من البيانات لتصحيح الأخطاء
+          const allUsers = await User.find({}, { orders: 1 }).lean();
+          allUsers.forEach(user => {
+              console.log("User ID:", user._id);
+              user.orders.forEach(order => {
+                  console.log("Order ID:", order._id);
+                  order.measurement.forEach(measurement => {
+                      console.log("Measurement ID:", measurement._id);
+                  });
+              });
+          });
+
+          return res.status(404).send('Order not found');
+      }
+
+      const h = result;
+      const idCustomer = h._id; // معرف العميل
+      console.log("User ID:", idCustomer);
+      
+      const orderId = req.params.id; // معرف الطلب من الرابط
+      const foundOrder = h.orders.find(order => order._id.toString() === orderId);
+      
+      if (!foundOrder) {
+          console.log("No order found with the given order ID in the orders");
+          return res.status(404).send('Order not found');
+      }
+      
+      const foundMeasurement = foundOrder.measurement;
+      console.log("Found Measurements:", foundMeasurement);
+
+      // جلب الفنيين من قاعدة البيانات بدور factoryWorker
+      const technicians = await AuthUser.find({ role: 'factoryWorker' });
+      console.log("Technicians:", technicians);
+
+      res.render('user/aluminum-cutting', { arrR: foundMeasurement, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians, moment: moment });
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+
+
+
+router.post("/aluminum-cutting/assign", async (req, res) => {
+    const { idCustomer, orderId, technicianId, taskType } = req.body;
+    let { selectedMeasurements } = req.body;
+
+    try {
+        const user = await User.findOne({ _id: idCustomer });
+        if (user) {
+            const order = user.orders.id(orderId);
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+
+            // تأكد من أن selectedMeasurements هو مصفوفة
+            if (!Array.isArray(selectedMeasurements)) {
+                selectedMeasurements = [selectedMeasurements];
+            }
+
+            selectedMeasurements.forEach(measurementId => {
+                const measurement = order.measurement.id(measurementId);
+                if (measurement) {
+                    if (taskType === 'cutting') {
+                        measurement.cuttingTechnician = technicianId;
+                        measurement.cuttingStatus = false;
+                    } else if (taskType === 'assembly') {
+                        measurement.assemblyTechnician = technicianId;
+                        measurement.assemblyStatus = false;
+                    }
+                }
+            });
+
+            await user.save();
+            res.redirect(`/aluminum-cutting/${orderId}`);
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+
+
+router.post("/aluminum-cutting/update-status", async (req, res) => {
+  const { idCustomer, orderId, measurementId, taskType } = req.body;
+
+  try {
+      const user = await User.findOne({ _id: idCustomer });
+      if (user) {
+          const order = user.orders.id(orderId);
+          if (!order) {
+              return res.status(404).send('Order not found');
+          }
+
+          const measurement = order.measurement.id(measurementId);
+          if (measurement) {
+              if (taskType === 'cutting') {
+                  measurement.cuttingStatus = !measurement.cuttingStatus;
+              } else if (taskType === 'assembly') {
+                  measurement.assemblyStatus = !measurement.assemblyStatus;
+              }
+          }
+
+          await user.save();
+          res.redirect(`/aluminum-cutting/${orderId}`);
+      } else {
+          res.status(404).send('User not found');
+      }
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+
+
+
+
+
+// router.post("/aluminum-cutting/assign", async (req, res) => {
+//   const { idCustomer, orderId, technicianId, taskType } = req.body;
+//   let { selectedMeasurements } = req.body;
+
+//   try {
+//       const user = await User.findOne({ _id: idCustomer });
+//       if (user) {
+//           const order = user.orders.id(orderId);
+//           if (!order) {
+//               return res.status(404).send('Order not found');
+//           }
+
+//           // تأكد من أن selectedMeasurements هو مصفوفة
+//           if (!Array.isArray(selectedMeasurements)) {
+//               selectedMeasurements = [selectedMeasurements];
+//           }
+
+//           selectedMeasurements.forEach(measurementId => {
+//               const measurement = order.measurement.id(measurementId);
+//               if (measurement) {
+//                   if (taskType === 'cutting') {
+//                       measurement.cuttingTechnician = technicianId;
+//                       measurement.cuttingStatus = false;
+//                   } else if (taskType === 'assembly') {
+//                       measurement.assemblyTechnician = technicianId;
+//                       measurement.assemblyStatus = false;
+//                   }
+//               }
+//           });
+
+//           await user.save();
+//           res.redirect(`/aluminum-cutting/${orderId}`);
+//       } else {
+//           res.status(404).send('User not found');
+//       }
+//   } catch (err) {
+//       console.log(err);
+//       res.status(500).send('Server Error');
+//   }
+// });
+
+
+
 
 
 // مسار للحصول على تفاصيل طلب القطع

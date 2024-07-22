@@ -118,12 +118,32 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
 
                                 },
+
+
+                                cuttingTechnicianGlass: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                cuttingStatusGlass: { type: Boolean, default: false },
+                                assemblyTechnicianGlass: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                assemblyStatusGlass: { type: Boolean, default: false },
+                            
+
+
+
                                 glassCuttingReport:{
                                     H: Number,
                                     W: Number,
                                     reportTemper: Number,
                                 },
+
+
+                                                //مختصه في صففخة ترير قص لالميم ذكاء صناعي                           
+                               cuttingTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                cuttingStatus: { type: Boolean, default: false },
+                                assemblyTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                assemblyStatus: { type: Boolean, default: false },
+                            
+
                                 aluminumCuttingReport:{
+                                    
                                     Q4: Number,
                                     R4: Number,
                                     S4: Number,
