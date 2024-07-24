@@ -32,6 +32,9 @@ const {calculateValues} = require("../middleware/equations.js")
 const {aluminumCuttingReport} = require("../middleware/equations.js")
 const {updatetotalMotherEquation} = require("../middleware/equations.js")
 const { numberAllMeasurementsForOrder } = require('../middleware/sequenceNumberHelper'); // استدعاء دالة الترقيم
+const {ensureRole} = require('../middleware/middleware.js')
+const {restrictFactoryWorker} = require('../middleware/middleware');
+const {verifyToken} = require('../middleware/middleware');
 
 // router.get("/calculator",calculator) // يعي تنفذ هذاي الداة على جميع الاكواد النجمه يعين جميع الاكواد
 // router.post("*",calculator)
@@ -113,7 +116,7 @@ router.post("/user/measurement", async (req, res) => {
 
 
 // قيد التصنيع
-router.get('/in-production', requireAuth, (req, res) => {
+router.get('/in-production', requireAuth,restrictFactoryWorker, (req, res) => {
   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
   User.find()
     .then((users) => {
@@ -129,7 +132,7 @@ router.get('/in-production', requireAuth, (req, res) => {
 
 
 // قيد التركيب
-router.get('/in-installation', requireAuth, (req, res) => {
+router.get('/in-installation', requireAuth,restrictFactoryWorker, (req, res) => {
   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
   User.find()
     .then((users) => {
@@ -141,7 +144,7 @@ router.get('/in-installation', requireAuth, (req, res) => {
 });
 
 // تم التسليم
-router.get('/delivered', requireAuth, (req, res) => {
+router.get('/delivered', requireAuth,restrictFactoryWorker, (req, res) => {
   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
   User.find()
     .then((users) => {
@@ -167,7 +170,7 @@ router.get('/delivered', requireAuth, (req, res) => {
 // });
 
 // ////
-router.get('/canceled',requireAuth, (req, res, ) => {
+router.get('/canceled',requireAuth,restrictFactoryWorker, (req, res, ) => {
   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
   User.find()
     .then((users) => {
@@ -192,31 +195,31 @@ router.get('/canceled',requireAuth, (req, res, ) => {
 
 // هذا الركوس اذا الواحد دخل على الصفحة الرايسية اش يطلعلة
 
-router.get('/home',requireAuth, (req, res, ) => {
-    // res.send('<h1>Hello World!</h1>') // هذا الأمر يطبع في المتصفح وتقدر تكتب فيه اش تي ام ال
-    // res.sendFile("./views/home.html", {root: __dirname}); // لعرض التصميم من ملفي اتش تي امل ال
-    // AuthUser.find()//هذا يستدعي قاعدة البينات
+// router.get('/home',requireAuth, (req, res, ) => {
+//     // res.send('<h1>Hello World!</h1>') // هذا الأمر يطبع في المتصفح وتقدر تكتب فيه اش تي ام ال
+//     // res.sendFile("./views/home.html", {root: __dirname}); // لعرض التصميم من ملفي اتش تي امل ال
+//     // AuthUser.find()//هذا يستدعي قاعدة البينات
 
-  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
-  console.log(decoded.id)
+//   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
+//   console.log(decoded.id)
 
-    // AuthUser.findById(decoded.id)//نبعث بال ايدي وجبنا الايد من التوكن بطريقة الي فوق 
-    User.find()
+//     // AuthUser.findById(decoded.id)//نبعث بال ايدي وجبنا الايد من التوكن بطريقة الي فوق 
+//     User.find()
 
-  .then((result)=>{
-  console.log(result)
-  // res.render("index",  {arr:result.customerInfo , moment:moment } ) // هذا حنا اشأنه في الداتا عطريقاكسيما محمل بأري فيه العملاء الي على اسم المستخدم customerInfoنقول له اطبعلنا طفحة الاندكس في في الامتداد الرايسب وحطينا فاصلة وكتبنا متغير محمل بداتا وارسلناه لصفحة الاندكس عشان يرتبون في الاجدول هناك طبعا حطينا
-  res.render("index", { arr: result, moment: moment });
+//   .then((result)=>{
+//   console.log(result)
+//   // res.render("index",  {arr:result.customerInfo , moment:moment } ) // هذا حنا اشأنه في الداتا عطريقاكسيما محمل بأري فيه العملاء الي على اسم المستخدم customerInfoنقول له اطبعلنا طفحة الاندكس في في الامتداد الرايسب وحطينا فاصلة وكتبنا متغير محمل بداتا وارسلناه لصفحة الاندكس عشان يرتبون في الاجدول هناك طبعا حطينا
+//   res.render("index", { arr: result, moment: moment });
 
-  }).catch((err)=>{
-    console.log(err)
-  })
-  })
+//   }).catch((err)=>{
+//     console.log(err)
+//   })
+//   })
   
   
   
   
-  router.get('/user/add.html',requireAuth, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
+  router.get('/user/add.html',requireAuth,restrictFactoryWorker, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
     var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); 
 
     res.render('user/add',{ jwt: decoded }) //هنا تحط اسم الملف الي تبغة يفتحة لحة اذا دخلة على الرابط الي فوق 
@@ -224,13 +227,13 @@ router.get('/home',requireAuth, (req, res, ) => {
   
   
   
-  router.get('/user/view.html',requireAuth, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
+  router.get('/user/view.html',requireAuth,restrictFactoryWorker, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
     res.render('user/view') //هنا تحط اسم الملف الي تبغة يفتحة لحة اذا دخلة على الرابط الي فوق 
   })
   
   
   
-  router.get('/user/:id',requireAuth, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
+  router.get('/user/:id',requireAuth,restrictFactoryWorker, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
   
     User.findById(req.params.id)
   
@@ -241,7 +244,7 @@ router.get('/home',requireAuth, (req, res, ) => {
   
   // هذا الركوست اذا احد ضغط على عرض للعميل
   
-  router.get('/view/:id',requireAuth,async (req, res) => {  // :id طبعاً هذا الجزء مهم جداً عندي جزء في الرابط متغير يعتمد على ضغط المستخدم على اي عميل فتوجد طريقة جمية  جداً انك تكتب متغير في الرابط وبعيث يتغر مع النقرات ويكون فيه اليدي حق العميل ولكتابت متغير ضع نقطتان راسياتن وبعدها اسم المتغير الي تبغى مثل 
+  router.get('/view/:id',requireAuth,restrictFactoryWorker,async (req, res) => {  // :id طبعاً هذا الجزء مهم جداً عندي جزء في الرابط متغير يعتمد على ضغط المستخدم على اي عميل فتوجد طريقة جمية  جداً انك تكتب متغير في الرابط وبعيث يتغر مع النقرات ويكون فيه اليدي حق العميل ولكتابت متغير ضع نقطتان راسياتن وبعدها اسم المتغير الي تبغى مثل 
    
     // const a =await User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
 // AuthUser.findOne({"customerInfo._id":req.params.id})
@@ -278,7 +281,7 @@ console.log(result)
 
 
   
-  router.get('/edit/:id',requireAuth, async(req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
+  router.get('/edit/:id',requireAuth,restrictFactoryWorker, async(req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
     const b= await User.findOne({"_id":req.params.id })
     // const b =await User.findById(req.params.id)
     
@@ -307,7 +310,7 @@ console.log(result)
 
 
   // sign out
-  router.get('/signout',requireAuth, (req, res) => { //هذا تسجيل الخروج 
+  router.get('/signout',requireAuth,restrictFactoryWorker, (req, res) => { //هذا تسجيل الخروج 
     res.cookie("jwt", { maxAge: 1 }); // هذا يحذف التوكن عشان سجل حروج بختصار يكتب توكن فاضي ويخليه لمدة جزء من الثانية
     
     res.redirect("/") // بعد مايحذف التوكن يحول المستخدم إلى صفحة الرأيسية
@@ -348,7 +351,7 @@ console.log(result)
 
 
                 // صفحة القياسات الأساسية
-            router.get("/basic-measurement/:id", (req, res) => {
+            router.get("/basic-measurement/:id",restrictFactoryWorker, (req, res) => {
               
               User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
                       .then((result)=>{
@@ -366,7 +369,7 @@ console.log(result)
 
 
 
-            router.get('/draft',requireAuth, (req, res, ) => {
+            router.get('/draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
               var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
               User.find()
                 .then((users) => {
@@ -387,7 +390,7 @@ console.log(result)
 
 
 
-            router.post("/basic-measurement/:id", async (req, res) => {
+            router.post("/basic-measurement/:id",restrictFactoryWorker, async (req, res) => {
               const v = await req.body
               const b = req.params.id
               
@@ -463,7 +466,7 @@ return res.json({ id:"done" })
 
 
 
-            router.post("/basic-measurementbbb/:id", async (req, res) => {
+            router.post("/basic-measurementbbb/:id",restrictFactoryWorker, async (req, res) => {
               try {
                   const v = req.body;
                   const b = req.params.id;
@@ -603,7 +606,7 @@ const bbbf=   await numberAllMeasurementsForOrder(orderId);
 
 
 
-            router.get("/measurementmm/:id", (req, res) => {
+            router.get("/measurementmm/:id",restrictFactoryWorker, (req, res) => {
               
               // User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
               //         .then((result)=>{
@@ -658,7 +661,7 @@ console.log(foundObject);
 
 
 
-            router.get("/measurementtt/:id", (req, res) => {
+            router.get("/measurementtt/:id",restrictFactoryWorker, (req, res) => {
               
              
                        
@@ -696,7 +699,7 @@ console.log(foundObject);
 
 
 
-            router.get("/measurement/:id", (req, res) => {
+            router.get("/measurement/:id",restrictFactoryWorker, (req, res) => {
               const customerId = req.params.id;
               User.findOne({'orders._id': req.params.id})
                   .then((result1) => {
@@ -765,7 +768,7 @@ console.log("777777777777777777777777")
 //  تم دمج ركوستات البوست التابعة لصفحة المقاس ركوست من رفع قياس جديد والأخر من تعديل القياس 
 
 
-router.post("/measurement/:id", async (req, res) => {
+router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
 
 
 
@@ -1724,7 +1727,7 @@ const cvx = await User.updateOne(
 
 
 
-router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
+router.delete('/review/:measurementId-:orderId', requireAuth,restrictFactoryWorker, async (req, res) => {
   console.log(`Request received for measurementId: ${req.params.measurementId}, orderId: ${req.params.orderId}`);
   try {
       const { measurementId, orderId } = req.params;
@@ -1816,7 +1819,7 @@ router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) =
 
 
 
-            router.get("/review/:id",requireAuth, async (req, res) => {
+            router.get("/review/:id",requireAuth,restrictFactoryWorker, async (req, res) => {
               // User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
               // User.findOne({_id:req.params.id}) // عشان نحصل اسم المستخدم الي مسجل الدخول عشان نبحث عن الاري الي داخلة
               User.findOne({'orders._id': req.params.id})
@@ -1863,7 +1866,7 @@ router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) =
 
 
     // مجموع الأمتار
-    router.get("/total-meters/:id", (req, res) => {
+    router.get("/total-meters/:id",restrictFactoryWorker, (req, res) => {
       User.findOne({'orders._id': req.params.id})
 
       // User.findById(req.params.id, 'orders._id' )
@@ -1906,7 +1909,7 @@ router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) =
 
 // موقت واحذف فقط لرفع اسعار القطاعات في الداتا
 
-router.post('/total-meters/:id', requireAuth, async function (req, res, next) {
+router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
   try {
       const newUser = await commands.create({
           price: {
@@ -1960,7 +1963,7 @@ router.post('/total-meters/:id', requireAuth, async function (req, res, next) {
 
 
        // تقرير السعر
-    router.get("/price/:id", (req, res) => {
+    router.get("/price/:id",restrictFactoryWorker, (req, res) => {
         User.findOne({'orders._id': req.params.id})
         // 
       
@@ -1995,7 +1998,7 @@ router.post('/total-meters/:id', requireAuth, async function (req, res, next) {
 
 
 
-    router.post('/pricegg/:id', requireAuth, async function (req, res, next) {
+    router.post('/pricegg/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
       const v = await req.body
       try {
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuu")
@@ -2144,7 +2147,7 @@ let iid = v.iid
 
 /////////////////////////////
  
-  router.post('/price/:id', requireAuth, async function (req, res, next) {
+  router.post('/price/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
     const v = await req.body
     console.log(v.total)
       try {
@@ -2225,49 +2228,11 @@ console.log(to)
 });
   
 
-/////////////////////////
 
-//////////// لتجربنه وسيتم حذفه 
-router.get("/test", (req, res) => {
-  User.findOne({'orders._id':'65fb620615fe20eec32ca41b'})
-  // 
-
-.then((result)=>{
-
-  const h =  result
-
- const idCustomer = h.id // ارسلت له ايدي العميل لاني احتجة في الفرنت اند
-
-const idToFind = '65fb620615fe20eec32ca41b'; // من الرابط id 
-const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-
-const mm = foundObject.measurement.find(item => item.id === "65fe4b1d66fa54f1fb370e0e"); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-
-
-
-
-
-  res.render('user/test',{arrR:foundObject,idCustomer:idCustomer,arrMM:mm ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-  // res.render('user/price',{arrR:result ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-})
-
-
-
-
-
-
-.catch((err)=>{
-    console.log(err)
-})
-
-
-});
 
 
 //////////Post////////
-router.post('/test', requireAuth, async function (req, res, next) {
+router.post('/test', requireAuth,restrictFactoryWorker, async function (req, res, next) {
   const v = await req.body
   console.log(v.total)
     try {
@@ -2481,7 +2446,7 @@ router.post('/test', requireAuth, async function (req, res, next) {
 
 //     });
 
-router.get("/glass-cutting/:id", async (req, res) => {
+router.get("/glass-cutting/:id",restrictFactoryWorker, async (req, res) => {
   try {
       console.log("Request ID:", req.params.id);
       
@@ -2535,7 +2500,7 @@ router.get("/glass-cutting/:id", async (req, res) => {
 
 
 
-router.post("/glass-cutting/assign", async (req, res) => {
+router.post("/glass-cutting/assign",restrictFactoryWorker, async (req, res) => {
     const { idCustomer, orderId, technicianId, taskType } = req.body;
     let { selectedMeasurements } = req.body;
 
@@ -2611,6 +2576,102 @@ router.post("/glass-cutting/update-status", async (req, res) => {
 });
 
 
+
+
+
+
+
+
+// هذا لتعدل حالة القياس من يوزر عامل المصنع لحالة القص والدبل للقزاز
+
+router.post("/glass-cutting/update-status-glass-cutting-and-glass-double", async (req, res) => {
+  const { orderId, measurementId, taskType } = req.body;
+
+  try {
+      const user = await User.findOne({ "orders._id": orderId });
+      if (!user) {
+          return res.status(404).send('Order not found');
+      }
+
+      const order = user.orders.id(orderId);
+      if (!order) {
+          return res.status(404).send('Order not found within user');
+      }
+
+      const measurement = order.measurement.id(measurementId);
+      if (measurement) {
+          if (taskType === 'cutting') {
+              measurement.cuttingStatusGlass = !measurement.cuttingStatusGlass;
+          } else if (taskType === 'double') {
+              measurement.assemblyStatusGlass = !measurement.assemblyStatusGlass;
+          }
+
+          await user.save();
+          res.redirect(`/glass-cutting/${orderId}`);
+      } else {
+          res.status(404).send('Measurement not found');
+      }
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+
+
+
+
+
+
+
+
+// هذا لتعديل حلة القياس من حساب عامل المصنع حالة القص وحالة التجميع
+
+
+router.post("/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly", async (req, res) => {
+  const { orderId, measurementId, taskType } = req.body;
+
+  try {
+      const user = await User.findOne({ "orders._id": orderId });
+      if (!user) {
+          return res.status(404).send('Order not found');
+      }
+
+      const order = user.orders.id(orderId);
+      if (!order) {
+          return res.status(404).send('Order not found within user');
+      }
+
+      const measurement = order.measurement.id(measurementId);
+      if (measurement) {
+          if (taskType === 'cutting') {
+              measurement.cuttingStatus = !measurement.cuttingStatus;
+          } else if (taskType === 'assembly') {
+              measurement.assemblyStatus = !measurement.assemblyStatus;
+          }
+
+          await user.save();
+          res.redirect(`/aluminum-cutting/${orderId}`);
+      } else {
+          res.status(404).send('Measurement not found');
+      }
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
     // تقرير قص الألمنيوم
 
 
@@ -2640,7 +2701,7 @@ router.post("/glass-cutting/update-status", async (req, res) => {
 
 
 
-router.get("/aluminum-cutting/:id", async (req, res) => {
+router.get("/aluminum-cutting/:id",restrictFactoryWorker, async (req, res) => {
   try {
       console.log("Request ID:", req.params.id);
       
@@ -2694,7 +2755,7 @@ router.get("/aluminum-cutting/:id", async (req, res) => {
 
 
 
-router.post("/aluminum-cutting/assign", async (req, res) => {
+router.post("/aluminum-cutting/assign",restrictFactoryWorker, async (req, res) => {
     const { idCustomer, orderId, technicianId, taskType } = req.body;
     let { selectedMeasurements } = req.body;
 
@@ -2738,7 +2799,7 @@ router.post("/aluminum-cutting/assign", async (req, res) => {
 
 
 
-router.post("/aluminum-cutting/update-status", async (req, res) => {
+router.post("/aluminum-cutting/update-status",restrictFactoryWorker, async (req, res) => {
   const { idCustomer, orderId, measurementId, taskType } = req.body;
 
   try {
@@ -2858,7 +2919,7 @@ router.post("/aluminum-cutting/update-status", async (req, res) => {
 
 // تقرير السكريت
 
-router.get("/report-temper/:id", (req, res) => {
+router.get("/report-temper/:id",restrictFactoryWorker, (req, res) => {
   User.findOne({'orders._id': req.params.id})
 
   
@@ -2889,7 +2950,7 @@ router.get("/report-temper/:id", (req, res) => {
 
 
 
-router.get("/total-materials/:id", (req, res) => {
+router.get("/total-materials/:id",restrictFactoryWorker, (req, res) => {
   User.findOne({'orders._id': req.params.id})
 
   
@@ -2929,7 +2990,7 @@ router.get("/total-materials/:id", (req, res) => {
   //POST    Level 1 اكواد كلها 
                     //add.html هذا عشان ناخذ المدخلات من صفحة اشاء عميل جديد 
   
-    router.post('/user/add.html',requireAuth,async (req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
+    router.post('/user/add.html',requireAuth,restrictFactoryWorker,async (req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
     // console.log(req.body)
     var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
 
@@ -2996,7 +3057,7 @@ router.get("/total-materials/:id", (req, res) => {
   
   // البحث
   
-  router.post('/search',requireAuth, (req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
+  router.post('/search',requireAuth,restrictFactoryWorker, (req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
     console.log("5555555555555555555555555555555555555")
     const inputSearch =req.body.searchText.trim() // ترم هذي الي في الاخير عشان تحذف المسافات من البداو والنهاية
     //  هذا مصدر البحث من قاعدة البيانات للمزيد من الرموز 
@@ -3149,53 +3210,144 @@ router.get("/total-materials/:id", (req, res) => {
 
 
 
+// تسجيل الدخول
+router.post("/login", async (req, res) => {
+  try {
+    const loginUser = await AuthUser.findOne({ userName: req.body.userName });
+
+    if (!loginUser) {
+      return res.json({ notFoundUser: "Username not found, try to sign up" });
+    } else {
+      const match = await bcrypt.compare(req.body.password, loginUser.password);
+      if (match) {
+        const token = jwt.sign(
+          {
+            id: loginUser._id,
+            userName: loginUser.userName,
+            name: loginUser.name,
+            role: loginUser.role
+          },
+          "shhhhh"
+        );
+
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+console.log(loginUser.role)
+// console.log("gggggggggggvvvvvvvvv")
+        if (loginUser.role === 'factoryWorker') {
+          return res.json({ redirectUrl: '/workerPage' });
+        } else {
+          return res.json({ redirectUrl: '/home' });
+        }
+      } else {
+        return res.json({ passwordError: "incorrect password" });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// توجيه المستخدمين إلى الصفحات المختلفة بناءً على دورهم
+// router.get('/workerPage', requireAuth, ensureRole('factoryWorker'), (req, res) => {
+//   res.render('workerPage');
+// });
+
+
+router.get('/workerPage', requireAuth, ensureRole('factoryWorker'), verifyToken, async (req, res) => {
+  try {
+    const token = req.cookies.jwt; // الحصول على التوكن من الكوكيز
+    const decoded = jwt.verify(token, 'shhhhh'); // استخدم مفتاحك السري هنا
+    const userId = decoded.id;
+    const name = decoded.name;
+    const userName = decoded.userName;
+console.log(token)
+    const orders = await User.aggregate([
+        { $unwind: "$orders" },
+        { $match: { "orders.status2": "قيد التصنيع" } },
+        { $project: { 
+            "orders.orderNumber": 1, 
+            "orders.measurement": 1,
+            _id: 0 
+        } }
+    ]);
+
+    // تصفية القياسات وإضافة المتغيرات بناءً على ID المستخدم
+    const filteredOrders = orders.map(order => {
+        const measurements = order.orders.measurement.filter(measurement => 
+            (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) || 
+            (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) ||
+            (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) || 
+            (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId)
+        );
+        return measurements.length > 0 ? { ...order, orders: { ...order.orders, measurement: measurements } } : null;
+    }).filter(order => order !== null);
+
+    res.render('workerPage', { orders: filteredOrders, userId,userName,name });
+} catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+}
+});
 
 
 
 
-        router.post("/login", async (req, res) => {
-          // طباعة خط فاصل في وحدة التحكم للوضوح
-          console.log("__________________________________________");
+
+
+
+router.get('/home', requireAuth,restrictFactoryWorker, (req, res) => {
+  User.find().then((result) => {
+    res.render("index", { arr: result, moment: moment });
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+
+
+      //   router.post("/login", async (req, res) => {
+      //     // طباعة خط فاصل في وحدة التحكم للوضوح
+      //     console.log("__________________________________________");
       
-          try {
-              // البحث عن المستخدم في قاعدة البيانات بناءً على اسم المستخدم المدخل
-              const loginUser = await AuthUser.findOne({ userName: req.body.userName });
+      //     try {
+      //         // البحث عن المستخدم في قاعدة البيانات بناءً على اسم المستخدم المدخل
+      //         const loginUser = await AuthUser.findOne({ userName: req.body.userName });
       
-              // إذا لم يتم العثور على المستخدم، طباعة رسالة وإرجاع استجابة تفيد بأن المستخدم غير موجود
-              if (loginUser == null) {
-                  console.log("this username not found in DATABASE");
-                  return res.json({ notFoundUser: "Username not found, try to sign up" });
-              } else {
-                  // مقارنة كلمة المرور المدخلة مع كلمة المرور المخزنة في قاعدة البيانات باستخدام bcrypt
-                  const match = await bcrypt.compare(req.body.password, loginUser.password);
-                  if (match) {
-                      // إذا كانت كلمة المرور صحيحة، طباعة رسالة وإنشاء توكن JWT يحتوي على معرف المستخدم واسم المستخدم والاسم
-                      console.log("correct username & password");
-                      var token = jwt.sign(
-                          {
-                              id: loginUser._id,
-                              userName: loginUser.userName,
-                              name: loginUser.name
-                          },
-                          "shhhhh"
-                      );
-                      console.log(token);
+      //         // إذا لم يتم العثور على المستخدم، طباعة رسالة وإرجاع استجابة تفيد بأن المستخدم غير موجود
+      //         if (loginUser == null) {
+      //             console.log("this username not found in DATABASE");
+      //             return res.json({ notFoundUser: "Username not found, try to sign up" });
+      //         } else {
+      //             // مقارنة كلمة المرور المدخلة مع كلمة المرور المخزنة في قاعدة البيانات باستخدام bcrypt
+      //             const match = await bcrypt.compare(req.body.password, loginUser.password);
+      //             if (match) {
+      //                 // إذا كانت كلمة المرور صحيحة، طباعة رسالة وإنشاء توكن JWT يحتوي على معرف المستخدم واسم المستخدم والاسم
+      //                 console.log("correct username & password");
+      //                 var token = jwt.sign(
+      //                     {
+      //                         id: loginUser._id,
+      //                         userName: loginUser.userName,
+      //                         name: loginUser.name
+      //                     },
+      //                     "shhhhh"
+      //                 );
+      //                 console.log(token);
       
-                      // إعداد كوكي تحتوي على التوكن وإرسالها في الاستجابة
-                      res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
-                      return res.json({ id: loginUser._id });
-                  } else {
-                      // إذا كانت كلمة المرور غير صحيحة، طباعة رسالة وإرجاع استجابة تفيد بأن كلمة المرور غير صحيحة
-                      console.log("wrong password");
-                      return res.json({ passwordError: "incorrect password" });
-                  }
-              }
-          } catch (error) {
-              // في حالة حدوث خطأ أثناء العملية، طباعة الخطأ وإرجاع استجابة خطأ
-              console.log(error);
-              res.status(500).json({ error: "Internal server error" });
-          }
-      });
+      //                 // إعداد كوكي تحتوي على التوكن وإرسالها في الاستجابة
+      //                 res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+      //                 return res.json({ id: loginUser._id });
+      //             } else {
+      //                 // إذا كانت كلمة المرور غير صحيحة، طباعة رسالة وإرجاع استجابة تفيد بأن كلمة المرور غير صحيحة
+      //                 console.log("wrong password");
+      //                 return res.json({ passwordError: "incorrect password" });
+      //             }
+      //         }
+      //     } catch (error) {
+      //         // في حالة حدوث خطأ أثناء العملية، طباعة الخطأ وإرجاع استجابة خطأ
+      //         console.log(error);
+      //         res.status(500).json({ error: "Internal server error" });
+      //     }
+      // });
       
 
 
@@ -3253,7 +3405,7 @@ router.get("/total-materials/:id", (req, res) => {
 
   // DELETE ركوست
   
-  router.delete('/edit/:id',requireAuth, (req, res) => { 
+  router.delete('/edit/:id',requireAuth,restrictFactoryWorker, (req, res) => { 
     var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
 
     // console.log(decoded)
@@ -3280,7 +3432,7 @@ router.get("/total-materials/:id", (req, res) => {
   // PUT ركوست لتعديل
   
   
-  router.put('/edit/:id',requireAuth, (req, res) => { 
+  router.put('/edit/:id',requireAuth,restrictFactoryWorker, (req, res) => { 
   
     // console.log(req.body)
     // User.findByIdAndUpdate(req.params.id , req.body) // هذه الطريقة لتعديل عن طريق الايدي 
@@ -3409,7 +3561,7 @@ router.post('/update-status/:orderId', async (req, res) => {
 // مسح الواوردر بشرط يكون مسودة
 
 // مسار لحذف الطلبات التي حالتها "مسودة"
-router.delete('/delete-order/:orderId', async (req, res) => {
+router.delete('/delete-order/:orderId',restrictFactoryWorker, async (req, res) => {
   const { orderId } = req.params;
 
   try {

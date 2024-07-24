@@ -13,31 +13,53 @@ var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
 
 
 //  يوجد كودين في صفحة الاب تبع الادة الي  تجيب التوكن من المتصفع لان السيرف ما يستطيع
-const requireAuth = (req, res ,next) => {
-    console.log(req.cookies.jwt)
-    const token = req.cookies.jwt
+// const requireAuth = (req, res ,next) => {
+//     console.log(req.cookies.jwt)
+//     const token = req.cookies.jwt
 
-    if (req.path === '/login'|| req.path === '/'|| req.path === '/sign-up' || req.path === '/admin') { // *  هذا عشان يستثني لي هذي الصفحات من التحويل غلى صفة تسجيل الدخول اذا التوكن غير موجود لاني حطية في صفحة الراوت ان يحدد جميع الركوستات الي تحمل قت بأستخدام علامة 
+//     if (req.path === '/login'|| req.path === '/'|| req.path === '/sign-up' || req.path === '/admin') { // *  هذا عشان يستثني لي هذي الصفحات من التحويل غلى صفة تسجيل الدخول اذا التوكن غير موجود لاني حطية في صفحة الراوت ان يحدد جميع الركوستات الي تحمل قت بأستخدام علامة 
 
-      next();
-    } else{
+//       next();
+//     } else{
 
-    if(token){
-      jwt.verify(token, "shhhhh", (err) => { // هذا تحقق اذا التكون مكتوب بطريقة صحيحة ولابيعطك خطاء ويحولك على صفة اللوقن
-        if (err) { 
-          res.redirect("/login"); 
-          } else {
-            next() // اذا صح يعطيك نكست للركوس القادم
-          }
+//     if(token){
+//       jwt.verify(token, "shhhhh", (err) => { // هذا تحقق اذا التكون مكتوب بطريقة صحيحة ولابيعطك خطاء ويحولك على صفة اللوقن
+//         if (err) { 
+//           res.redirect("/login"); 
+//           } else {
+//             next() // اذا صح يعطيك نكست للركوس القادم
+//           }
   
-         });
-        }else{
+//          });
+//         }else{
       
-         res.redirect("/login"); // اذا غلط يحولك على صفحة اللوقن
-        }
+//          res.redirect("/login"); // اذا غلط يحولك على صفحة اللوقن
+//         }
 
-      }
-  };
+//       }
+//   };
+
+
+const requireAuth = (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (req.path === '/login' || req.path === '/' || req.path === '/sign-up' || req.path === '/admin') {
+    next();
+  } else {
+    if (token) {
+      jwt.verify(token, "shhhhh", (err, decoded) => {
+        if (err) {
+          res.redirect("/login");
+        } else {
+          req.user = decoded;
+          next();
+        }
+      });
+    } else {
+      res.redirect("/login");
+    }
+  }
+};
   
   ///فنكشن التأكد من التوكن ///
 
@@ -170,12 +192,42 @@ const YourModel = mongoose.model('YourModel', yourSchema);
 
 // //دالة عشان اذا دخل المستخدم على رابط غير موجود يرجعة لصفحة الهوم ما عرفة اشغلها لعدم التفرغ//
 
+// دالة للتحقق من دور المستخدم
+function ensureRole(role) {
+  return function (req, res, next) {
+    if (req.user && req.user.role === role) {
+      return next();
+    } else {
+      res.redirect('/login');
+    }
+  }
+}
 
 
 
+// هذه الدالة من اجل تقيد الصفحات عشان ما تظهر لحساب العمال 
+function restrictFactoryWorker(req, res, next) {
+  if (req.user && req.user.role === 'factoryWorker' && req.path !== '/workerPage') {
+    return res.redirect('/workerPage');
+  }
+  next();
+}
 
+// هذا تجيب البينات من التكوكن بما في ذالك نوع الحساب
+function verifyToken(req, res, next) {
+  const token = req.cookies.jwt;
+  if (!token) return res.status(401).send('Access Denied');
 
-module.exports = {checkIfUser,requireAuth,YourModel}
+  try {
+      const verified = jwt.verify(token, 'shhhhh');
+      req.user = verified; // تحتوي على { id, userName, name, role, iat }
+      next();
+  } catch (err) {
+      res.status(400).send('Invalid Token');
+  }
+}
+
+module.exports = {checkIfUser,requireAuth,YourModel,ensureRole,restrictFactoryWorker,verifyToken}
 
 // module.exports = {requireAuth}
 // module.exports = {checkIfUser}

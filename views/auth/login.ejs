@@ -9,7 +9,7 @@
     <meta name="description" content="" />
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
     <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
+    <title>Login page</title>
 
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/dark-light.css"/>
@@ -26,7 +26,7 @@
             max-width: 42em;
         }
 
-        #passwordError, #emailError {
+        #passwordError, #userNameError {
             color: rgb(255, 0, 0);
             margin-left: 0.rem;
             font-weight: 600;
@@ -35,12 +35,12 @@
 </head>
 <body class="d-flex h-100 text-center text-bg-dark">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <%- include('./header.ejs',{currentPage:"login"}) %>
+        <%- include('./header.ejs', { currentPage: "login" }) %>
 
         <main class="px-3">
             <h1>Log in</h1>
 
-            <form id="signupForm" class="text-start mx-auto mt-5" style="max-width: 22em;">
+            <form id="loginForm" class="text-start mx-auto mt-5" style="max-width: 22em;">
                 <div class="form-group">
                     <label for="exampleInputUserName">Username</label>
                     <input name="userName" type="text" class="form-control" id="exampleInputUserName" placeholder="Enter username">
@@ -66,16 +66,16 @@
     </div>
 
     <script>
-        signupForm.addEventListener("submit", async (e) => {
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            userNameError.textContent = "";
-            passwordError.textContent = "";
+            document.getElementById("userNameError").textContent = "";
+            document.getElementById("passwordError").textContent = "";
 
-            const res = await fetch("login", {
+            const res = await fetch("/login", {
                 method: "POST",
                 body: JSON.stringify({
-                    userName: exampleInputUserName.value,
-                    password: exampleInputPassword1.value,
+                    userName: document.getElementById("exampleInputUserName").value,
+                    password: document.getElementById("exampleInputPassword1").value,
                 }),
                 headers: { "Content-Type": "application/json" },
             });
@@ -84,15 +84,15 @@
             console.log(data);
 
             if (data.notFoundUser) {
-                userNameError.textContent = data.notFoundUser;
+                document.getElementById("userNameError").textContent = data.notFoundUser;
             }
 
-            if (data.id) {
-                location.assign("/home");
+            if (data.redirectUrl) {
+                location.assign(data.redirectUrl);
             }
 
             if (data.passwordError) {
-                passwordError.textContent = data.passwordError;
+                document.getElementById("passwordError").textContent = data.passwordError;
             }
         });
     </script>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .completed {
+            background-color: green;
+            color: white;
+        }
+        .in-progress {
+            background-color: red;
+            color: white;
+        }
+        .order-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="container">
+
+    <div class="text-center my-4">
+        <h4>Name: <%= name %></h4>
+        <h4>Username: <%= userName %></h4>
+    </div>
+
+    <% orders.forEach(order => { %>
+        <div class="order-container">
+            <h1 class="text-primary">Order Number: <%= order.orders.orderNumber %></h1>
+
+            <% let hasGlassCutting = false; %>
+            <% let hasGlassAssembly = false; %>
+            <% let hasAluminumCutting = false; %>
+            <% let hasAluminumAssembly = false; %>
+
+            <% order.orders.measurement.forEach(measurement => { %>
+                <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
+                    <% hasGlassCutting = true; %>
+                <% } %>
+                <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
+                    <% hasGlassAssembly = true; %>
+                <% } %>
+                <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
+                    <% hasAluminumCutting = true; %>
+                <% } %>
+                <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
+                    <% hasAluminumAssembly = true; %>
+                <% } %>
+            <% }) %>
+
+            <% if (hasGlassCutting || hasGlassAssembly) { %>
+                <h2 class="text-secondary">Glass Report</h2>
+            <% } %>
+
+            <% if (hasGlassCutting) { %>
+                <h3 class="text-info">Glass Cutting</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Color Code</th>
+                            <th>H</th>
+                            <th>W</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
+                                <tr>
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.glassColorCode || '--' %></td>
+                                    <td><%=(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td>
+                                    <td>
+                                        <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="cutting">
+                                            <button type="submit" class="btn <%= measurement.cuttingStatusGlass ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatusGlass ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasGlassAssembly) { %>
+                <h3 class="text-info">Glass Double</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Color Code</th>
+                            <th>H</th>
+                            <th>W</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
+                                <tr>
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.glassColorCode || '--' %></td>
+                                    <td><%=(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td>
+                                    <td>
+                                        <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="double">
+                                            <button type="submit" class="btn <%= measurement.assemblyStatusGlass ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.assemblyStatusGlass ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasAluminumCutting || hasAluminumAssembly) { %>
+                <h2 class="text-secondary">Aluminum Report</h2>
+            <% } %>
+
+            <% if (hasAluminumCutting) { %>
+                <h3 class="text-info">Aluminum Cutting</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Aluminum Code</th>
+                            <th>Color Code</th>
+                            <th>H(A1)*2</th>
+                            <th>W(A2)*2</th>
+                            <th>(B1)*2</th>
+                            <th>(B2)*4</th>
+                            <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
+                                <tr>
+                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].U4 ? measurement.aluminumCuttingReport[0].U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].T4 ? measurement.aluminumCuttingReport[0].T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].S4 ? measurement.aluminumCuttingReport[0].S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].R4 ? measurement.aluminumCuttingReport[0].R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].Q4 ? measurement.aluminumCuttingReport[0].Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST">
+                                            <input type="hidden" name="idCustomer" value="<%= //idCustomer %>">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="cutting">
+                                            <button type="submit" class="btn <%= measurement.cuttingStatus ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasAluminumAssembly) { %>
+                <h3 class="text-info">Aluminum Assembly</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Sequence Number</th>
+                            <th>Aluminum Code</th>
+                            <th>Color Code</th>
+                            <th>H(A1)*2</th>
+                            <th>W(A2)*2</th>
+                            <th>(B1)*2</th>
+                            <th>(B2)*4</th>
+                            <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
+                                <tr>
+                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].U4 ? measurement.aluminumCuttingReport[0].U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].T4 ? measurement.aluminumCuttingReport[0].T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].S4 ? measurement.aluminumCuttingReport[0].S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].R4 ? measurement.aluminumCuttingReport[0].R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].Q4 ? measurement.aluminumCuttingReport[0].Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST">
+                                            <input type="hidden" name="idCustomer" value="<%= //idCustomer %>">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="assembly">
+                                            <button type="submit" class="btn <%= measurement.assemblyStatus ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+        </div>
+    <% }) %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
