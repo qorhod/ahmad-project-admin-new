@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
   <head>
+<!-- مكتبة الرسمة  -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 
 <style>
 /* زر التركيب الخارجي */
@@ -273,6 +276,66 @@
     <link rel="stylesheet" href="../css/myStyle.css" />
     <!-- styles img Checkbox -->
     <link rel="stylesheet" href="../css/imgCheckbox.css">
+
+<style>
+/* تصميم النافذة المنبثقة */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 9999; /* تأكد من أن هذه القيمة عالية بما يكفي لتكون فوق كل شيء */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  padding-top: 60px; 
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* تصميم savedImageContainer */
+#savedImageContainer {
+  display: none;
+  margin-top: 20px;
+  background-color: #fff; /* خلفية بيضاء */
+  border-radius: 15px; /* زوايا مستديرة */
+  border: 1px solid #ccc; /* إطار رمادي */
+  padding: 10px; /* مسافة داخلية */
+  width: 200px; /* عرض محدد */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* إضافة ظل */
+}
+
+#savedImageContainer img {
+  width: 100%; /* جعل الصورة تتناسب مع الحاوية */
+  border-radius: 10px; /* زوايا مستديرة للصورة */
+}
+
+
+
+</style>
+
   </head>
   <body>
 
@@ -640,274 +703,45 @@
 
 <br><br><hr><br>   
 
+<h4>:ارسم شكل الألمنيوم</h4>
+
+<button id="showCanvasButton" class="btn btn-primary">رسم قياس</button>
+
+<!-- النافذة المنبثقة لمساحة الرسم -->
+<div id="drawingModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <canvas id="drawingCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+    <div class="mt-2">
+      <button id="undoButton" class="btn btn-warning">الرجوع للوراء</button>
+      <button id="redoButton" class="btn btn-info">العودة إلى الأمام</button>
+      <button id="clearButton" class="btn btn-danger">مسح المساحة</button>
+      <button id="saveDrawingButton" class="btn btn-success">اعتماد الصورة</button>
+      <label for="lineWidth">عرض الخط:</label>
+<input type="range" id="lineWidth" min="1" max="10" value="2">
+    </div>
+  </div>
+</div>
+
+<!-- مساحة لعرض الصورة المحفوظة -->
+<div id="savedImageContainer" style="display: none; margin-top: 20px;">
+  <img id="savedImage" />
+</div>
+
+
+
  <!--  ازرار القوائم لأشكال الشبابيك-->
 
- <h4>:أختر شكل الألمنيوم</h4>
- <!-- ازرار اظهار قوائم انواع قطاعات الألمنيوم -->
- <div class="btn-group col-md-6 mt-3" role="group" aria-label="Basic radio toggle button group">
-   <input type="radio" class="btn-check" name="btnradio50" id="btnradio110" autocomplete="off" checked>
-   <label class="btn btn-outline-light" for="btnradio110"> 1</label>
- 
-   <input type="radio" class="btn-check" name="btnradio50" id="btnradio220" autocomplete="off">
-   <label class="btn btn-outline-light" for="btnradio220"> 2</label>
- 
-   <input type="radio" class="btn-check" name="btnradio50" id="btnradio330" autocomplete="off">
-   <label class="btn btn-outline-light" for="btnradio330"> 3</label>
- </div>
- 
 
- 
  <!--// ازرار اظهار قوائم شكل قطاعات الألمنيوم //-->
  
- 
- 
+
  
                <!-- القائمة 1 شكل الألمنيوم  -->
  
                <form class="row g-3">
          
-                 <div id="div110" class="checkbox mt-5 "  role="group" aria-label="Basic radio toggle button group">
-                   <label class="checkbox-wrapper">
-                       <input value="ستركتشر10" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                       <span class="checkbox-tile">
-                           <span class="checkbox-icon">
-                               <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                               <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                   <rect width="256" height="256" fill="none"></rect>
-                                   <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                               </svg>
-                           </span>
-                           <span class="checkbox-label">استركتشر10</span>
-                       </span>
-                   </label>
-                   
- 
- 
- 
-                     <label class="checkbox-wrapper">
-                         <input value="استركتشر" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                         <span class="checkbox-tile">
-                             <span class="checkbox-icon">
-                                 <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                 <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                     <rect width="256" height="256" fill="none"></rect>
-                                     <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                 </svg>
-                             </span>
-                             <span class="checkbox-label">استركتشر</span>
-                         </span>
-                     </label>
-                    
- 
- 
- 
- 
- 
- 
-                       <label class="checkbox-wrapper">
-                           <input value="استركتشر 2" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                           <span class="checkbox-tile">
-                               <span class="checkbox-icon">
-                                   <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                   <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                       <rect width="256" height="256" fill="none"></rect>
-                                       <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                   </svg>
-                               </span>
-                               <span class="checkbox-label">استركتشر 2</span>
-                           </span>
-                       </label>
-                 
- 
- 
- 
- 
- 
-                       <label class="checkbox-wrapper">
-                         <input value="استركتشر 3" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                         <span class="checkbox-tile">
-                             <span class="checkbox-icon">
-                                 <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                 <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                     <rect width="256" height="256" fill="none"></rect>
-                                     <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                 </svg>
-                             </span>
-                             <span class="checkbox-label">استركتشر 3</span>
-                         </span>
-                       </label>
- 
- 
- 
- 
- 
- 
-                     
 
-                       </div>
- 
-              
-             
-   
-                        <!-- القائمة 2 شكل الألمنيوم  -->
-             
-   
-                          <div id="div220" class="checkbox mt-5 "  role="group" aria-label="Basic radio toggle button group">
-                            <label class="checkbox-wrapper">
-                            <input value="سحاب D10" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                            <span class="checkbox-tile">
-                                <span class="checkbox-icon">
-                                    <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                        <rect width="256" height="256" fill="none"></rect>
-                                        <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                    </svg>
-                                </span>
-                                <span class="checkbox-label">سحاب D10</span>
-                            </span>
-                           </label>
-                          
- 
- 
- 
-                             <label class="checkbox-wrapper">
-                             <input value="سحاب D10+" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                            <span class="checkbox-tile">
-                             <span class="checkbox-icon">
-                                 <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                 <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                     <rect width="256" height="256" fill="none"></rect>
-                                     <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                 </svg>
-                             </span>
-                             <span class="checkbox-label">سحاب D10+</span>
-                             </span>
-                               </label>
-                    
- 
- 
- 
- 
- 
- 
-                                <label class="checkbox-wrapper">
-                                <input value="سحاب D12" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                                 <span class="checkbox-tile">
-                               <span class="checkbox-icon">
-                                   <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                   <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                       <rect width="256" height="256" fill="none"></rect>
-                                       <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                   </svg>
-                               </span>
-                               <span class="checkbox-label">سحاب D12</span>
-                           </span>
-                              </label>
-                 
- 
- 
- 
- 
- 
-                             <label class="checkbox-wrapper">
-                             <input value="سحاب S" type="radio" class="checkbox-input" name="t1"  autocomplete="off" />
-                              <span class="checkbox-tile">
-                             <span class="checkbox-icon">
-                                 <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                                 <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                     <rect width="256" height="256" fill="none"></rect>
-                                     <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                                 </svg>
-                             </span>
-                             <span class="checkbox-label">سحاب</span>
-                             </span>
-                             </label>
- 
- 
- 
- 
- 
- 
-          
-                                </div>
-                             
-              
-                              <!-- القائمة 3 شكل الألمنيوم  -->
-               
-                 <div id="div330" class="checkbox mt-5 "  role="group" aria-label="Basic radio toggle button group">
-                   <label class="checkbox-wrapper ">
-                       <input value="قلاب S10" type="radio" class="checkbox-input " name="t1"  autocomplete="off" />
-                       <span class="checkbox-tile">
-                           <span class="checkbox-icon">
-                               <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                               <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                   <rect width="256" height="256" fill="none"></rect>
-                                   <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                               </svg>
-                           </span>
-                           <span class="checkbox-label">قلاب S10</span>
-                       </span>
-                   </label>
-   
-   
-   
-   
-   
-   
-                   <label class="checkbox-wrapper ">
-                     <input value="قلاب S4" type="radio" class="checkbox-input " name="t1"  autocomplete="off" />
-                     <span class="checkbox-tile">
-                         <span class="checkbox-icon">
-                             <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                             <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                                 <rect width="256" height="256" fill="none"></rect>
-                                 <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                             </svg>
-                         </span>
-                         <span class="checkbox-label">قلاب S4</span>
-                     </span>
-                 </label>
-   
-   
- 
- 
-                 <label class="checkbox-wrapper ">
-                   <input value="قلاب D10" type="radio" class="checkbox-input " name="t1"  autocomplete="off" />
-                   <span class="checkbox-tile">
-                       <span class="checkbox-icon">
-                           <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                           <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                               <rect width="256" height="256" fill="none"></rect>
-                               <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                           </svg>
-                       </span>
-                       <span class="checkbox-label">قلاب D10</span>
-                   </span>
-               </label>
- 
- 
- 
- 
- 
- 
-               <label class="checkbox-wrapper ">
-                 <input value="قلاب D4" type="radio" class="checkbox-input " name="t1"  autocomplete="off" />
-                 <span class="checkbox-tile">
-                     <span class="checkbox-icon">
-                         <img class="ii" src="/img/windows/case7-white.png" alt="" >
-                         <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                             <rect width="256" height="256" fill="none"></rect>
-                             <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                         </svg>
-                     </span>
-                     <span class="checkbox-label">قلاب D4</span>
-                 </span>
-               </label>
- 
- 
- 
-                 </div>
- <!-- // ا//زرار القوائم لأشكال الشبابيك-->
               
  <br>
  <label >:إضافة شفة</label>
@@ -1290,7 +1124,10 @@
 
 
 
-<script>
+<!-- <script>
+
+
+  
 
 
 //////////////////////////////////////////////////////////////
@@ -1306,84 +1143,84 @@
 
 
   // الاقائمة
-  const div110 = document.getElementById("div110")
-            const div220 = document.getElementById("div220")
-            const div330 = document.getElementById("div330")
+  // const div110 = document.getElementById("div110")
+  //           const div220 = document.getElementById("div220")
+  //           const div330 = document.getElementById("div330")
 
-            div220.style.setProperty("display", "none", "important")
-            div330.style.setProperty("display", "none", "important")
+  //           div220.style.setProperty("display", "none", "important")
+  //           div330.style.setProperty("display", "none", "important")
 
-            // كنترول الزر الأول
-            document.getElementById("btnradio110").addEventListener("change",function(){
+  //           // كنترول الزر الأول
+  //           document.getElementById("btnradio110").addEventListener("change",function(){
                 
-                if (this.checked) {
-                console.log("Checkbox is checked1111..");
+  //               if (this.checked) {
+  //               console.log("Checkbox is checked1111..");
                 
-                div220.style.setProperty("display", "none", "important")
-                div330.style.setProperty("display", "none", "important")
-                div110.style.setProperty("display", "block", "important")
+  //               div220.style.setProperty("display", "none", "important")
+  //               div330.style.setProperty("display", "none", "important")
+  //               div110.style.setProperty("display", "block", "important")
 
 
               
-              } else  {
-                console.log("Checkbox is not checked..");
+  //             } else  {
+  //               console.log("Checkbox is not checked..");
 
-              }
-
-
-            })
+  //             }
 
 
+  //           })
 
-            // كنترول الزر الثاني
 
 
-            document.getElementById("btnradio220").addEventListener("change",function(){
+  //           // كنترول الزر الثاني
+
+
+  //           document.getElementById("btnradio220").addEventListener("change",function(){
               
-                if (this.checked) {
-                console.log("Checkbox is checked22222..");
+  //               if (this.checked) {
+  //               console.log("Checkbox is checked22222..");
               
-              div110.style.setProperty("display", "none", "important")
-                div330.style.setProperty("display", "none", "important")
-                div220.style.setProperty("display", "block", "important")
-                // document.getElementById("ok1").value="ok1"
+  //             div110.style.setProperty("display", "none", "important")
+  //               div330.style.setProperty("display", "none", "important")
+  //               div220.style.setProperty("display", "block", "important")
+  //               // document.getElementById("ok1").value="ok1"
             
-              } else  {
-                console.log("Checkbox is not checked..");
+  //             } else  {
+  //               console.log("Checkbox is not checked..");
                
                 
-              }
+  //             }
 
 
-            })
-
-
-
+  //           })
 
 
 
-            // كنترول الزر الثالث
 
 
-            document.getElementById("btnradio330").addEventListener("change",function(){
+
+  //           // كنترول الزر الثالث
+
+
+  //           document.getElementById("btnradio330").addEventListener("change",function(){
               
-              if (this.checked) {
-              console.log("Checkbox is checked33333..");
+  //             if (this.checked) {
+  //             console.log("Checkbox is checked33333..");
 
-              div110.style.setProperty("display", "none", "important")
-              div220.style.setProperty("display", "none", "important")
-              div330.style.setProperty("display", "block", "important")
+  //             div110.style.setProperty("display", "none", "important")
+  //             div220.style.setProperty("display", "none", "important")
+  //             div330.style.setProperty("display", "block", "important")
 
-
-              
-            } else  {
-              console.log("Checkbox is not checked..");
 
               
-            }
+  //           } else  {
+  //             console.log("Checkbox is not checked..");
+
+              
+  //           }
 
 
-            })
+  //           })
 
 
 
@@ -1706,7 +1543,7 @@ next.addEventListener("click", async (e) => {
 
 
 
-
+// تحت ادوات لعرض المساحة الحرة وطريقة حم الركوست
 
 
     const res = await fetch("measurement", {
@@ -1720,7 +1557,7 @@ next.addEventListener("click", async (e) => {
          glasstype:glasstypeValue.value,
          glassThickness:glassThickness.value,
          glassColorCode:glassColorCode.value,
-         id:"<%= arrM._id %>",
+         id:"<%= //arrM._id %>",
          
 
          H:lengthid.value,
@@ -1746,7 +1583,7 @@ console.log(data.id)
 
 
 
-location.assign(`/review/<%= arrM.iid?arrM.iid:arrM._id %>`)
+location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
 
 
 
@@ -1754,7 +1591,237 @@ location.assign(`/review/<%= arrM.iid?arrM.iid:arrM._id %>`)
 
 
 
+</script> -->
+
+
+<script>
+  // إعداد التحكم في القوائم
+  const div11 = document.getElementById("div11");
+  const div22 = document.getElementById("div22");
+  const div33 = document.getElementById("div33");
+
+  div22.style.setProperty("display", "none", "important");
+  div33.style.setProperty("display", "none", "important");
+
+  document.getElementById("btnradio11").addEventListener("change", function() {
+      if (this.checked) {
+          div22.style.setProperty("display", "none", "important");
+          div33.style.setProperty("display", "none", "important");
+          div11.style.setProperty("display", "block", "important");
+      }
+  });
+
+  document.getElementById("btnradio22").addEventListener("change", function() {
+      if (this.checked) {
+          div11.style.setProperty("display", "none", "important");
+          div33.style.setProperty("display", "none", "important");
+          div22.style.setProperty("display", "block", "important");
+      }
+  });
+
+  document.getElementById("btnradio33").addEventListener("change", function() {
+      if (this.checked) {
+          div11.style.setProperty("display", "none", "important");
+          div22.style.setProperty("display", "none", "important");
+          div33.style.setProperty("display", "block", "important");
+      }
+  });
+
+  // استهداف العنصر
+  const checkbox = document.getElementById('cb5');
+
+  // إضافة مستمع لحدث التغيير
+  checkbox.addEventListener('change', function() {
+      if (this.checked) {
+          this.value = "داخلي";
+      } else {
+          this.value = "خارجي";
+      }
+      console.log(this.value);
+  });
+
+  const checkbox6 = document.getElementById("cb6");
+  checkbox6.addEventListener('change', function() {
+      if (this.checked) {
+          this.value = "YAS";
+      } else {
+          this.value = "NO";
+      }
+      console.log(this.value);
+  });
+
+  const checkbox7 = document.getElementById("cb7");
+  checkbox7.addEventListener('change', function() {
+      if (this.checked) {
+          this.value = "YAS";
+      } else {
+          this.value = "NO";
+      }
+      console.log(this.value);
+  });
+
+  // الحصول على عنوان الصفحة الحالي
+  const url = window.location.href;
+  const parts = url.split("/");
+  const idUrl = parts[parts.length - 1];
+  console.log("الأيدي:", idUrl);
+
+  // فتح النافذة المنبثقة
+  document.getElementById('showCanvasButton').addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'block';
+  });
+
+  // إغلاق النافذة المنبثقة
+  document.getElementsByClassName('close')[0].addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  window.addEventListener('click', function(event) {
+      if (event.target == document.getElementById('drawingModal')) {
+          document.getElementById('drawingModal').style.display = 'none';
+      }
+  });
+
+  const canvas = new fabric.Canvas('drawingCanvas');
+  let isDrawing = false;
+  let undoStack = [];
+  let redoStack = [];
+  let currentLine;
+  const lineWidthControl = document.getElementById('lineWidth');
+
+  function saveState() {
+      undoStack.push(canvas.toJSON());
+      redoStack = [];
+  }
+
+  canvas.on('mouse:down', function(options) {
+      isDrawing = true;
+      const pointer = canvas.getPointer(options.e);
+      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+      currentLine = new fabric.Line(points, {
+          strokeWidth: parseInt(lineWidthControl.value, 10),
+          selectable: false,
+          stroke: 'black'
+      });
+      canvas.add(currentLine);
+      saveState();
+  });
+
+  canvas.on('mouse:move', function(options) {
+      if (!isDrawing) return;
+      const pointer = canvas.getPointer(options.e);
+      currentLine.set({ x2: pointer.x, y2: pointer.y });
+      canvas.renderAll();
+  });
+
+  canvas.on('mouse:up', function() {
+      isDrawing = false;
+  });
+
+  document.getElementById('saveDrawingButton').addEventListener('click', function() {
+      const dataURL = canvas.toDataURL('image/png');
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = dataURL;
+      document.getElementById('savedImageContainer').style.display = 'block';
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  document.getElementById('undoButton').addEventListener('click', function() {
+      if (undoStack.length > 0) {
+          redoStack.push(undoStack.pop());
+          const state = undoStack[undoStack.length - 1];
+          if (state) {
+              canvas.loadFromJSON(state);
+          } else {
+              canvas.clear();
+          }
+      }
+  });
+
+  document.getElementById('redoButton').addEventListener('click', function() {
+      if (redoStack.length > 0) {
+          const state = redoStack.pop();
+          if (state) {
+              undoStack.push(state);
+              canvas.loadFromJSON(state);
+          }
+      }
+  });
+
+  document.getElementById('clearButton').addEventListener('click', function() {
+      canvas.clear();
+      saveState();
+  });
+
+  saveState();
+
+  // عرض الصورة إذا كانت موجودة في وضع التعديل
+  const savedImagePath = '<%= arrM.designCode %>';
+  if (savedImagePath) {
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = savedImagePath;
+      document.getElementById('savedImageContainer').style.display = 'block';
+  }
+
+  document.getElementById('next').addEventListener('click', async function(e) {
+      e.preventDefault();
+      const dataURL = canvas.toDataURL('image/png');
+      const blankCanvas = document.createElement('canvas'); 
+      blankCanvas.width = canvas.width;
+      blankCanvas.height = canvas.height;
+      const blankDataURL = blankCanvas.toDataURL('image/png');
+
+      const getSelectedValue2 = document.querySelector('input[name="c2"]:checked');
+      const glasstypeValue = document.querySelector('input[name="q1"]:checked');
+
+      const designCode = (dataURL === blankDataURL) ? savedImagePath : dataURL;
+
+      const res = await fetch("measurement", {
+          method: "POST",
+          body: JSON.stringify({
+              aluminumCode: getSelectedValue2.value,
+              aluminumThickness: thickness.value,
+              aluminumColorCode: glassColorCodeId.value,
+              glasstype: glasstypeValue.value,
+              glassThickness: glassThickness.value,
+              glassColorCode: glassColorCode.value,
+              id: "<%= arrM._id %>",
+              H: lengthid.value,
+              W: widthid.value,
+              designCode: designCode,  // استخدم الصورة الجديدة إذا تم تغييرها، وإلا استخدم القديمة
+              insideOrOutside: checkbox.value,
+              temper: checkbox6.value,
+              lip: checkbox7.value,
+              comments: exampleFormControlTextarea1.value,
+              iid: iid.value,
+              idUrl: idUrl,
+          }),
+          headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+      console.log(data.imagePath);
+      
+      // عرض الصورة المحفوظة
+      document.getElementById('savedImage').src = '/' + data.imagePath;
+      document.getElementById('savedImageContainer').style.display = 'block';
+
+      // الانتقال إلى الصفحة التالية
+      location.assign(`/review/<%= arrM.iid ? arrM.iid : arrM._id %>`);
+  });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 
@@ -1852,4 +1919,107 @@ if (checkbox2 && checkbox2.value === "<%=arrM.lip%>") {
 
 
 </script>
+<!-- <script>
+  // فتح النافذة المنبثقة
+  document.getElementById('showCanvasButton').addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'block';
+  });
+
+  // إغلاق النافذة المنبثقة
+  document.getElementsByClassName('close')[0].addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  // إغلاق النافذة المنبثقة عند النقر خارجها
+  window.addEventListener('click', function(event) {
+      if (event.target == document.getElementById('drawingModal')) {
+          document.getElementById('drawingModal').style.display = 'none';
+      }
+  });
+
+  // إعداد مساحة الرسم باستخدام Fabric.js
+  const canvas = new fabric.Canvas('drawingCanvas');
+  let isDrawing = false;
+
+  // سجلات للتراجع والإعادة
+  let undoStack = [];
+  let redoStack = [];
+
+  function saveState() {
+      undoStack.push(canvas.toJSON());
+      redoStack = []; // إعادة تعيين سجل الإعادة
+  }
+
+  canvas.on('mouse:down', function(options) {
+      isDrawing = true;
+      const pointer = canvas.getPointer(options.e);
+      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+      const line = new fabric.Line(points, {
+          strokeWidth: 2,
+          selectable: false,
+          stroke: 'black'
+      });
+      canvas.add(line);
+      saveState();
+  });
+
+  canvas.on('mouse:move', function(options) {
+      if (!isDrawing) return;
+      const pointer = canvas.getPointer(options.e);
+      const line = canvas.getObjects().slice(-1)[0];
+      line.set({ x2: pointer.x, y2: pointer.y });
+      canvas.renderAll();
+  });
+
+  canvas.on('mouse:up', function() {
+      isDrawing = false;
+  });
+
+  // حفظ الرسمة وعرضها كصورة
+  document.getElementById('saveDrawingButton').addEventListener('click', function() {
+      const dataURL = canvas.toDataURL('image/png');
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = dataURL;
+      document.getElementById('savedImageContainer').style.display = 'block';
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  // زر الرجوع للوراء
+  document.getElementById('undoButton').addEventListener('click', function() {
+      if (undoStack.length > 0) {
+          redoStack.push(undoStack.pop());
+          const state = undoStack[undoStack.length - 1];
+          if (state) {
+              canvas.loadFromJSON(state);
+          } else {
+              canvas.clear();
+          }
+      }
+  });
+
+  // زر العودة إلى الأمام
+  document.getElementById('redoButton').addEventListener('click', function() {
+      if (redoStack.length > 0) {
+          const state = redoStack.pop();
+          if (state) {
+              undoStack.push(state);
+              canvas.loadFromJSON(state);
+          }
+      }
+  });
+
+  // زر مسح المساحة
+  document.getElementById('clearButton').addEventListener('click', function() {
+      canvas.clear();
+      saveState();
+  });
+
+  // حفظ الحالة الابتدائية
+  saveState();
+</script> -->
+
+
+
+
+
 </html>

@@ -310,7 +310,7 @@ console.log(result)
 
 
   // sign out
-  router.get('/signout',requireAuth,restrictFactoryWorker, (req, res) => { //هذا تسجيل الخروج 
+  router.get('/signout',requireAuth, (req, res) => { //هذا تسجيل الخروج 
     res.cookie("jwt", { maxAge: 1 }); // هذا يحذف التوكن عشان سجل حروج بختصار يكتب توكن فاضي ويخليه لمدة جزء من الثانية
     
     res.redirect("/") // بعد مايحذف التوكن يحول المستخدم إلى صفحة الرأيسية
@@ -554,7 +554,7 @@ return res.json({ id:"done" })
                 // console.log(v.confirming2)
                 // console.log("fffffffff")
 
-                if(foundObject.status=="مسودة"){ // اشترط ان يكون مسودة لكي لايوكون موكد ونزيد نهب رقم طلب جديد
+                if (foundObject.status == "مسودة" && Array.isArray(foundObject.measurement) && foundObject.measurement.length > 0) { // اشترط ان يكون مسودة لكي لايوكون موكد ونزيد نهب رقم طلب جديد
                 // حفظ الوثيقة في قاعدة البيانات
                 const savedDocument = await n.save();
                 console.log('تمت إضافة البيانات بنجاح:', savedDocument);

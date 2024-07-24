@@ -11,6 +11,8 @@ const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 const flash = require('connect-flash');
 const adminController = require('./admin/controllers/adminController'); // استيراد وحدة تحكم الأدمن
+const multer = require('multer'); // استيراد multer
+const fs = require('fs');
 
 require('dotenv').config();
 require('./admin/config/passport')(passport); // تحميل إعدادات passport للأدمن
@@ -71,3 +73,33 @@ app.use('/admin', adminRoutes);
 
 // استخدم مسارات أخرى
 app.use(allRoutes);
+
+// إعدادات multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // إضافة التاريخ والوقت إلى اسم الملف
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// تأكد من أن مجلد 'uploads' موجود
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
+// استقبال الصورة من العميل
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  const imagePath = req.file.path;
+
+  // احفظ مسار الصورة في قاعدة البيانات هنا
+  // ...
+
+  res.json({ imagePath });
+});
+
+// خدمة الملفات الثابتة من مجلد uploads
+app.use('/uploads', express.static('uploads'));

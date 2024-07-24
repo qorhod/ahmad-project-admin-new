@@ -123,21 +123,24 @@
               <td><%= item.temper %></td>
               <td><%= item.lip %></td>
               <td>
-                <div class="container">
-                  <div id="div110" class="row" role="group" aria-label="Basic radio toggle button group">
-                    <div class="col-md-6 mx- d-block text-center">
-                      <label class="checkbox-wrapper">
-                        <span class="checkbox-tile">
-                          <span class="checkbox-icon">
-                            <img class=" img-fluid" src="/img/windows/case7-white.png" alt="" />
-                          </span>
-                          <span class="checkbox-label"><%= item.designCode %></span>
-                        </span>
-                      </label>
+                <img style="background-color: aliceblue; width: 100%; height: 100%; object-fit: cover;" src="<%= item.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal-<%= index %>">
+                
+                <!-- المودال لعرض الصورة بشكل كامل -->
+                <div class="modal fade" id="imageModal-<%= index %>" tabindex="-1" aria-labelledby="imageModalLabel-<%= index %>" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-white">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel-<%= index %>">عرض الصورة</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <img src="<%= item.designCode %>" alt="Design Image" class="img-fluid">
+                      </div>
                     </div>
                   </div>
                 </div>
               </td>
+              
               <td><%= item.aluminumThickness %></td>
               <td><%= item.comments %></td>
               <td><%= item.insideOrOutside %></td>
@@ -165,5 +168,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../js/overlay.js"></script>
   
+
+
+
 </body>
 </html>

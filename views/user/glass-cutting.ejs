@@ -143,6 +143,7 @@
                             <th>Color Code</th>
                             <th >H</th>
                             <th >W</th>
+                            <th >Design </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,7 +170,31 @@
 
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
+
+                                    <td>
+                                      <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                      
+                                      <!-- المودال لعرض الصورة بشكل كامل -->
+                                      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content bg-white">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+
+
                                 </tr>
+
+
+
                             <% }) %>
                         <% } else { %>
                             <tr>
@@ -211,6 +236,7 @@
                         <th >H</th>
                         <th >W</th>
                         <th>Status</th>
+                        <th >Design </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,6 +259,28 @@
                                     </button>
                                 </form>
                             </td>
+
+                            <td>
+                              <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                              
+                              <!-- المودال لعرض الصورة بشكل كامل -->
+                              <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content bg-white">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <img id="modalImage" src="" alt="Design Image" class="img-fluid">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+
+
+
                         </tr>
                     <% } }) %>
                 </tbody>
@@ -250,6 +298,7 @@
                       <th >H</th>
                       <th >W</th>
                       <th>Status</th>
+                      <th >Design </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -273,6 +322,26 @@
                                     </button>
                                 </form>
                             </td>
+
+                            <td>
+                              <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                              
+                              <!-- المودال لعرض الصورة بشكل كامل -->
+                              <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content bg-white">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+
                         </tr>
                     <% } }) %>
                 </tbody>

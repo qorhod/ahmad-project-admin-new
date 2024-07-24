@@ -44,3 +44,18 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 //////==============خاص بأضهر الون الأحمر على القياسات الممسوحة===============
+
+
+
+// تكبير صورة الاوردر عند النقر عليها 
+
+document.addEventListener('DOMContentLoaded', function() {
+  const imageModal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+
+  imageModal.addEventListener('show.bs.modal', function (event) {
+    const triggerElement = event.relatedTarget; // العنصر الذي فتح المودال
+    const imageUrl = triggerElement.getAttribute('src');
+    modalImage.setAttribute('src', imageUrl);
+  });
+});
