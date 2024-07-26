@@ -21,7 +21,7 @@
     <%- include('../components/dark-light.ejs') %> 
 
     <main class="d-flex flex-nowrap">
-      <%- include('../components/sidebar.ejs', {currentPage:"allDraft"}) %> 
+      <%- include('../components/sidebar.ejs', {currentPage:"myDraft"}) %> 
 
       <section class="w-100">
       <%- include('../components/navbar.ejs') %>
@@ -53,7 +53,7 @@
         <% arr.reverse().forEach(user => { %>
           <% if (user.orders && user.orders.length > 0) { %>
             <% user.orders.reverse().forEach(order => { %>
-              <% if (order.status==="مسودة") { %>
+              <% if (order.status==="مسودة"&&order.salesEmployeeId===jwt.id) { %>
 
               <tr>
            

@@ -92,9 +92,10 @@
                                 <tr>
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
-                                    <td><%=(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
-                                    <td><%=(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td>
-
+                                    <!-- <td><%=//(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
+                                    <td><%=//(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td> -->
+                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
                                         
@@ -153,8 +154,8 @@
                                 <tr>
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
-                                    <td><%=(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
-                                    <td><%=(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
 
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
@@ -227,8 +228,8 @@
                                     <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].U4 ? measurement.aluminumCuttingReport[0].U4 * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].T4 ? measurement.aluminumCuttingReport[0].T4 * 4 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].S4 ? measurement.aluminumCuttingReport[0].S4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].R4 ? measurement.aluminumCuttingReport[0].R4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].Q4 ? measurement.aluminumCuttingReport[0].Q4 * 2 : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
 
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">

@@ -367,7 +367,7 @@ console.log(result)
 
 
 
-
+// جميع المسودات 
 
             router.get('/draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
               var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
@@ -382,9 +382,18 @@ console.log(result)
 
 
 
+// المسودة الخاصة في اليوزر
 
-
-
+router.get('/my-draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
+  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+  User.find()
+    .then((users) => {
+      res.render('user/myDraft', { arr: users, moment: moment,jwt:decoded });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})
 
 
 
@@ -1250,7 +1259,7 @@ var glassCuttingReportSchema={
 
 const cv = await User.updateOne(
   { "orders._id": v.id },
-  { $push: { "orders.$[orderElem].measurement.$[lastMeasurement].glassCuttingReport": glassCuttingReportSchema } },
+  { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].glassCuttingReport": glassCuttingReportSchema } },
   {
     arrayFilters: [
       { "orderElem._id": v.id },
@@ -1284,7 +1293,7 @@ var aluminumCuttingReportSchema={
 
 const cvd = await User.updateOne(
   { "orders._id": v.id },
-  { $push: { "orders.$[orderElem].measurement.$[lastMeasurement].aluminumCuttingReport": aluminumCuttingReportSchema } },
+  { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].aluminumCuttingReport": aluminumCuttingReportSchema } },
   {
     arrayFilters: [
       { "orderElem._id": v.id },

@@ -145,6 +145,7 @@
                             <th>(B3)*2</th>
                             <th>(N1)*2</th>
                             <th>(N2)*2</th>
+                            <th>Design</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -176,6 +177,24 @@
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                        
+                                        <!-- المودال لعرض الصورة بشكل كامل -->
+                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content bg-white">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
                                 </tr>
                             <% }) %>
                         <% } else { %>
@@ -223,6 +242,7 @@
                         <th>(B3)*2</th>
                         <th>(N1)*2</th>
                         <th>(N2)*2</th>
+                        <th>Design</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -241,6 +261,26 @@
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+
+                            <td>
+                                <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                
+                                <!-- المودال لعرض الصورة بشكل كامل -->
+                                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content bg-white">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
                             <td>
                                 <form action="/aluminum-cutting/update-status" method="POST">
                                     <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
@@ -274,6 +314,7 @@
                         <th>(B3)*2</th>
                         <th>(N1)*2</th>
                         <th>(N2)*2</th>
+                        <th>Design</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -292,6 +333,25 @@
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+
+                            <td>
+                                <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                
+                                <!-- المودال لعرض الصورة بشكل كامل -->
+                                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content bg-white">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
                             <td>
                                 <form action="/aluminum-cutting/update-status" method="POST">
                                     <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
