@@ -69,35 +69,98 @@ const requireAuth = (req, res, next) => {
 
 
 // فنكشن عشان تتأكد من انك مسجل الدخول عشان ماتزيد تدخل على صفحة الوق ان و تسجيل مستخدم زي كذا
-const checkIfUser  = (req, res, next)=>{
-  // res.locals.xxx = "qorhod" // هذا الاداة مهمة جدا جدا لاني دورت عليها واجد طبعا تكتب فيها اي شي وتقدر تضهره في الي صفحة من الصفحات التاليه بكتابة اسمة في اي صفحة تبغى طبعا اخر كلمة تكتب في اي اسم تبغى زي المتغير بضبط انا كاتب 3 اكس
-const token = req.cookies.jwt
-        if (token){
-          // login user
+// const checkIfUser  = (req, res, next)=>{
+//   // res.locals.xxx = "qorhod" // هذا الاداة مهمة جدا جدا لاني دورت عليها واجد طبعا تكتب فيها اي شي وتقدر تضهره في الي صفحة من الصفحات التاليه بكتابة اسمة في اي صفحة تبغى طبعا اخر كلمة تكتب في اي اسم تبغى زي المتغير بضبط انا كاتب 3 اكس
+// const token = req.cookies.jwt
+//         if (token){
+//           // login user
 
-                      jwt.verify(token, "shhhhh", async(err,decoded) => { // هذا يتأكد من ان التوكن مكتوب بطريقة صحيحة واذا فيه خطا ينطبع في الخطا و التغير الي بعد كلم الخطاء يجيب لن التوكن عشان نتسفيد منه الاكواد التالية 
-                        if (err) { 
-                          res.locals.user =null //null يعني اذا خطاء خرج ذي للركوستات الي تحت مكتوب عليه اسم اذي الدالة ان تعطيه 
-                          next() // اذا صح يعطيك نكست للركوس القادم
-                          } else {
-                          const loginUser = await AuthUser.findById(decoded.id) // هذا عشان يروح قاعدة البينات وستخرج بينات الحساب من الايد وهذا اليدي اخذناه من التوكن الي في المتصفح لأننا سجلنا الأيدي في التوكن عند تسجيل الدخول تقدر ترجعلها وتشوف
-                          res.locals.user =loginUser //الي تبغى وتقدر تشوف كيف سويت في صفحة الويلكم بستخدام هذا المتغير   ejs وخليناه يساوي البينات حقت العميل عن طريق استخراج اليدي من التوكن لاننا جعلنا الايدي يكتب في التوكن عند تسجيل الدخول خلاص ذلحين نقدر نطبع في صفحة user هذا ارسالة ركوست للدوالة القادمة وسمينا امتغير حقة 
-                               next() // اذا صح يعطيك نكست للركوس القادم
+//                       jwt.verify(token, "shhhhh", async(err,decoded) => { // هذا يتأكد من ان التوكن مكتوب بطريقة صحيحة واذا فيه خطا ينطبع في الخطا و التغير الي بعد كلم الخطاء يجيب لن التوكن عشان نتسفيد منه الاكواد التالية 
+//                         if (err) { 
+//                           res.locals.user =null //null يعني اذا خطاء خرج ذي للركوستات الي تحت مكتوب عليه اسم اذي الدالة ان تعطيه 
+//                           next() // اذا صح يعطيك نكست للركوس القادم
+//                           } else {
+//                           const loginUser = await AuthUser.findById(decoded.id) // هذا عشان يروح قاعدة البينات وستخرج بينات الحساب من الايد وهذا اليدي اخذناه من التوكن الي في المتصفح لأننا سجلنا الأيدي في التوكن عند تسجيل الدخول تقدر ترجعلها وتشوف
+//                           res.locals.user =loginUser //الي تبغى وتقدر تشوف كيف سويت في صفحة الويلكم بستخدام هذا المتغير   ejs وخليناه يساوي البينات حقت العميل عن طريق استخراج اليدي من التوكن لاننا جعلنا الايدي يكتب في التوكن عند تسجيل الدخول خلاص ذلحين نقدر نطبع في صفحة user هذا ارسالة ركوست للدوالة القادمة وسمينا امتغير حقة 
+//                                next() // اذا صح يعطيك نكست للركوس القادم
 
 
-                          }
+//                           }
                    
-                        });
+//                         });
 
 
             
-        }else{
-          res.locals.user =null
-          next()
-        }
+//         }else{
+//           res.locals.user =null
+//           next()
+//         }
+// };
+
+
+
+// الكود الأصلي الي فوق ولكن هذا الي تحت يمرر اسماء الصالحيات لجميع الركوستات
+const checkIfUser = async (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (token) {
+      try {
+          const decoded = jwt.verify(token, "shhhhh");
+          const loginUser = await AuthUser.findById(decoded.id);
+
+          if (!loginUser) {
+              res.locals.user = null;
+              res.locals.permissions = [];
+          } else {
+              res.locals.user = loginUser;
+              res.locals.permissions = loginUser.permissions;
+          }
+      } catch (err) {
+          res.locals.user = null;
+          res.locals.permissions = [];
+      }
+  } else {
+      res.locals.user = null;
+      res.locals.permissions = [];
+  }
+  next();
 };
 
+
 // هي المعادة تساوي ترقيم لطلبات وما يتكرر الرقم لانه يحتوي على داله من المنقو ديبي
+
+
+
+// دالة لتأكد من الحساب هل الصلاحية في الوصول إلى الركوست بأستخدم الصلاحيات الممنوحة له 
+
+const checkPermission = (requiredPermission) => (req, res, next) => {
+  const user = res.locals.user;
+
+  if (!user) {
+      console.log("User not found in res.locals");
+      return res.status(404).send({ message: 'User not found.' });
+  }
+
+  // التحقق من وجود الإذن المطلوب في قائمة أذونات المستخدم
+  const hasPermission = user.permissions.some(permission => permission.name === requiredPermission);
+
+  if (!hasPermission) {
+      console.log("Insufficient permissions:", requiredPermission);
+      return res.status(403).send({ message: 'Access denied: insufficient permissions.' });
+  }
+
+  next();
+};
+
+
+// // دالة لتأكد من الحساب هل الصلاحية في الوصول إلى الركوست بأستخدم الصلاحيات الممنوحة له  // 
+
+
+
+
+
+
+
 
 const mongoose = require('mongoose');
 
@@ -227,7 +290,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = {checkIfUser,requireAuth,YourModel,ensureRole,restrictFactoryWorker,verifyToken}
+module.exports = {checkIfUser,requireAuth,YourModel,ensureRole,restrictFactoryWorker,verifyToken,checkPermission}
 
 // module.exports = {requireAuth}
 // module.exports = {checkIfUser}

@@ -89,7 +89,7 @@
                     <tbody>
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
-                                <tr>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
                                     <!-- <td><%=//(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
@@ -151,7 +151,8 @@
                     <tbody>
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
-                                <tr>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
@@ -219,7 +220,8 @@
                     <tbody>
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
-                                <tr>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+
                                     <td><%= measurement.sequenceNumber || '--' %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
@@ -290,7 +292,8 @@
                     <tbody>
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
-                                <tr>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+
                                     <td><%= measurement.sequenceNumber || '--' %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>

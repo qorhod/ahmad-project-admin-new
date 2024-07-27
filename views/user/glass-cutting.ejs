@@ -96,9 +96,12 @@
         <li class="nav-item">
           <a href="../total-meters/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
         <li class="nav-item">
           <a href="../price/<%= foundOrder._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
         </li>
+        <% } %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= foundOrder._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
         </li>
@@ -114,10 +117,10 @@
           <a  href="../aluminum-cutting/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
         </li>
 
-      </ul>foundOrder
+      </ul>
       <div class="container mt-4">
        
-        <h1>Aluminum Cutting</h1>
+        <h1>Glass Report </h1>
         <div class="btn-group mb-4" role="group">
             <button type="button" class="btn btn-primary" onclick="showTable('all-table')">All</button>
             <button type="button" class="btn btn-primary" onclick="showTable('cutting-table')">Cutting</button>

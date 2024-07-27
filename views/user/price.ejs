@@ -111,6 +111,9 @@
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>"class="nav-link  active"  href="#">التسعيرة</a>
         </li>
+
+        <% if (permissions.some(permission => permission.name === 'manufacturing_reports')) { %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
         </li>
@@ -125,18 +128,19 @@
         <li class="nav-item">
           <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
         </li>
+        <% } %>
 
       </ul>
 
     
      <!-- form-control -->
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+     <!-- <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
       <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
 
       <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
       <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
 
-  </div>
+  </div> -->
   <!-- <a
            
   class="btn btn-primary "
@@ -145,9 +149,9 @@
     class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> -->
   
 <!-- زر الطباعة -->
-  <input type="button" id="t" value="القائمة المفصلة" class="btn btn-secondary " onclick="toggleTables()" >
+  <input type="button" id="t" value="القائمة المفصلة" class="btn btn-secondary mt-5" onclick="toggleTables()" >
 
-  <button id="print1" type="button" class="btn btn-secondary" onclick="window.print()" >
+  <button id="print1" type="button" class="btn btn-secondary mt-5" onclick="window.print()" >
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
 <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
 <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>

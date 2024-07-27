@@ -71,7 +71,8 @@
             
           </p>
         </nav>
-     
+        <% if (permissions.some(permission => permission.name === 'edit_customers')) { %>
+
          <a
          data-bs-toggle="tooltip"
          data-bs-title="Edit user"
@@ -79,6 +80,8 @@
          class="btn btn-primary "
          href="../edit/<%= arrView._id %>"
        > تعديل بيانات العميل <i class="bi bi-pencil"></i></a>
+       <% } %>
+
         <table
           style="width: 99%"
           class="ms-1 table mt-3 table-striped table-bordered"
@@ -130,6 +133,8 @@
 
     
     <!-- اضافتي للاوردرات -->
+    <% if (permissions.some(permission => permission.name === 'add_order')) { %>
+
     <a
     data-bs-toggle="tooltip"
     data-bs-title="Edit user"
@@ -137,6 +142,7 @@
     class="btn btn-primary "
     href="../basic-measurement/<%= arrView._id %>"
     >إضافة طلب جديد <i class="bi bi-plus-lg"></i></a>
+    <% } %>
 
 
 
@@ -226,7 +232,7 @@
       </section>
     </main>
 
-
+<% if (permissions.some(permission => permission.name === 'my_draft')) { %><% } %>
 
 
 
@@ -256,8 +262,14 @@
 document.getElementById("kk").innerHTML = 
 
 `
+  <% if (permissions.some(permission => permission.name === 'all_draft')) { %>    
+
+
+    
+
 <% arrView.orders.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
-       
+               
+
            <tr>
              <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
              <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
@@ -287,23 +299,137 @@ document.getElementById("kk").innerHTML =
                >
                  <i class="bi bi-pencil"></i>
                </a>
-               <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-               <button
-                 data-bs-toggle="tooltip"
-                 data-bs-title="Delete user"
-                 data-bs-placement="top"
-                 class="btn btn-danger btn-sm"
-               >
-                 <i class="bi bi-trash"></i>
-               </button>
-             </form>
+                  <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
+
+                  <form id="delete-form-<%= item._id %>" action="/delete-order/<%= item._id %>?_method=DELETE" method="post" style="display: none;">
+                  </form>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('<%= item._id %>')"><i class="bi bi-trash"></i></button>
+                 <%}%>
+                 </td>
              </td>
            </tr>
          <% }) %>
+         <% } else if (permissions.some(permission => permission.name === 'my_draft')) { %>
+          <% arrView.orders.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+               
+  <% if (item.status === 'مؤكد'||item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
+
+               <tr>
+                 <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                 <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
+                 <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                 <td><%= item.location %>	</td>
+                 <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
+                 <!-- <td><%= //item.age %></td> -->
+                 <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+                 <td>
+              
+                   <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                   <a
+                     data-bs-toggle="tooltip"
+                     data-bs-title="View details"
+                     data-bs-placement="top"
+                     class="btn btn-primary btn-sm"
+                     href="/review/<%= item._id%>" 
+                     ><i class="bi bi-eye"></i
+                   ></a>
+    
+                   <a
+                     data-bs-toggle="tooltip"
+                     data-bs-title="Edit user"
+                     data-bs-placement="top"
+                     class="btn btn-primary btn-sm"
+                     href="./edit/<%= //item._id %>"
+                   >
+                     <i class="bi bi-pencil"></i>
+                   </a>
+                    <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
+
+                  <form id="delete-form-<%= item._id %>" action="/delete-order/<%= item._id %>?_method=DELETE" method="post" style="display: none;">
+                  </form>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('<%= item._id %>')"><i class="bi bi-trash"></i></button>
+                 <%}%>
+                 </td>
+               </tr>
+               <% } %>
+             <% }) %>
+                      <% } else{ %>
+          <% arrView.orders.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+               
+  <% if (item.status === 'مؤكد') { %>    
+
+               <tr>
+                 <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+                 <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
+                 <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+                 <td><%= item.location %>	</td>
+                 <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
+                 <!-- <td><%= //item.age %></td> -->
+                 <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
+                 <td>
+              
+                   <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                   <a
+                     data-bs-toggle="tooltip"
+                     data-bs-title="View details"
+                     data-bs-placement="top"
+                     class="btn btn-primary btn-sm"
+                     href="/review/<%= item._id%>" 
+                     ><i class="bi bi-eye"></i
+                   ></a>
+    
+                   <a
+                     data-bs-toggle="tooltip"
+                     data-bs-title="Edit user"
+                     data-bs-placement="top"
+                     class="btn btn-primary btn-sm"
+                     href="./edit/<%= //item._id %>"
+                   >
+                     <i class="bi bi-pencil"></i>
+                   </a>
+
+                   <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
+
+                  <form id="delete-form-<%= item._id %>" action="/delete-order/<%= item._id %>?_method=DELETE" method="post" style="display: none;">
+                  </form>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('<%= item._id %>')"><i class="bi bi-trash"></i></button>
+                 <%}%>
+                 </td>
+                 
+                 </td>
+               </tr>
+               <% } %>
+             <% }) %>
+         <% } %>
+         
 `
 
 
 
 
   </script> 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+<script>
+  function confirmDelete(orderId) {
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'نعم، احذف!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('delete-form-' + orderId).submit();
+      }
+    })
+  }
+</script>
+
 </html>

@@ -118,10 +118,11 @@ exports.initializeAdmin = async () => {
 
 // دالة تهيئة الصلاحيات الافتراضية
 exports.initializeDefaultPermissions = async () => {
+    // من هنا اضافة صلاحيات لأنوع الحسابت الي تحت
     const defaultPermissions = {
-        salesManager: [{ name: 'view_sales', description: 'عرض المبيعات', default: true }, { name: 'manage_team', description: 'إدارة الفريق', default: false }, { name: 'access_reports', description: 'الوصول إلى التقارير', default: true }],
-        salesMan: [{ name: 'view_sales', description: 'عرض المبيعات', default: true }, { name: 'manage_clients', description: 'إدارة العملاء', default: false }],
-        IndustrialManager: [{ name: 'view_production', description: 'عرض الإنتاج', default: true }, { name: 'manage_workers', description: 'إدارة العمال', default: false }],
+        salesManager: [{ name: 'add_customer', description: 'إنشاء عميل جديد', default: true },{ name: 'my_draft', description: 'مسودة ', default: true },{ name: 'add_order', description: 'انشاء طلب جديد', default: true },{ name: 'edit_customers', description: 'تعديل بيانات جميع العملاء', default: true }, { name: 'all_draft', description: 'الوصول إلى جميع المسودات لجميع المناديب', default: false },{ name: 'manufacturing_reports', description: 'تقارير التصنيع: المواد و الزجاج و السكريت و الألمنيوم', default: true }, { name: 'access_reports', description: 'الوصول إلى التقارير', default: true },{ name: 'price', description: 'الوصول إلى تقرير السعر', default: false },{ name: 'add_edit_measurement', description: 'اضافة او تعديل قياس', default: false },],
+        salesMan: [{ name: 'add_customer', description: 'إنشاء عميل جديد', default: true },{ name: 'my_draft', description: 'مسودة ', default: true },{ name: 'add_order', description: 'انشاء طلب جديد', default: true },{ name: 'edit_customers', description: 'تعديل بيانات جميع العملاء', default: true },{ name: 'manufacturing_reports', description: 'تقارير التصنيع: المواد و الزجاج و السكريت و الألمنيوم', default: true },{ name: 'price', description: 'الوصول إلى تقرير السعر', default: false },{ name: 'add_edit_measurement', description: 'اضافة او تعديل قياس', default: false },],
+        IndustrialManager: [{ name: 'manufacturing_reports', description: 'تقارير التصنيع: المواد و الزجاج و السكريت و الألمنيوم', default: true }, { name: 'add_edit_measurement', description: 'اضافة او تعديل قياس', default: false },{ name: 'price', description: 'الوصول إلى تقرير السعر', default: false }],
         factoryWorker: [{ name: 'view_tasks', description: 'عرض المهام', default: true }]
     };
 

@@ -61,9 +61,14 @@
         <li class="nav-item">
           <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page">مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
         </li>
+        <% } %>
+
+        <% if (permissions.some(permission => permission.name === 'manufacturing_reports')) { %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
         </li>
@@ -76,8 +81,10 @@
         <li class="nav-item">
           <a href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم</a>
         </li>
+        <% } %>
+
       </ul>
-      <h6>id Customer: <%= idCustomer %></h6>
+      <h6>Order Number: <%= arrR.orderNumber %></h6>
       <div class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
         <button id="deleteButton" <%= arrR.orderNumber ? "hidden" : '' %> type="button" class="btn btn-danger">حذف <i class="bi bi-trash"></i></button>
         <a <%= arrR.orderNumber ? "hidden" : '' %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">البقاء في المسودة <i class="bi bi-journal-text"></i></a>
@@ -90,7 +97,10 @@
           <input id="submitButton" type="<%= arrR.orderNumber ? 'hidden' : 'submit' %>" value="اعتماد الطلب" class="btn btn-success">
         </form>
       </div>
+      <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
+
       <a href="../measurement/<%= arrR._id %>" class="btn btn-primary mt-3 mb-3">إضافة قياس جديد <i class="bi bi-plus-lg"></i></a>
+      <% } %>
       <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
         <thead>
           <tr>
@@ -145,9 +155,13 @@
               <td><%= item.comments %></td>
               <td><%= item.insideOrOutside %></td>
               <td>
+                <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
+
                 <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../measurement/<%= item._id %>">
                   <i class="bi bi-pencil"></i>
                 </a>
+                <% } %>
+
                 <form id="delete-form-<%= item._id %>" style="display: inline;" action="/review/<%= item._id %>-<%= arrR._id %>?_method=DELETE" method="post">
                   <button data-bs-toggle="tooltip" data-bs-title="Delete user" data-bs-placement="top" class="btn btn-danger btn-sm mt-2">
                     <i class="bi bi-trash"></i>

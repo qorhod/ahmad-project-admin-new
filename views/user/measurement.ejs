@@ -1779,6 +1779,7 @@ location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
       const res = await fetch("measurement", {
           method: "POST",
           body: JSON.stringify({
+              // aluminumCode: getSelectedValue2.value,
               aluminumCode: getSelectedValue2.value,
               aluminumThickness: thickness.value,
               aluminumColorCode: glassColorCodeId.value,

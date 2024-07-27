@@ -103,9 +103,12 @@
         <li class="nav-item">
           <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
         </li>
+        <% } %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
         </li>
@@ -126,21 +129,21 @@
 
 
      <!-- form-control -->
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+     <!-- <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
       <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
 
       <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
       <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
 
-  </div>
+  </div> -->
 
 
-  <a
+  <!-- <a
            
   class="btn btn-primary "
   href="../measurement/<%= arrR._id %>"
    type="button"
-    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
+    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> -->
 
 
 

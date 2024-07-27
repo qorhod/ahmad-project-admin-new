@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script src="./js/color-modes.js"></script>
     <link rel="stylesheet" href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
@@ -9,35 +10,84 @@
     <meta name="description" content="" />
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
     <meta name="generator" content="Hugo 0.112.5" />
-    <title>Login page</title>
+    <title>Login</title>
 
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/dark-light.css"/>
+    <link rel="stylesheet" href="./css/dark-light.css" />
     <link href="./css/sidebars.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/myStyle.css" />
 
     <style>
         body {
-            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+            background: url('./img/login.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
         .cover-container {
             max-width: 42em;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2em;
+            border-radius: 10px;
+            text-align: center;
         }
 
-        #passwordError, #userNameError {
+        #passwordError,
+        #userNameError {
             color: rgb(255, 0, 0);
             margin-left: 0.rem;
             font-weight: 600;
         }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 0.25rem;
+            color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        label {
+            color: #f8f9fa;
+        }
+
+        .custom-img {
+            max-width: 100%;
+            height: auto;
+            width: 200px; /* يمكنك تعديل العرض حسب الحاجة */
+            margin-bottom: 20px; /* مسافة أسفل الصورة */
+        }
     </style>
 </head>
-<body class="d-flex h-100 text-center text-bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <%- include('./header.ejs', { currentPage: "login" }) %>
 
+<body>
+   
+    <div class="cover-container d-flex w-100 p-3 mx-auto flex-column">
+        <%- include('./header.ejs', { currentPage: "login" }) %>
+        <% if (user== null) { %>
         <main class="px-3">
+            <img class="fw-bold custom-img" src="./img/factory.png" alt="">
+
             <h1>Log in</h1>
 
             <form id="loginForm" class="text-start mx-auto mt-5" style="max-width: 22em;">
@@ -52,17 +102,18 @@
                     <p id="passwordError"></p>
                 </div>
 
-                <div class="form-group form-check">
+                <!-- <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="exampleCheck1">
                     <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Log in</button>
+                </div> -->
+                <button type="submit" class="btn btn-primary w-100">Log in</button>
             </form>
         </main>
 
-        <footer class="mt-auto text-white-50">
-            <p>جميع الحقوق محفوظة لبن قرهد ©2024</p>
-        </footer>
+        <!-- <footer class="mt-auto text-white-50">
+            <p>جميع الحقوق محفوظة لمصنع المعدن الابيض ©2024 </p>
+        </footer> -->
+        <%}%>
     </div>
 
     <script>
@@ -98,4 +149,5 @@
     </script>
     <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

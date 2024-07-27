@@ -35,6 +35,7 @@ const { numberAllMeasurementsForOrder } = require('../middleware/sequenceNumberH
 const {ensureRole} = require('../middleware/middleware.js')
 const {restrictFactoryWorker} = require('../middleware/middleware');
 const {verifyToken} = require('../middleware/middleware');
+const {checkPermission} = require('../middleware/middleware');  //  التأكد من صلاحية المستخدم للوصول إلى هذه الركوست تستخدم هكذا checkPermission('اسم الصلاحية')
 
 // router.get("/calculator",calculator) // يعي تنفذ هذاي الداة على جميع الاكواد النجمه يعين جميع الاكواد
 // router.post("*",calculator)
@@ -59,7 +60,7 @@ router.get("*",requireAuth) // يعي تنفذ هذاي الداة على جمي
 
 
 
-router.post("/user/measurement", async (req, res) => {
+router.post("/user/measurement",checkPermission('add_edit_measurement'), async (req, res) => {
 
 
   //   const loginUser = await AuthUser.findOne({ email: req.body.email });
@@ -219,7 +220,7 @@ router.get('/canceled',requireAuth,restrictFactoryWorker, (req, res, ) => {
   
   
   
-  router.get('/user/add.html',requireAuth,restrictFactoryWorker, (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
+  router.get('/user/add.html',requireAuth,restrictFactoryWorker,checkPermission('add_customer'), (req, res) => { // نقول له اذ فتحت هذا الامتداد حولني على الملف الي تحت
     var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); 
 
     res.render('user/add',{ jwt: decoded }) //هنا تحط اسم الملف الي تبغة يفتحة لحة اذا دخلة على الرابط الي فوق 
@@ -265,9 +266,10 @@ console.log(result)
   
 // })
 // console.log(clickedobject)
+var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); 
 
 
-          res.render('user/view',{arrView:result ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+          res.render('user/view',{arrView:result ,moment:moment,userId:decoded.id} ) // المتغير الثاني حق اداة تغيير شكل اوقت
         }).catch((err)=>{
             console.log(err)
    })
@@ -351,7 +353,7 @@ console.log(result)
 
 
                 // صفحة القياسات الأساسية
-            router.get("/basic-measurement/:id",restrictFactoryWorker, (req, res) => {
+            router.get("/basic-measurement/:id",restrictFactoryWorker,checkPermission('add_order'), (req, res) => {
               
               User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
                       .then((result)=>{
@@ -369,7 +371,7 @@ console.log(result)
 
 // جميع المسودات 
 
-            router.get('/draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
+            router.get('/draft',requireAuth,restrictFactoryWorker,checkPermission('all_draft'), (req, res, ) => {
               var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
               User.find()
                 .then((users) => {
@@ -384,7 +386,7 @@ console.log(result)
 
 // المسودة الخاصة في اليوزر
 
-router.get('/my-draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
+router.get('/my-draft',requireAuth,restrictFactoryWorker,checkPermission('my_draft'), (req, res, ) => {
   var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
   User.find()
     .then((users) => {
@@ -399,7 +401,7 @@ router.get('/my-draft',requireAuth,restrictFactoryWorker, (req, res, ) => {
 
 
 
-            router.post("/basic-measurement/:id",restrictFactoryWorker, async (req, res) => {
+            router.post("/basic-measurement/:id",restrictFactoryWorker,checkPermission('add_order'), async (req, res) => {
               const v = await req.body
               const b = req.params.id
               
@@ -708,7 +710,7 @@ console.log(foundObject);
 
 
 
-            router.get("/measurement/:id",restrictFactoryWorker, (req, res) => {
+            router.get("/measurement/:id",restrictFactoryWorker,checkPermission('add_edit_measurement'), (req, res) => {
               const customerId = req.params.id;
               User.findOne({'orders._id': req.params.id})
                   .then((result1) => {
@@ -1972,7 +1974,7 @@ router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async functi
 
 
        // تقرير السعر
-    router.get("/price/:id",restrictFactoryWorker, (req, res) => {
+    router.get("/price/:id",restrictFactoryWorker,checkPermission('price'), (req, res) => {
         User.findOne({'orders._id': req.params.id})
         // 
       
@@ -2455,7 +2457,7 @@ router.post('/test', requireAuth,restrictFactoryWorker, async function (req, res
 
 //     });
 
-router.get("/glass-cutting/:id",restrictFactoryWorker, async (req, res) => {
+router.get("/glass-cutting/:id",restrictFactoryWorker,checkPermission('manufacturing_reports'), async (req, res) => {
   try {
       console.log("Request ID:", req.params.id);
       
@@ -2710,7 +2712,7 @@ router.post("/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assem
 
 
 
-router.get("/aluminum-cutting/:id",restrictFactoryWorker, async (req, res) => {
+router.get("/aluminum-cutting/:id",restrictFactoryWorker,checkPermission('manufacturing_reports'), async (req, res) => {
   try {
       console.log("Request ID:", req.params.id);
       
@@ -2928,7 +2930,7 @@ router.post("/aluminum-cutting/update-status",restrictFactoryWorker, async (req,
 
 // تقرير السكريت
 
-router.get("/report-temper/:id",restrictFactoryWorker, (req, res) => {
+router.get("/report-temper/:id",restrictFactoryWorker,checkPermission('manufacturing_reports'), (req, res) => {
   User.findOne({'orders._id': req.params.id})
 
   
@@ -3306,7 +3308,8 @@ console.log(token)
 
 router.get('/home', requireAuth,restrictFactoryWorker, (req, res) => {
   User.find().then((result) => {
-    res.render("index", { arr: result, moment: moment });
+    const user = res.locals.user;  // هذه تم تمريرها مدالة التوكن عشان نرسل الصلاحيات إلى الفرنت اند عشان نخفي ونظهر بعض الأزرار
+    res.render("index", { arr: result, moment: moment, permissions: user ? user.permissions : [] });
   }).catch((err) => {
     console.log(err);
   });

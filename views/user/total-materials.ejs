@@ -65,9 +65,13 @@
         <li class="nav-item">
           <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
+
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
         </li>
+        <% } %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %> "class="nav-link  active" aria-disabled="true">كميات المواد</a>
         </li>
