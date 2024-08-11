@@ -6,6 +6,7 @@ const User = require("../models/customersSchema.js") // اسكيما العمل�
 const AuthUser = require("../models/auth-user") // تسيما الحسابات اليوزرات
 
 const commands = require("../models/commands")
+const Prices = require("../models/prices")
 
 var moment = require('moment'); // مكتبة لتعديل شكل التاريخ والوقت الوجودة في الداتا وعن طريق المنقوز
 const bcrypt = require('bcrypt');  // تحضير مكتبة تشفير الباسورد
@@ -617,50 +618,6 @@ const bbbf=   await numberAllMeasurementsForOrder(orderId);
 
 
 
-            router.get("/measurementmm/:id",restrictFactoryWorker, (req, res) => {
-              
-              // User.findById(req.params.id) // هذي الادة من منقز لاستخراج ابجكت معين من الداتا ممكن تكتب الايري على طول بس حن استخرجناه من الرابط بهذي العبارة واضفنا اسم المتغير الي اضفنه فوق
-              //         .then((result)=>{
-                       
-              User.findOne({'orders._id': req.params.id})
-
-
-    //  User.orders.findOne({'orders.measurement._id': req.params.id})
-  //   User.findOne({
-  //   "orders": {
-  //     "$elemMatch": {
-  //       "measurement._id": ObjectId("65e38779b4a0b7802ed92fb7")
-  //     }
-  //   }
-
-  // })
-
-
-
-// User.findById(req.params.id, 'orders._id' )
-.then((result)=>{
-
-  const h =result
-
- console.log("++++++++++++++++++++++++++")
- console.log(h)
-
-const idToFind = req.params.id; // من الرابط id 
-
-const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-console.log(foundObject);
-
-      console.log("++++++++++++++++++++++++++")
-              
-
-                        res.render('user/measurement',{arrM:foundObject ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-                      }).catch((err)=>{
-                          console.log(err)
-                 })
-
-
-            });
 
 
 
@@ -672,36 +629,7 @@ console.log(foundObject);
 
 
 
-            router.get("/measurementtt/:id",restrictFactoryWorker, (req, res) => {
-              
-             
-                       
-              // User.findOne({'orders._id': req.params.id})
 
-              const customerId = req.params.id;
-
-              User.findOne(
-                { "orders.measurement._id": customerId },
-                { "orders.$": 1 }
-              )
-.then((result)=>{
- 
-  if (result) {
-    const measurement = result.orders[0].measurement.find(m => m._id.toString() === customerId);
-    console.log(measurement);
-    res.render('user/measurement',{arrM:measurement ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
-
-  } else {
-    console.log("No document found");
-  }
-              
-
-                      }).catch((err)=>{
-                          console.log(err)
-                 })
-
-
-            });
 
 
 
@@ -719,16 +647,13 @@ console.log(foundObject);
 
                         const h =result1
 
-                        console.log("++++++++++++++++++++++++++")
-                        console.log(h)
                        
                        const idToFind = req.params.id; // من الرابط id 
                        
                        const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
                        
-                       console.log(foundObject);
+                     
                        
-                             console.log("++++++++++++++++++++++++++")
                                      
                        
                              return  res.render('user/measurement',{arrM:foundObject ,moment:moment} )
@@ -745,9 +670,7 @@ console.log(foundObject);
                   })
                   .then((result2) => {
                       if (result2) {
- console.log("777777777777777777777777")
-console.log(result2)
-console.log("777777777777777777777777")
+
                         const measurement = result2.orders[0].measurement.find(m => m._id.toString() === customerId);
                         console.log(measurement);
                         res.render('user/measurement',{arrM:measurement ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
@@ -768,6 +691,169 @@ console.log("777777777777777777777777")
 
 
 
+// رفع قياس الاستركتشر
+
+router.get("/structure-measurement/:id",restrictFactoryWorker,checkPermission('add_edit_measurement'), (req, res) => {
+  const customerId = req.params.id;
+  User.findOne({'orders._id': req.params.id})
+      .then((result1) => {
+          if (result1) {
+
+
+            const h =result1
+
+    
+           
+           const idToFind = req.params.id; // من الرابط id 
+           
+           const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+           
+      
+           
+                         
+           
+                 return  res.render('user/structure-measurement',{arrM:foundObject ,moment:moment} )
+
+
+              console.log("Found in first query:", result1);
+              return result1; // يمكنك التعامل مع result1 هنا
+          } else {
+              return User.findOne(
+                  { "orders.measurement._id": customerId },
+                  { "orders.$": 1 }
+              );
+          }
+      })
+      .then((result2) => {
+        //خاص بتعديل
+          if (result2) {
+
+            const measurement = result2.orders[0].measurement.find(m => m._id.toString() === customerId);
+            console.log(measurement);
+            res.render('user/structure-measurement',{arrM:measurement ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+        
+
+              // console.log("Found in second query:", result2);
+              // يمكنك التعامل مع result2 هنا
+          } else {
+              console.log("Not found in either queries");
+          }
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+      });
+});
+
+
+
+// رفع قياس الإسكاي لايت 
+router.get("/skylight-measurement/:id",restrictFactoryWorker,checkPermission('add_edit_measurement'), (req, res) => {
+  const customerId = req.params.id;
+  User.findOne({'orders._id': req.params.id})
+      .then((result1) => {
+          if (result1) {
+
+
+            const h =result1
+
+      
+           const idToFind = req.params.id; // من الرابط id 
+           
+           const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+           
+
+           
+                         
+           
+                 return  res.render('user/skylight-measurement',{arrM:foundObject ,moment:moment} )
+
+
+              console.log("Found in first query:", result1);
+              return result1; // يمكنك التعامل مع result1 هنا
+          } else {
+              return User.findOne(
+                  { "orders.measurement._id": customerId },
+                  { "orders.$": 1 }
+              );
+          }
+      })
+      .then((result2) => {
+        //خاص بتعديل
+          if (result2) {
+
+            const measurement = result2.orders[0].measurement.find(m => m._id.toString() === customerId);
+            console.log(measurement);
+            res.render('user/skylight-measurement',{arrM:measurement ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+        
+
+              // console.log("Found in second query:", result2);
+              // يمكنك التعامل مع result2 هنا
+          } else {
+              console.log("Not found in either queries");
+          }
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+      });
+});
+
+
+
+// رفع قياس الابواب
+
+router.get("/doors-measurement/:id",restrictFactoryWorker,checkPermission('add_edit_measurement'), (req, res) => {
+  const customerId = req.params.id;
+  User.findOne({'orders._id': req.params.id})
+      .then((result1) => {
+          if (result1) {
+
+
+            const h =result1
+
+      
+           
+           const idToFind = req.params.id; // من الرابط id 
+           
+           const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+           
+
+                 return  res.render('user/doors-measurement',{arrM:foundObject ,moment:moment} )
+
+
+              console.log("Found in first query:", result1);
+              return result1; // يمكنك التعامل مع result1 هنا
+          } else {
+              return User.findOne(
+                  { "orders.measurement._id": customerId },
+                  { "orders.$": 1 }
+              );
+          }
+      })
+      .then((result2) => {
+          if (result2) {
+
+            const measurement = result2.orders[0].measurement.find(m => m._id.toString() === customerId);
+            console.log(measurement);
+            res.render('user/doors-measurement',{arrM:measurement ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+        
+
+              // console.log("Found in second query:", result2);
+              // يمكنك التعامل مع result2 هنا
+          } else {
+              console.log("Not found in either queries");
+          }
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+      });
+});
+
+
+
+
+
+
+
 
 
 
@@ -783,44 +869,7 @@ router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
 
 
 
-  // هذا عشان اذا الداتا حقة التسعير موجودة ينشأها وذا موجودة ما يساوي شي
-  const cc = await commands.find()
-  // console.log('hhhhhhhhhhhhhhhhhhjjjj:');
-  // console.log(cc.length ==0?1:0);
-  // console.log('hhhhhhhhhhhhhhhhhjjj:');
-  if(cc.length ==0){
-   const newUser = await commands.create({
-        price: {
-            slidingD10: 530,
-            slidingD10b: 500,
-            slidingD12: 550,
-            slidingS: 300,
-            interruptT: 650,
-            interrupt: 650,
-            fixedD10: 450,
-            fixedD4: 300,
-            fixedS10: 350,
-            fixedS4: 300,
-            sketchureSmart: 850,
-            sketchureFortex: 1000,
-            GOLF10: 550,
-            GOLF12: 600,
-            ROYAL2: 700,
-            ROYAL3: 1000,
-            DoorD10: 850,
-            SlicedDoor: 400,
-            SketchureFortex: 250,
-            Skylight: 1100
-        },
-        createdAt: new Date()
-    });
 
-    console.log('تم انشاء هذه الاسعار لانها غير موجودة مسبقا في الداتا:', newUser);
-  
-  }
-  //// هذا عشان اذا الداتا حقة التسعير موجودة ينشأها وذا موجودة ما يساوي شي////
-
-   
 
 
 
@@ -921,6 +970,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
       salesEmployeeUserName: '',
       aluminumCode: v.aluminumCode,
       aluminumThickness: v.aluminumThickness,
+      aluminumSize:v.aluminumSize,
       aluminumColorCode: v.aluminumColorCode,
       glasstype: v.glasstype,
       glassThickness: v.glassThickness,
@@ -931,6 +981,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
       insideOrOutside: v.insideOrOutside,
       temper: v.temper,
       lip: v.lip,
+      illumination: v.illumination,
       comments: v.comments,
       sequenceNumber: sequenceNumber, // إضافة الترقيم
       totalMeters:{
@@ -996,6 +1047,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
       salesEmployeeUserName: '',
       aluminumCode: v.aluminumCode,
       aluminumThickness: v.aluminumThickness,
+      aluminumSize:v.aluminumSize,
       aluminumColorCode: v.aluminumColorCode,
       glasstype: v.glasstype,
       glassThickness: v.glassThickness,
@@ -1006,6 +1058,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
       insideOrOutside: v.insideOrOutside,
       temper: v.temper,
       lip: v.lip,
+      illumination: v.illumination,
       comments: v.comments,
       
       totalMeters:{
@@ -1871,6 +1924,9 @@ router.delete('/review/:measurementId-:orderId', requireAuth,restrictFactoryWork
             });
 
 
+
+
+
     // GRT Reports
     
 
@@ -1943,7 +1999,7 @@ router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async functi
               DoorD10: 850,
               SlicedDoor: 400,
               SketchureFortex: 250,
-              Skylight: 1100
+              SKYLIGHT: 1100
           },
           createdAt: new Date()
       });
@@ -2009,148 +2065,7 @@ router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async functi
 
 
 
-    router.post('/pricegg/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
-      const v = await req.body
-      try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuu")
-        console.log(v)
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuu")
-          // const ObjectId = require('mongoose').Types.ObjectId;
-  
-          // // الشرط لتحديث الوثائق
-          // const filter = {
-          //     "orders.measurement.aluminumCode": "GOLF12", // الشرط على أن يكون aluminumCode مساويًا لـ "GOLF10"
-          //     "orders.measurement.discount": { $ne: 2 } // الشرط على أن يكون discount مختلفًا عن 1
-          // };
-  
-          // // القيمة الجديدة لـ discount
-          // const update = { $set: { "orders.$[].measurement.$[elem].discount": 22222 } };
-  
-          // // الخيارات لتحديث الوثائق
-          // const options = {
-          //     arrayFilters: [{ "elem.aluminumCode": "GOLF12" }], // شرط لعنصر في الـ array
-          //     multi: true // تحديث عدة وثائق
-          // };
-  
-          // // تحديث الوثائق
-          // const d = await User.updateMany(filter, update);
-          // console.log('تم تحديث الوثائق بنجاح:', d);
-          // res.redirect(`/price/65faed920d5e625395d9aa83`);
-let iid = v.iid
-        const findDate = await  User.findOne({'orders._id': iid})
 
-            const h =  findDate
-    
-    
-          //  let indexVariable = `orders.$[orderElem].${"1"}.price.discount`
-          const foundObject = await h.orders.find(item => item.id === iid); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-          let pp = 0 // عدد المطلبات الي نفس الاسم عشان يقسمها عليهم
-          let hhh = v.discount // المبلغ 
-          let l = v.aluminumCode
-
-          foundObject.measurement.forEach(async (item,index) => {
-            if(item.aluminumCode===l){
-              pp++
-       
-
-            // const vgf = await User.updateOne(
-            //   { "orders._id": iid }, 
-            //   { $set: { [`orders.$[orderElem].measurement.${index}.price.discount`]: hhh } }, 
-            //   // { $set: { "orders.$[orderElem].measurement.3.price.discount":hhh } }, 
-            //   // { $set: { "orders.$[orderElem].measurement." + indexVariable + ".price.discount" : 1} }, 
-            //   { 
-            //     arrayFilters: [ { "orderElem._id": iid }, 
-            //     // { "measurementElem": 3 }
-            //   ],
-            //     new: true 
-            //   }
-            
-            // );
-      
-            
-            // updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
-          }
-          })
-       //
-      let to=hhh/pp
-       foundObject.measurement.forEach(async (item,index) => {
-        if(item.aluminumCode===l){
-         
-        // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuu")
-        // console.log(pp)
-        // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuu")
-   
-        const vgf = await User.updateOne(
-          { "orders._id": iid }, 
-          { $set: { [`orders.$[orderElem].measurement.${index}.price.discount`]: to } }, 
-          // { $set: { "orders.$[orderElem].measurement.3.price.discount":hhh } }, 
-          // { $set: { "orders.$[orderElem].measurement." + indexVariable + ".price.discount" : 1} }, 
-          { 
-            arrayFilters: [ { "orderElem._id": iid }, 
-            // { "measurementElem": 3 }
-          ],
-            new: true 
-          }
-        
-        );
-  
-
-
-    const data = {
-          aluminumCode: item.aluminumCode, // يمكنك استبدال القيم بالقيم الفعلية
-          h: parseFloat(item.H ),
-          w: parseFloat(item.W ),
-          discound:parseFloat(to)
-      };
-
-
-
-        const { resultH, resultW ,totalMeters,total,price } = calculateResults(data);
-   
-  let u = {
-    
-
-    umberOfMeters: totalMeters,
-    price: price,
-    discount: to,
-    total: total,
-
-  }
-        
-        const lkj = await User.updateOne(
-          { "orders._id": iid }, 
-          { $set: { [`orders.$[orderElem].measurement.${index}.price`]: u } }, 
-          { 
-            arrayFilters: [ { "orderElem._id": iid }, 
-          ],
-            new: true 
-          }
-        
-        );
-
-
-
-
-    
-
-      }
-
-      })
-       //
-       const { done } = await updateTotal(iid)// معادلة تحديث الجمالي والضريبة
-
-    let don = await done
-
-  res.redirect(`/price/${iid}`);
-
-         
- 
-      } catch (error) {
-          console.error('حدث خطأ أثناء تحديث الوثائق:', error);
-          res.status(500).json({ error: 'حدث خطأ أثناء تحديث الوثائق' });
-      }
-  });
-    
 
 
 
@@ -3306,14 +3221,49 @@ console.log(token)
 
 
 
-router.get('/home', requireAuth,restrictFactoryWorker, (req, res) => {
-  User.find().then((result) => {
-    const user = res.locals.user;  // هذه تم تمريرها مدالة التوكن عشان نرسل الصلاحيات إلى الفرنت اند عشان نخفي ونظهر بعض الأزرار
-    res.render("index", { arr: result, moment: moment, permissions: user ? user.permissions : [] });
-  }).catch((err) => {
-    console.log(err);
-  });
+// router.get('/home', requireAuth,restrictFactoryWorker, (req, res) => {
+//   User.find().then((result) => {
+//     const user = res.locals.user;  // هذه تم تمريرها مدالة التوكن عشان نرسل الصلاحيات إلى الفرنت اند عشان نخفي ونظهر بعض الأزرار
+//     res.render("index", { arr: result, moment: moment, permissions: user ? user.permissions : [] });
+//   }).catch((err) => {
+//     console.log(err);
+//   });
+// });
+
+
+
+
+
+router.get('/home', requireAuth, restrictFactoryWorker, (req, res) => {
+  const limit = parseInt(req.query.limit) || 4; // تعيين الحد الافتراضي إلى 1 إذا لم يتم تقديمه
+  const skip = parseInt(req.query.skip) || 0;   // تعيين قيمة skip الافتراضية إلى 0
+
+  User.find().skip(skip).limit(limit)
+    .then((result) => {
+      const user = res.locals.user;
+      const hasMore = result.length === limit; // تحقق إذا كانت هناك المزيد من البيانات
+
+      res.render("index", {
+        arr: result,                // تمرير النتائج التي تم جلبها إلى القالب
+        moment: moment,             // تمرير مكتبة moment لتنسيق التواريخ
+        permissions: user ? user.permissions : [],
+        hasMore: hasMore,           // تمرير ما إذا كانت هناك المزيد من البيانات
+        skip: skip + limit,         // زيادة قيمة skip للطلب التالي
+        limit: limit                // تمرير limit للقالب
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send('Something went wrong');
+    });
 });
+
+
+
+
+
+
+
 
 
 

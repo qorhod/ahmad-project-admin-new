@@ -55,6 +55,7 @@ mongoose.connect(process.env.DATABASE_PASSWORD)
     // تهيئة الأدمن الافتراضي والصلاحيات الافتراضية
     adminController.initializeAdmin();
     adminController.initializeDefaultPermissions();
+    adminController.initializePrices(); // لأنشاء التسعيرات الإفتارضية للقطاعات
     
     app.listen(port, () => {
       console.log(`http://localhost:${port}/`);

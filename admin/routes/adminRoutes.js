@@ -51,4 +51,8 @@ router.get('/manageAdmin', adminController.getManageAdmin);
 router.post('/manageAdmin', adminController.postManageAdmin);
 
 
+// عرض وتعديل اسعار الالمنيوم
+router.get('/editPrices', adminController.getPrices); // مسار لعرض الأسعار
+router.post('/editPrices', adminController.updatePrices); // مسار لتحديث الأسعار
+
 module.exports = router;

@@ -262,7 +262,19 @@ function calculateResults(data) {
     } else if (aluminumCode === "Fixed S4") {
         resultH = lip === "YAS" ? h + 5.6 : h;
         resultW = lip === "YAS" ? w + 5.6 : w;
-    }
+            }else if (["SG50","SMART","FORTICKS"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["T8CM","T10CM","FLAT"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["SKYLIGHT","SKYLIGHT FOR WALK"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["SLICES DOOR","DOUBLE GLASS DOOR"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }
 
     let H1 = resultH;
     let W1 = resultW;
@@ -281,7 +293,27 @@ function calculateResults(data) {
         "GOLF12": 600,
         "Sliding D10+": 500,
         "Fixed D4": 300,
-        "Fixed S4": 300
+        "Fixed S4": 300,
+
+        // اسعار الستركتشر
+        "SG50": 850,
+        "SMART": 850,
+        "FORTICKS": 950,
+        // سكاي لايت
+        "SKYLIGHT":1500,
+        "SKYLIGHT FOR WALK":3000,
+
+        // سعر التيوبات
+        "T8CM":600,
+        "T10CM":600,
+        "FLAT":600,
+
+        // الابواب 
+        "SLICES DOOR":850,
+        "DOUBLE GLASS DOOR":850,
+
+
+
     };
 
     let price = priceMap[aluminumCode] || 0;
@@ -299,8 +331,7 @@ function calculateResults(data) {
 
 
 
-
-
+// غير مستخدمة في allRoutes
 function  functionPrice(price) {
 
 
@@ -719,6 +750,11 @@ function motherEquation(data) {
         const Q10 = (B10 * C10) / 10000;
         const P10 = Math.ceil((C10 + B10) / 350) * 2;
 
+        return { Q10, E10, P10 };
+    }else{   // هذه الإلس انا اضفتها عشان القطاعة غير المسجلة
+        const E10 = 0
+        const Q10 = 0
+        const P10 = 0
         return { Q10, E10, P10 };
     }
 }
@@ -1386,6 +1422,14 @@ function aluminumCuttingReport(M4,B10,C10,) {
         // S4 = "--";
         // T4 = "--";
         // U4 = "--";
+        Q4 = 0;
+        R4 = 0;
+        S4 = 0;
+        T4 = 0;
+        U4 = 0;
+    }else{ 
+        // هذا الإليلص عشان القطاعات الي مسجلتها مثل الاستكتشر والأبواب والقواطع 
+      
         Q4 = 0;
         R4 = 0;
         S4 = 0;

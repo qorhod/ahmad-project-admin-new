@@ -60,14 +60,14 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                             aluminumThickness: Number,
                             insideOrOutside: String,
                             aluminumColorCode: String,
-
+                            aluminumSize: Number, // مقاس الألمنيوم نحتاجه فقط في الأستركتشر وال التيوبات
                             glasstype: String,
                             glassThickness: String,
                             glassColorCode: String,
                             glassCode: String,
                             temper: String,
                             lip: String,
-                            
+                            illumination: String,  // الإنميشن 
                             comments: String,
 
                             totalMeters:{

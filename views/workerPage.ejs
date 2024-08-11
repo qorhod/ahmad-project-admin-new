@@ -142,8 +142,11 @@
                         <tr>
                             <th>Number</th>
                             <th>Color Code</th>
+                            <th >illumination</th>
+
                             <th>H</th>
                             <th>W</th>
+
                             <th >Design </th>
                             <th>Status</th>
                         </tr>
@@ -155,6 +158,8 @@
 
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
+                                    <td><%= measurement.illumination || '--' %></td>
+
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
 

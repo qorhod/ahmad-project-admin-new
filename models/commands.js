@@ -33,7 +33,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                         SlicedDoor: Number,
                         SketchureFortex: Number,
                         Skylight: Number,
-                        ROYAL2: Number,
+                        
 
                     },
                     

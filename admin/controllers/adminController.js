@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
 const AuthUser = require('../models/auth-user');
 const Permissions = require('../models/permissions');
-
+const Prices = require('../models/prices');  
 // عرض صفحة تسجيل الدخول
 exports.getLogin = (req, res) => {
     res.render(path.join(__dirname, '../views/index'));
@@ -139,6 +139,101 @@ exports.initializeDefaultPermissions = async () => {
         console.error('Error initializing default permissions:', error);
     }
 };
+
+
+
+
+// عشان انشاء اسم القطاعات بشكل افتراضي عند تشغيل البرنامج
+exports.initializePrices = async () => {
+    try {
+        const count = await Prices.countDocuments();
+        if (count === 0) {
+            const defaultPrices = new Prices({
+                price: {
+                    slidingD10: 530,
+                    slidingD10b: 500,
+                    slidingD12: 550,
+                    slidingS: 300,
+               
+                    fixedD10: 450,
+                    fixedD4: 300,
+                    fixedS10: 350,
+                    fixedS4: 300,
+                 
+                    GOLF10: 550,
+                    GOLF12: 600,
+                    ROYAL2: 700,
+                    ROYAL3: 1000,
+
+                    
+                
+                    // اسعار الستركتشر
+                    SG50: 850,
+                    SMART: 850,
+                    FORTICKS: 950,
+                
+                    // سكاي لايت
+                    SKYLIGHT: 1100,
+                    SKYLIGHT_FOR_WALK: 3000,
+                
+                    // سعر التيوبات
+                    T8CM: 600,
+                    T10CM: 600,
+                    FLAT: 600,
+                
+                    // الابواب 
+                    SLICES_DOOR: 850,
+                    DOUBLE_GLASS_DOOR: 850
+                }
+            });
+            await defaultPrices.save();
+            console.log("Default prices initialized");
+            return "Default prices initialized";
+        } else {
+            console.log("Prices already initialized");
+            return "Prices already initialized";
+        }
+    } catch (error) {
+        console.error("Error initializing prices", error);
+        return "Error initializing prices";
+    }
+}
+
+
+
+// دالة للحصول على الأسعار
+exports.getPrices = async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const prices = await Prices.findOne();
+            const user = req.user || { username: 'guest', profileImage: '/admin/public/img/user.png' };
+            res.render(path.join(__dirname, '../views/editPrices'), { prices: prices.price, user });
+        } catch (error) {
+            console.error("Error getting prices", error);
+            res.status(500).send("Error getting prices");
+        }
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+// دالة لتحديث الأسعار
+exports.updatePrices = async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const updatedPrices = req.body.price;
+            await Prices.updateOne({}, { price: updatedPrices });
+            res.redirect('/admin/editPrices');
+        } catch (error) {
+            console.error("Error updating prices", error);
+            res.status(500).send("Error updating prices");
+        }
+    } else {
+        res.redirect('/admin');
+    }
+};
+
+
 
 // عرض صفحة إدارة الصلاحيات
 exports.getPermissions = async (req, res) => {
