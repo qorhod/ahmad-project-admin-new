@@ -9,7 +9,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
     
     
     
-
+    TAX: Number,
 
     price: { 
         slidingD10: Number,
@@ -22,15 +22,12 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
         fixedD4: Number,
         fixedS10: Number,
         fixedS4: Number,
-        sketchureSmart: Number,
-        sketchureFortex: Number,
+    
         GOLF10: Number,
         GOLF12: Number,
         ROYAL2: Number,
         ROYAL3: Number,
-        DoorD10: Number,
-        SlicedDoor: Number,
-        SketchureFortex: Number,
+
        
         ROYAL2: Number,
         

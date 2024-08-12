@@ -149,6 +149,8 @@ exports.initializePrices = async () => {
         const count = await Prices.countDocuments();
         if (count === 0) {
             const defaultPrices = new Prices({
+                TAX: 0.15, // الضريبة
+
                 price: {
                     slidingD10: 530,
                     slidingD10b: 500,
@@ -205,9 +207,9 @@ exports.initializePrices = async () => {
 exports.getPrices = async (req, res) => {
     if (req.isAuthenticated()) {
         try {
-            const prices = await Prices.findOne();
+            const pricesData = await Prices.findOne();
             const user = req.user || { username: 'guest', profileImage: '/admin/public/img/user.png' };
-            res.render(path.join(__dirname, '../views/editPrices'), { prices: prices.price, user });
+            res.render(path.join(__dirname, '../views/editPrices'), { prices: pricesData.price, tax: pricesData.TAX, user });
         } catch (error) {
             console.error("Error getting prices", error);
             res.status(500).send("Error getting prices");
@@ -217,21 +219,26 @@ exports.getPrices = async (req, res) => {
     }
 };
 
+
 // دالة لتحديث الأسعار
 exports.updatePrices = async (req, res) => {
     if (req.isAuthenticated()) {
         try {
-            const updatedPrices = req.body.price;
-            await Prices.updateOne({}, { price: updatedPrices });
+            const updatedPrices = req.body.price;  // أسعار المنتجات
+            const updatedTax = req.body.TAX;  // قيمة الضريبة
+
+            await Prices.updateOne({}, { price: updatedPrices, TAX: updatedTax });
             res.redirect('/admin/editPrices');
         } catch (error) {
-            console.error("Error updating prices", error);
-            res.status(500).send("Error updating prices");
+            console.error("Error updating prices and tax", error);
+            res.status(500).send("Error updating prices and tax");
         }
     } else {
         res.redirect('/admin');
     }
 };
+
+
 
 
 

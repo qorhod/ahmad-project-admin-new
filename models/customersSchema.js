@@ -40,9 +40,48 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
             glassThickness0: String,
             glassColorCode0: String,
           
-      
+            TAX: Number, // الضريبة 
+        // التسعيرات المحلية للطلب
+            prices: { 
+                slidingD10: Number,
+                slidingD10b: Number,
+                slidingD12: Number,
+                slidingS: Number,
+                interruptT: Number,
+                interrupt: Number,
+                fixedD10: Number,
+                fixedD4: Number,
+                fixedS10: Number,
+                fixedS4: Number,
+            
+                GOLF10: Number,
+                GOLF12: Number,
+                ROYAL2: Number,
+                ROYAL3: Number,
         
+               
+                ROYAL2: Number,
+                
+                // اسعار الستركتشر
+                SG50: Number,
+                SMART: Number,
+                FORTICKS: Number,
+            
+                // سكاي لايت
+                SKYLIGHT: Number,
+                SKYLIGHT_FOR_WALK: Number,
+            
+                // سعر التيوبات
+                T8CM: Number,
+                T10CM: Number,
+                FLAT: Number,
+            
+                // الابواب 
+                SLICES_DOOR: Number,
+                DOUBLE_GLASS_DOOR: Number
+            },
 
+            
 
 
 
@@ -83,11 +122,9 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                                 item: String,
                                 umberOfMeters: Number,
                                 price: Number,
-                                discount: Number,
+                                
                                 total: Number,
-                                // totalBeforeTax: Number,
-                                // tax: Number,
-                                totalWithDiscount: Number,
+                            
                                 },
 
 
@@ -168,8 +205,10 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
                     totalPrice:{ // التسعيرة
 
-                 
+                        
                     totalBeforeTax: Number,
+                    Discount: Number,
+                    totalAftereDiscount: Number,
                     tax: Number,
                     totalWithTax: Number,
                     },

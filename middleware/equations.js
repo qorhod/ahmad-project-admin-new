@@ -243,6 +243,7 @@ function calculateResults(data) {
     var w = data.w;
     var lip = data.lip;
     var aluminumCode = data.aluminumCode;
+    var prices= data.prices
 
     let resultH;
     let resultW;
@@ -282,43 +283,43 @@ function calculateResults(data) {
     let totalMeters = (H1 * W1 / 10000) < 1 && (H1 * W1 / 10000) !== 0 ? 1 : H1 * W1 / 10000;
 
     let priceMap = {
-        "Fixed D10": 450,
-        "Sliding D10": 530,
-        "Sliding D12": 550,
-        "GOLF10": 550,
-        "ROYAL 2": 700,
-        "ROYAL 3": 1000,
-        "Fixed S10": 350,
-        "Sliding S": 300,
-        "GOLF12": 600,
-        "Sliding D10+": 500,
-        "Fixed D4": 300,
-        "Fixed S4": 300,
+        "Fixed D10": prices.fixedD10,
+        "Sliding D10": prices.slidingD10,
+        "Sliding D12": prices.slidingD12,
+        "GOLF10": prices.GOLF10,
+        "ROYAL 2": prices.ROYAL2,
+        "ROYAL 3": prices.ROYAL3,
+        "Fixed S10": prices.fixedS10,
+        "Sliding S": prices.slidingS,
+        "GOLF12": prices.GOLF12,
+        "Sliding D10+": prices.slidingD10b,
+        "Fixed D4": prices.fixedD4,
+        "Fixed S4": prices.fixedS4,
 
         // اسعار الستركتشر
-        "SG50": 850,
-        "SMART": 850,
-        "FORTICKS": 950,
+        "SG50": prices.SG50,
+        "SMART": prices.SMART,
+        "FORTICKS": prices.FORTICKS,
         // سكاي لايت
-        "SKYLIGHT":1500,
-        "SKYLIGHT FOR WALK":3000,
+        "SKYLIGHT":prices.SKYLIGHT,
+        "SKYLIGHT FOR WALK":prices.SKYLIGHT_FOR_WALK,
 
         // سعر التيوبات
-        "T8CM":600,
-        "T10CM":600,
-        "FLAT":600,
+        "T8CM":prices.T10CM,
+        "T10CM":prices.T10CM,
+        "FLAT":prices.FLAT,
 
         // الابواب 
-        "SLICES DOOR":850,
-        "DOUBLE GLASS DOOR":850,
+        "SLICES DOOR":prices.SLICES_DOOR,
+        "DOUBLE GLASS DOOR":prices.DOUBLE_GLASS_DOOR,
 
 
 
     };
 
     let price = priceMap[aluminumCode] || 0;
-    let discound = data.discound || 0;
-    let total = (price - discound) * totalMeters;
+    // let discound = data.discound || 0;
+    let total = price * totalMeters;
 
     return { resultH, resultW, totalMeters, total, price };
 }
@@ -479,6 +480,51 @@ return { total };
 
 //// معادلة تحديث الجمالي والضريبة////
 
+// تعلدل الخصم هذه المعادلة القديمة بحدثها في المعادلة الي تحت
+// async function updateTotal(iid) {
+//     let priceTot = 0;
+
+//     const h = await User.findOne({'orders._id': iid});
+
+//     const foundObject = h.orders.find(item => item._id.equals(iid)); // للعثور على الكائن الصحيح
+
+//     if (foundObject.measurement && foundObject.measurement.length > 0) { // التحقق من وجود قياسات
+//         foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
+//         for (const item of foundObject.measurement) {
+//             if (!item.delete) { // الشرط لتجاهل القياسات المحذوفة
+//                 priceTot += item.price.totalWithDiscount;
+//             }
+//         }
+//     }
+//     const taxOrder=foundObject.TAX // نسبة الضيربة الخاصف في الاوردر
+//     let taxx = priceTot * taxOrder;
+//     let priceTotAndtaxx = priceTot + taxx;
+//     console.log("الاجمالي", priceTot, taxx, priceTotAndtaxx);
+
+//     const totalAndTax = {
+//         totalBeforeTax: priceTot,
+//         tax: taxx,
+//         totalWithTax: priceTotAndtaxx,
+//     };
+
+//     const nm = await User.updateOne(
+//         { "orders._id": iid },
+//         { $set: { "orders.$[orderElem].totalPrice": totalAndTax } },
+//         {
+//             arrayFilters: [{ "orderElem._id": iid }],
+//             new: true
+//         }
+//     );
+
+//     if (nm.nModified > 0) {
+//         return { done: "done" };
+//     } else {
+//         return false;
+//     }
+// }
+
+
+
 
 async function updateTotal(iid) {
     let priceTot = 0;
@@ -491,17 +537,21 @@ async function updateTotal(iid) {
         foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
         for (const item of foundObject.measurement) {
             if (!item.delete) { // الشرط لتجاهل القياسات المحذوفة
-                priceTot += item.price.totalWithDiscount;
+                priceTot += item.price.total;
             }
         }
     }
-
-    let taxx = priceTot * 0.15;
-    let priceTotAndtaxx = priceTot + taxx;
+    let discount =foundObject.totalPrice.Discount?foundObject.totalPrice.Discount:0  // يعني اذا كان الخصم موجود وألا اجعله صفر
+ let totalAftereDiscount = priceTot-discount
+    const taxOrder=foundObject.TAX // نسبة الضيربة الخاصف في الاوردر
+    let taxx = totalAftereDiscount * taxOrder; // الضريبة
+    let priceTotAndtaxx = totalAftereDiscount + taxx;
     console.log("الاجمالي", priceTot, taxx, priceTotAndtaxx);
 
     const totalAndTax = {
         totalBeforeTax: priceTot,
+        Discount:discount,
+        totalAftereDiscount:totalAftereDiscount,
         tax: taxx,
         totalWithTax: priceTotAndtaxx,
     };
@@ -521,6 +571,7 @@ async function updateTotal(iid) {
         return false;
     }
 }
+
 
 
 

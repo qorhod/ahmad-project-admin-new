@@ -10,7 +10,8 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
     
     
 
-
+    TAX: Number,
+    
     price: { 
         slidingD10: Number,
         slidingD10b: Number,
@@ -66,8 +67,8 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 // Create a model based on that schema
 // const prices = mongoose.model("prices", userSchema);  //كأنه نشأ اري وداخل اري يبدا يكتب البيانات الي نبغا بصيغة ابجكت customer عشان ننشاء مكان في الداتا بيز بهذا الأسم 
  // التحقق من وجود النموذج مسبقًا قبل تعريفه
-const prices = mongoose.models.prices || mongoose.model("prices", userSchema);
+const Prices = mongoose.models.prices || mongoose.model("prices", userSchema);
 
  
 // export the model
-module.exports = prices;  //app.js نصدر الداتا عشان نستقبلها في صفحة 
+module.exports = Prices;  //app.js نصدر الداتا عشان نستقبلها في صفحة 

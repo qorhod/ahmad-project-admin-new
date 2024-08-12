@@ -149,7 +149,7 @@
     class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> -->
   
 <!-- زر الطباعة -->
-  <input type="button" id="t" value="القائمة المفصلة" class="btn btn-secondary mt-5" onclick="toggleTables()" >
+  <input type="button" id="t" value="القائمة المختصرة"  class="btn btn-secondary mt-5" onclick="toggleTables()" >
 
   <button id="print1" type="button" class="btn btn-secondary mt-5" onclick="window.print()" >
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
@@ -183,7 +183,7 @@
 </div>
 
 
-        <table id="table1"
+        <table id="table2"
           style="width: 99%"
           class="text-center mx-auto table mt-5 table-striped table-bordered"
         >
@@ -204,7 +204,6 @@
               <th scope="col">الكمية</th>
               <th scope="col">الوحدة</th>
               <th scope="col">السعر</th>
-              <th scope="col">الخصم</th>
               <th scope="col">الإجمالي</th>
               <!-- <th scope="col">اجمالي بعد الخصم خويش</th> -->
               <th scope="col" class="no-print">Action</th>
@@ -217,46 +216,82 @@
           <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
             <% arrR.measurement.forEach((item, index) => { %>  
               <!--  -->
+
               <tbody  id="kk" >
+                <form style="display: inline;" action="/edit-price/<%= arrR._id %>" method="post">
+
                 <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
                  <tr class="<%= item.delete ? 'strikethrough' : '' %>"> 
                    <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                    <td><%=  parseFloat(item.totalMeters.totalMeters.toFixed(2))%>	</td>
                    <td>m2</td>
-                   <td><%= item.price.price %></td>
-                   <td><%=  parseFloat(item.price.discount.toFixed(2)) %></td>
+                   <!-- <td><%= //item.price.price %></td> -->
+                   <td  style="width: 15%;"><input disabled name="price"  id="editPrice<%= index %>"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;" value="<%= parseFloat(item.price.price.toFixed(2))%>"></td>
+
                    <td><%= parseFloat(item.price.total.toFixed(2)) %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
                    <!-- <td><%= //parseFloat( item.price.totalWithDiscount.toFixed(2)) %></td> -->
-                   <td class="no-print">
-                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-                  
-     
-                     <a
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Edit user"
-                       data-bs-placement="top"
-                       class="btn btn-primary btn-sm"
-                       href="./edit/<%=// item._id %>"
-                     >
-                       <i class="bi bi-pencil"></i>
-                     </a>
-                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-                     <button
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Delete user"
-                       data-bs-placement="top"
-                       class="btn btn-danger btn-sm"
-                     >
-                       <i class="bi bi-trash"></i>
-                     </button>
-                   </form>
-                   </td>
+                   <td style="width: 5%;" class="no-print">
+                    <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
+                 
+            
+                    <input
+                    id="butff<%= index %>"
+                    onclick="toggleEditability()"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="تعديل السعر"
+                      data-bs-placement="top"
+                      class="btn btn-primary btn-sm "
+                      value="تعديل السعر"
+                      
+                      
+                    >
+                      <!-- <i class="bi bi-pencil"></i> -->
+                  <!-- </a> -->
+                    <!-- <form style="display: inline;" action="/price/<%=// arrR._id %>" method="post"> -->
+                    <input
+                    
+                    style="width: 100%;  display: none;"
+                    id="ff<%= index %>"
+                   type="submit"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="تأكيد"
+                      data-bs-placement="top"
+                      class="btn btn-success btn-sm"
+                      value="تأكيد"
+                    >
+                      <!-- <i class="bi bi-trash"></i> -->
+                    <!-- </button> -->
+            
+                    <input type="hidden" name="id" value="<%= item._id %>">
+                    <input type="hidden" name="iid" value="<%= arrR._id %>">
+                    <input type="hidden" name="totalMeters" value="<%= item.totalMeters.totalMeters %>">
+
+                    <!-- <input id="discount<%= //index %>" type="hidden" name="discount" value=""> -->
+                  </form>
+                  </td>
                  </tr>
                 </tbody>
+              
+
+<script>
+  // هذا لتعديل السعر الجماعي يجعل الواجهه قابله لتعديدل 
+document.getElementById('butff<%= index %>').addEventListener('click', function() {
+      document.getElementById('butff<%= index %>').style.display = "none";
+      document.getElementById('ff<%= index %>').style.display = "block";
+
+      var input = document.getElementById('editPrice<%= index %>');
+      if (input.disabled) {
+        input.style="width: 60%; text-align: center; "
+        input.disabled = false; // جعل الإدخال قابل للتعديل
+      } else {
+        input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+  
+        input.disabled = true; // جعل الإدخال غير قابل للتعديل
+      }});
 
 
-
+</script>
 
      
                <% }) %>
@@ -266,9 +301,9 @@
 
 
 <!-- هذا جدول جمع الاصناف -->
-        <table  id="table2"
+        <table  id="table1"
         style="width: 99%"
-        class="text-center mx-auto table mt-5 table-striped table-bordered"
+        class="text-center mx-auto table mt-5 table-striped table-bordered mb-5"
       >
   
           <tr>
@@ -276,12 +311,9 @@
             <th scope="col">الصنف</th>
             <th scope="col">الكمية</th>
             <th scope="col">الوحدة</th>
-            <th scope="col">السعر</th>
-            <th scope="col">الخصم</th>
+            <!-- <th scope="col">السعر</th> -->
             <th scope="col">الإجمالي</th>
-            <th scope="col">الإجمالي بعد الخصم</th>
             
-            <th scope="col" class="no-print">Action</th>
          
           </tr>
         </thead>
@@ -346,48 +378,19 @@ arrR.measurement.forEach((item, index) => {
       <td><%= key %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
       <td><%=  parseFloat(value.value1.toFixed(2)) %>	</td>
       <td>m2</td>
-      <td><%= value.value2 %></td>
-      <td  style="width: 15%;"><input disabled name="discount"  id="editableInput<%= index %>"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;" value="<%= parseFloat(value.value4.toFixed(2))%>"></td>
+      <!-- <td><%=// value.value2 %></td> -->
+      <!-- <td  style="width: 15%;"><input disabled name="pricexx"  id="editPricexxx<%=// index %>"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;" value="<%=// parseFloat(value.value2.toFixed(2))%>"></td> -->
+
 <td><input  type="hidden" name="total" value="<%= value.value3 %>"><%= parseFloat(value.value3.toFixed(2))%></td>       <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
-<td><input  type="hidden" name="d" value="<%= value.value5 %>"><%= parseFloat(value.value5.toFixed(2))%></td>       <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
 
-      <td style="width: 5%;" class="no-print">
-        <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-     
+    
 
-        <input
-        id="but<%= index %>"
-        onclick="toggleEditability()"
-          data-bs-toggle="tooltip"
-          data-bs-title="إضافة خصم"
-          data-bs-placement="top"
-          class="btn btn-primary btn-sm "
-          value="إضافة خصم"
-          
-          
-        >
-          <!-- <i class="bi bi-pencil"></i> -->
-      <!-- </a> -->
-        <!-- <form style="display: inline;" action="/price/<%=// arrR._id %>" method="post"> -->
-        <input
-       
-        style="width: 100%;  display: none;"
-        id="bb<%= index %>"
-       type="submit"
-          data-bs-toggle="tooltip"
-          data-bs-title="تأكيد"
-          data-bs-placement="top"
-          class="btn btn-success btn-sm"
-          value="تأكيد"
-        >
-          <!-- <i class="bi bi-trash"></i> -->
-        <!-- </button> -->
 
         <input type="hidden" name="iid" value="<%= arrR._id %>">
         <!-- <input id="discount<%= //index %>" type="hidden" name="discount" value=""> -->
         <input type="hidden" name="aluminumCode" value="<%= key %>">
       </form>
-      </td>
+      
     </tr>
    </tbody>
 
@@ -408,6 +411,11 @@ arrR.measurement.forEach((item, index) => {
       }});
 
   
+
+
+
+
+
    
   </script>
     
@@ -425,17 +433,42 @@ arrR.measurement.forEach((item, index) => {
 
 
 
+<form style="display: inline;" action="/discount/<%= arrR._id %>" method="post">
 
 
-
+<div style="text-align: center;" class="mt-5 no-print">
+  <input
+    id="butkk"
+    onclick="toggleEditability()"
+    data-bs-toggle="tooltip"
+    data-bs-title="إضافة خصم"
+    data-bs-placement="top"
+    class="btn btn-primary btn-sm"
+    value="إضافة خصم"
+  >
+  <input
+    style="width: 100%; display: none;"
+    id="bbkk"
+    type="submit"
+    data-bs-toggle="tooltip"
+    data-bs-title="تأكيد"
+    data-bs-placement="top"
+    class="btn btn-success btn-sm"
+    value="تأكيد"
+  >
+</div>
 
 
 
 
         <table
         style="width: 99%"
-        class="text-center mx-auto table mt-5 table-striped table-bordered"
+        class="text-center mx-auto table mt-2 table-striped table-bordered"
       >
+
+
+
+      
         <thead>
           <tr>
            
@@ -445,13 +478,26 @@ arrR.measurement.forEach((item, index) => {
           </tr>
 
           <tr>
-            <th scope="col">الضريبة</th>
+           
+            <th scope="col">الخصم</th>
+            <th  style="width: 15%;"><input disabled name="discount"  id="editDiscount"  type="text" style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none; font-weight: bold;" value="<%= arrR.totalPrice.Discount%>"></th>
+            <th scope="col">SR</th>
+          </tr>
+
+          <tr>
+            <th scope="col">الإجمالي بعد الخصم</th>
+            <th scope="col"><%=  arrR.totalPrice.totalAftereDiscount ? parseFloat(arrR.totalPrice.totalAftereDiscount.toFixed(2)):0 %></th>
+            <th scope="col">SR</th>
+          </tr>
+
+          <tr>
+            <th scope="col">الضريبة <%="%"+ (arrR.TAX * 100).toFixed(0) %> </th>
             <th scope="col"><%= arrR.totalPrice.tax ? parseFloat(arrR.totalPrice.tax .toFixed(2)):0 %></th>
             <th scope="col">SR</th>
           </tr>
 
           <tr>
-            <th scope="col">الإجمالي شامل الضريبة</th>
+            <th scope="col">الإجمالي شامل الضريبة </th>
             <th scope="col"><%=  arrR.totalPrice.totalWithTax ? parseFloat(arrR.totalPrice.totalWithTax.toFixed(2)):0 %></th>
             <th scope="col">SR</th>
           </tr>
@@ -459,8 +505,9 @@ arrR.measurement.forEach((item, index) => {
       <tbody>
     </tbody>
   </table>
-     
-  
+  <input type="hidden" name="iid" value="<%= arrR._id %>">
+
+</form>
 
       </section>
     </main>
@@ -490,7 +537,7 @@ arrR.measurement.forEach((item, index) => {
       var table1 = document.getElementById('table1');
       var table2 = document.getElementById('table2');
     
-      document.getElementById("t").value="القائمة المفصلة"
+      document.getElementById("t").value="القائمة المختصرة" 
 
       // إذا كان الجدول الأول مرئيًا، قم بإخفاءه وإظهار الجدول الثاني، والعكس صحيح
       if (table1.style.display !== 'none') {
@@ -507,7 +554,7 @@ arrR.measurement.forEach((item, index) => {
         table1.style.display = 'table';
         table2.style.display = 'none';
 
-        document.getElementById("t").value="القائمة المختصرة"
+        document.getElementById("t").value="القائمة المفصلة"
 
       }
     }
@@ -549,6 +596,29 @@ function toggleEditability() {
 }
 
 </script> -->
+<script>
+  // background-color: transparent; border: none; outline: none;
+  document.getElementById('butkk').addEventListener('click', function() {
+    document.getElementById('butkk').style.display = "none";
+    document.getElementById('bbkk').style.display = "block";
 
+    var input = document.getElementById('editDiscount');
+    if (input.disabled) {
+      input.style="width: 60%; text-align: center; "
+      input.disabled = false; // جعل الإدخال قابل للتعديل
+    } else {
+      input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+
+      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+    }});
+
+
+
+
+
+
+
+ 
+</script>
 
 </html>

@@ -409,8 +409,22 @@ router.get('/my-draft',requireAuth,restrictFactoryWorker,checkPermission('my_dra
           
 
 
-var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // لمعرفة الأيدي من التوكن عشان نحطة في البحث بال اي دي تحت عشان نعرف العملاء الي تحت اسم هذا المستخدم
-const n = await {
+              var decoded = jwt.verify(req.cookies.jwt, 'shhhhh'); // استخراج البيانات من التوكن
+
+              // استدعاء جميع بيانات `prices`
+              const allPricesData = await Prices.findOne({}); // هذا سيعيد جميع الوثائق من نموذج `prices`
+              
+              // التحقق من وجود البيانات
+              if (!allPricesData || allPricesData.length === 0) {
+                return res.status(404).json({ error: 'لم يتم العثور على أي بيانات في prices' });
+              }
+
+              const prices = allPricesData.price
+              console.log("====================jj")
+
+              // إنشاء كائن جديد يحتوي على البيانات التي نريد إضافتها
+              
+   const n = await {
   status: 'مسودة',
   branch: v.branch,
   location: v.location,
@@ -426,32 +440,64 @@ const n = await {
   glassThickness0: v.glassThickness0,
   glassColorCode0: v.glassColorCode0,
   // glassColorCode0: v.glassColorCode,
-
-
+  TAX:allPricesData.TAX,
+  prices: { 
+    slidingD10: prices.slidingD10,
+    slidingD10b: prices.slidingD10b,
+    slidingD12: prices.slidingD12,
+    slidingS: prices.slidingS,
+    interruptT: prices.interruptT,
+    interrupt: prices.interrupt,
+    fixedD10: prices.fixedD10,
+    fixedD4: prices.fixedD4,
+    fixedS10: prices.fixedS10,
+    fixedS4: prices.fixedS4,
+  
+    GOLF10: prices.GOLF10,
+    GOLF12: prices.GOLF12,
+    ROYAL2: prices.ROYAL2,
+    ROYAL3: prices.ROYAL3,
+  
+    // اسعار الستركتشر
+    SG50: prices.SG50,
+    SMART: prices.SMART,
+    FORTICKS: prices.FORTICKS,
+  
+    // سكاي لايت
+    SKYLIGHT: prices.SKYLIGHT,
+    SKYLIGHT_FOR_WALK: prices.SKYLIGHT_FOR_WALK,
+  
+    // سعر التيوبات
+    T8CM: prices.T8CM,
+    T10CM: prices.T10CM,
+    FLAT: prices.FLAT,
+  
+    // الابواب 
+    SLICES_DOOR: prices.SLICES_DOOR,
+    DOUBLE_GLASS_DOOR: prices.DOUBLE_GLASS_DOOR
+  },
+  
 
 
 
           measurement:[]
-        }
+        };
     
-     
-const vgf= await User.findOneAndUpdate(
-  { _id: v.id },
-  { $push: { orders: [n] } }, // إضافة البيانات داخل orders
-  { new: true, upsert: true },
-  // { $push: { 'orders.$[].measurement': v } },
-  // { new: true, upsert: true }
-  
-)
+// تحديث مستند المستخدم بناءً على `_id` وإضافة البيانات إلى `orders`
+try {
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: v.id }, // البحث عن المستخدم بناءً على `id`
+    { $push: { orders: n } }, // إضافة البيانات الجديدة إلى `orders`
+    { new: true, upsert: true } // إنشاء مستند جديد إذا لم يتم العثور على أي مستند
+  );
 
+  // console.log('تمت إضافة البيانات بنجاح:', updatedUser);
+  return res.json({ id: "done" });
 
-.then(updatedUser => {
-  // return res.json({ id:"done" })
-  console.log('تمت إضافة البيانات بنجاح:', updatedUser);
-})
-.catch(error => {
+} catch (error) {
   console.error('حدث خطأ أثناء إضافة البيانات:', error);
-});
+  return res.status(500).json({ error: 'حدث خطأ أثناء إضافة البيانات' });
+}
 
 
 
@@ -870,6 +916,12 @@ router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
 
 
 
+  try {
+    // استدعاء بيانات الأسعار
+    const allPricesData = await Prices.findOne({});
+    
+    // إذا كنت بحاجة لاستخدام بيانات الأسعار هنا
+    // console.log('بيانات الأسعار:', allPricesData);
 
 
 
@@ -887,6 +939,7 @@ router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
     h: parseFloat(v.H ),
     w: parseFloat(v.W ),
     lip:v.lip,
+    prices:allPricesData.price
 
   
 };
@@ -932,7 +985,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
 
 /// دالة المعادلات الام///
   
-  try {
+  // try {
     const decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
 
 
@@ -1168,7 +1221,7 @@ console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
   
   // })
 
-// ظظ
+// 
  function sanitizeValue(value) {
     // إذا كانت القيمة undefined أو null أو ليست رقمًا، نعيد القيمة 0
     if (value === undefined || value === null || isNaN(Number(value))) {
@@ -2073,7 +2126,7 @@ router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async functi
 
 /////////////////////////////
  
-  router.post('/price/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
+  router.post('/pricexx/:id', requireAuth,restrictFactoryWorker, async function (req, res, next) {
     const v = await req.body
     console.log(v.total)
       try {
@@ -2156,194 +2209,89 @@ console.log(to)
 
 
 
+// ركوست إضافة خصم
 
-//////////Post////////
-router.post('/test', requireAuth,restrictFactoryWorker, async function (req, res, next) {
-  const v = await req.body
-  console.log(v.total)
-    try {
-// المدخلات
-      let iid = v.iid // id for order
-      let id = "65fe4b1d66fa54f1fb370e0e" // id for mesurement
+router.post('/discount/:id', requireAuth, restrictFactoryWorker, async function (req, res, next) {
+  // const orderId = req.params.id; // الحصول على معرف الطلب من مسار URL
+  // const { discount } = req.body; // الحصول على القيمة الجديدة للخصم من جسم الطلب
+  const v =  req.body
+  let orderId = v.iid
+  try {
+      // البحث عن الطلب وتحديث حقل الخصم
+      const user = await User.findOneAndUpdate(
+          { 'orders._id': orderId }, // البحث عن الطلب بالـ id داخل القائمة
+          { $set: { 'orders.$.totalPrice.Discount': v.discount } }, // التعديل على الحقل
+          { new: true } // للحصول على المستند المعدل
+      );
 
-      const findDate = await  User.findOne({'orders._id': iid})
+      if (user) {
+          // استدعاء الدالة updateTotal بشكل متزامن بعد تحديث الخصم
+          await updateTotal(orderId);
 
-          const h =  findDate
-  
-  
-        //  let indexVariable = `orders.$[orderElem].${"1"}.price.discount`
-        const foundObject = await h.orders.find(item => item.id === iid); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-        const mm = foundObject.measurement.find(item => item.id === id); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-      //   var measurement=[
-      //     { price :{
-       
-      //      price:100,  
-      //      total:150,
-      //      discount:50
-      //  },
-      //  aluminumCode:"GOLF12"
-       
-      //  },
-      //  { price :{
-       
-      //  price:55,  
-      //  total:250,
-      //  discount:50
-      //  },
-      //  aluminumCode:"GOLF10"
-      //  },
-      //  { price :{
-       
-      //  price:55,  
-      //  total:95,
-      //  discount:40
-      //  },
-      //  aluminumCode:"GOLF10"
-      //  }
-      //  ]
-      var pp =0
-      var price = 0
-      var total = 0
-      var discount = 0
-      var aluminumCode =''
-       let wordCount = 0;
-       const resultMap = new Map(); // إنشاء Map خارج اللوب الخارجي
-       
-       foundObject.measurement.forEach((item, index) => {
-           const itemm = { 
-               // value1: item.totalMeters.totalMeters , 
-               value1: item.price.price, 
-               value2: item.price.total,
-               value3: item.price.discount,
-               // value5: item.price.totalWithDiscount,  
-               
-               word: item.aluminumCode 
-           };
-       
-       
-           const key = `${itemm.word}`; // تكوين مفتاح يحتوي على الكلمة ورقم العمود
-       
-           if (resultMap.has(key)) {
-               resultMap.set(key, {
-                   // value1: resultMap.get(key).value1 += itemm.value1,
-                   value1: resultMap.get(key).value1 = itemm.value1,
-                   value2: resultMap.get(key).value2 + itemm.value2,
-                   value3: resultMap.get(key).value3 + itemm.value3,
-                   // value5: resultMap.get(key).value5 + itemm.value5,
-                   word: resultMap.get(key).word = itemm.word, 
-                 
-               });
-               
-               // resultMap.set(key, resultMap.get(key) ); //
-           } else {
-               resultMap.set(key, itemm);
-               // resultMap.set(key.length, 1);//
-           } 
-         
-       });
-       
-        let index = 0; 
-        // عرض النتيجة -->
-       
-        resultMap.forEach((value, key   ) => {
-       
-         // console.log(`${key} تكرر ${value} مرات`); 
-         index++; 
-       
-        //  console.log(key,value.value1,value.value2,value.value3)
-        if(mm.aluminumCode===key){
-          aluminumCode=key
-          price = value.value1
-         total = value.value2
-          discount = value.value3
-         
-        
-        
-        }
-      
-
-  //  console.log(aluminumCode,price,total,discount)
-          
-        })
-            console.log(aluminumCode,price,total,discount)
-
-
-
-
-
-
-
-//         let pp = 0 // عدد المطلبات الي نفس الاسم عشان يقسمها عليهم
-        // let hhh = //v.discount // المبلغ 
-//         let l = v.aluminumCode
-
-        foundObject.measurement.forEach(async (item,index) => {
-          if(mm.aluminumCode===item.aluminumCode){
-            pp++
-           
-          
-          
-          }
-
-        })
-        console.log(pp)
-        let to=discount/pp //الخصم تقسيم عدد القياسات المتشابهه في اسم القطاع
-       let tot = total/pp // اجمالي السعر لكل القطاعات المتشابها تقسيم عدلدها
-       let y = tot-to
-// console.log(to)
-
-
-// ////////////////
-      const filter = {
-          "orders.measurement.aluminumCode": aluminumCode
-      };
-  
-      const update = { $set: { 
-        "orders.$[orderElem].measurement.$[elem].price.discount": to,
-        "orders.$[orderElem].measurement.$[elem].price.totalWithDiscount": y,
-
-    
-    } };
-  
-      const options = {
-          arrayFilters: [{ "elem.aluminumCode": aluminumCode },
-          { "orderElem._id": iid }
-        ],
-          multi: true
-      };
-
-  
-      const result = await User.updateMany(filter, update, options);
-      console.log('تم تحديث الوثائق بنجاح:', result);
-// // /////////////
-
-
-
- 
-
-
-
-//       // updateTotal(iid)
-//           updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
-
-      res.redirect(`/test`);
-      // res.redirect(`/price/65fb082c7f80673a1fcc2a15`);
-
-
+          res.redirect(`/price/${orderId}`);
+      } else {
+          res.status(404).json({ message: 'لم يتم العثور على الطلب.' });
+      }
   } catch (error) {
-      console.error('حدث خطأ أثناء تحديث الوثائق:', error);
-      // Handle error
+      console.error('حدث خطأ أثناء التعديل:', error);
+      res.status(500).json({ message: 'حدث خطأ أثناء التعديل.', error });
   }
-
-
-     
-
-
 });
 
 
-//////////// لتجربنه وسيتم حذفه  /////
+
+// ركوست تعديل السعر
+
+
+router.post('/edit-price/:id', requireAuth, restrictFactoryWorker, async function (req, res, next) {
+  // const orderId = req.params.id; // الحصول على معرف الطلب من مسار URL
+  // const { discount } = req.body; // الحصول على القيمة الجديدة للخصم من جسم الطلب
+  const v =  req.body
+  let orderId = v.iid
+  const measurementId = v.id; // الحصول على معرف القياس من مسار URL
+  const  price  = v.price; // الحصول على القيمة الجديدة للسعر من جسم الطلب
+  const totalMeters=v.totalMeters
+  const total = price?price:0 * totalMeters;
+  try {
+      // البحث عن الطلب وتحديث حقل price داخل القياس المحدد
+      const user = await User.findOneAndUpdate(
+          { 'orders._id': orderId, 'orders.measurement._id': measurementId }, // البحث عن الطلب والقياس
+          { $set: { 
+            'orders.$[order].measurement.$[measurement].price.price': price?price:0 ,
+          'orders.$[order].measurement.$[measurement].price.total': total
+          } }, // التعديل على الحقل
+          { 
+              arrayFilters: [
+                  { 'order._id': orderId },
+                  { 'measurement._id': measurementId }
+              ],
+              new: true // للحصول على المستند المعدل
+          }
+      );
+
+
+      if (user) {
+          // استدعاء الدالة updateTotal بشكل متزامن بعد تحديث الخصم
+          await updateTotal(orderId);
+
+          res.redirect(`/price/${orderId}`);
+      } else {
+          res.status(404).json({ message: 'لم يتم العثور على الطلب.' });
+      }
+  } catch (error) {
+      console.error('حدث خطأ أثناء التعديل:', error);
+      res.status(500).json({ message: 'حدث خطأ أثناء التعديل.', error });
+  }
+});
+
+
+
+
+
+
+
+
+
 
 
 
