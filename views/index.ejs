@@ -79,7 +79,8 @@
                 <td>
                   <a class="btn btn-primary btn-sm" href="/view/<%= item._id %>" 
                     data-bs-toggle="tooltip" data-bs-title="View details" data-bs-placement="top">
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-arrow-right"></i>
+
                   </a>
                   <a class="btn btn-primary btn-sm" href="./edit/<%= item._id %>" 
                     data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top">
@@ -108,7 +109,7 @@
         <script>
           const userTable = document.getElementById('kk');
           let skip = parseInt(userTable.getAttribute('data-skip')); // يحصل على عدد العناصر الموجودة حاليًا من data-skip على الجدول
-          let limit = 4;
+          let limit = 10;
         
           const loadMoreBtn = document.getElementById('load-more-btn');
         

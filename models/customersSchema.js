@@ -44,7 +44,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
         // التسعيرات المحلية للطلب
             prices: { 
                 slidingD10: Number,
-                slidingD10b: Number,
+                slidingD10p: Number,
                 slidingD12: Number,
                 slidingS: Number,
                 interruptT: Number,

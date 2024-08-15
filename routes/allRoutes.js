@@ -369,6 +369,76 @@ var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
 
 
 
+                // صفحة القياسات الأساسية
+                router.get("/edit-basic-measurement/:orderId", restrictFactoryWorker, checkPermission('add_order'), async (req, res) => {
+                  try {
+                      // جلب orderId من المسار
+                      const { orderId } = req.params;
+                      
+                      // جلب customerId من الاستعلام
+                      const { customerId } = req.query;
+                      // البحث عن الطلب بناءً على orderId
+                      const user = await User.findOne({ "orders._id": orderId }, { "orders.$": 1 }); // يستخدم $ لجلب الطلب فقط
+                      
+                      if (user && user.orders.length > 0) {
+                          const order = user.orders[0]; // الطلب الذي تم جلبه
+                          res.render('user/edit-basic-measurement', { order: order, customerId: customerId, moment: moment });
+                      } else {
+                          res.status(404).send('Order not found');
+                      }
+                  } catch (err) {
+                      res.status(500).send(err);
+                  }
+              });
+
+
+
+
+     router.post('/edit-basic-measurement', async (req, res) => {
+  try {
+      const {
+          branch,
+          location,
+          aluminumCode0,
+          aluminumThickness0,
+          aluminumColorCode0,
+          glasstype0,
+          glassThickness0,
+          glassColorCode0,
+          id
+      } = req.body;
+
+      // تحديث الطلب داخل المستخدم بناءً على ID
+      const user = await User.findOneAndUpdate(
+          { "orders._id": id },
+          {
+              $set: {
+                  "orders.$.branch": branch,
+                  "orders.$.location": location,
+                  "orders.$.aluminumCode0": aluminumCode0,
+                  "orders.$.aluminumThickness0": aluminumThickness0,
+                  "orders.$.aluminumColorCode0": aluminumColorCode0,
+                  "orders.$.glasstype0": glasstype0,
+                  "orders.$.glassThickness0": glassThickness0,
+                  "orders.$.glassColorCode0": glassColorCode0
+              }
+          },
+          { new: true }
+      );
+
+      if (!user) {
+          return res.status(404).json({ message: 'Order not found' });
+      }
+
+      res.json({ message: 'Order updated successfully', id });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
 
 // جميع المسودات 
 
@@ -443,7 +513,7 @@ router.get('/my-draft',requireAuth,restrictFactoryWorker,checkPermission('my_dra
   TAX:allPricesData.TAX,
   prices: { 
     slidingD10: prices.slidingD10,
-    slidingD10b: prices.slidingD10b,
+    slidingD10p: prices.slidingD10p,
     slidingD12: prices.slidingD12,
     slidingS: prices.slidingS,
     interruptT: prices.interruptT,
@@ -2034,7 +2104,7 @@ router.post('/total-meters/:id', requireAuth,restrictFactoryWorker, async functi
       const newUser = await commands.create({
           price: {
               slidingD10: 530,
-              slidingD10b: 500,
+              slidingD10p: 500,
               slidingD12: 550,
               slidingS: 300,
               interruptT: 650,
@@ -2364,7 +2434,7 @@ router.get("/glass-cutting/:id",restrictFactoryWorker,checkPermission('manufactu
       const technicians = await AuthUser.find({ role: 'factoryWorker' });
       console.log("Technicians:", technicians);
 
-      res.render('user/glass-cutting', { arrR: foundMeasurement, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians, moment: moment });
+      res.render('user/glass-cutting', { arrR: foundMeasurement, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians,allData:h, moment: moment });
   } catch (err) {
       console.log(err);
       res.status(500).send('Server Error');
@@ -2619,7 +2689,7 @@ router.get("/aluminum-cutting/:id",restrictFactoryWorker,checkPermission('manufa
       const technicians = await AuthUser.find({ role: 'factoryWorker' });
       console.log("Technicians:", technicians);
 
-      res.render('user/aluminum-cutting', { arrR: foundMeasurement, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians, moment: moment });
+      res.render('user/aluminum-cutting', { arrR: foundMeasurement,allData:h, idCustomer: idCustomer, foundOrder: foundOrder, technicians: technicians, moment: moment });
   } catch (err) {
       console.log(err);
       res.status(500).send('Server Error');
@@ -2838,7 +2908,7 @@ router.get("/total-materials/:id",restrictFactoryWorker, (req, res) => {
   const idToFind = req.params.id; // من الرابط id 
   const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
 
-    res.render('user/total-materials',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+    res.render('user/total-materials',{arrR:foundObject,idCustomer:idCustomer ,allData:h,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
   }).catch((err)=>{
       console.log(err)
 })
@@ -3183,7 +3253,7 @@ console.log(token)
 
 
 router.get('/home', requireAuth, restrictFactoryWorker, (req, res) => {
-  const limit = parseInt(req.query.limit) || 4; // تعيين الحد الافتراضي إلى 1 إذا لم يتم تقديمه
+  const limit = parseInt(req.query.limit) || 30; // تعيين الحد الافتراضي إلى 1 إذا لم يتم تقديمه
   const skip = parseInt(req.query.skip) || 0;   // تعيين قيمة skip الافتراضية إلى 0
 
   User.find().skip(skip).limit(limit)

@@ -274,8 +274,11 @@ document.getElementById("kk").innerHTML =
              <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
              <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
              <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-             <td><%= item.location %>	</td>
-             <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
+      <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Go to Location" data-bs-placement="top" class="btn btn-success btn-sm mx-auto" href="<%= item.location %>" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </a>
+                </td>             <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
              <!-- <td><%= //item.age %></td> -->
              <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
              <td>
@@ -287,19 +290,20 @@ document.getElementById("kk").innerHTML =
                  data-bs-placement="top"
                  class="btn btn-primary btn-sm"
                  href="/review/<%= item._id%>" 
-                 ><i class="bi bi-eye"></i
-               ></a>
+                 ><i class="bi bi-arrow-right"></i>
+</a>
 
-               <a
-                 data-bs-toggle="tooltip"
-                 data-bs-title="Edit user"
-                 data-bs-placement="top"
-                 class="btn btn-primary btn-sm"
-                 href="./edit/<%= //item._id %>"
-               >
-                 <i class="bi bi-pencil"></i>
-               </a>
                   <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
+
+
+                   <a
+                     data-bs-toggle="tooltip"
+                     data-bs-title="Edit user"
+                     data-bs-placement="top"
+                     class="btn btn-primary btn-sm"
+href="/edit-basic-measurement/<%= item._id %>?customerId=<%= arrView._id  %>">
+                     <i class="bi bi-pencil"></i>
+                   </a>
 
                   <form id="delete-form-<%= item._id %>" action="/delete-order/<%= item._id %>?_method=DELETE" method="post" style="display: none;">
                   </form>
@@ -318,8 +322,11 @@ document.getElementById("kk").innerHTML =
                  <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                  <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
                  <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                 <td><%= item.location %>	</td>
-                 <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
+                  <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Go to Location" data-bs-placement="top" class="btn btn-success btn-sm mx-auto" href="<%= item.location %>" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </a>
+                </td>                 <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
                  <!-- <td><%= //item.age %></td> -->
                  <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
                  <td>
@@ -331,16 +338,15 @@ document.getElementById("kk").innerHTML =
                      data-bs-placement="top"
                      class="btn btn-primary btn-sm"
                      href="/review/<%= item._id%>" 
-                     ><i class="bi bi-eye"></i
-                   ></a>
+                     ><i class="bi bi-arrow-right"></i>
+</a>
     
                    <a
                      data-bs-toggle="tooltip"
                      data-bs-title="Edit user"
                      data-bs-placement="top"
                      class="btn btn-primary btn-sm"
-                     href="./edit/<%= //item._id %>"
-                   >
+href="/edit-basic-measurement/<%= item._id %>?customerId=<%= arrView._id  %>">
                      <i class="bi bi-pencil"></i>
                    </a>
                     <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
@@ -361,8 +367,18 @@ document.getElementById("kk").innerHTML =
                <tr>
                  <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                  <td><%= item.orderNumber?item.orderNumber:"لم يؤكد" %>	</td>
-                 <td><%= item.branch %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                 <td><%= item.location %>	</td>
+                  <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Go to Location" data-bs-placement="top" class="btn btn-success btn-sm mx-auto" href="<%= item.location %>" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </a>
+                </td>                 <td><%= item.location %>	</td>
+                  <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Go to Location" data-bs-placement="top" class="btn btn-success btn-sm mx-auto" href="<%= item.location %>" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </a>
+                </td>
+
+
                  <td  id="status" style="padding-left: 12px; padding-right: 26px;   color: <%= item.status === 'مؤكد' ? 'rgb(60, 199, 10)' : '' %>"><%= item.status %></td>
                  <!-- <td><%= //item.age %></td> -->
                  <!-- <td><%= //moment(item.updatedAt).fromNow();  %></td> الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
@@ -375,21 +391,18 @@ document.getElementById("kk").innerHTML =
                      data-bs-placement="top"
                      class="btn btn-primary btn-sm"
                      href="/review/<%= item._id%>" 
-                     ><i class="bi bi-eye"></i
-                   ></a>
+                     ><i class="bi bi-arrow-right"></i>
+</a>
     
-                   <a
-                     data-bs-toggle="tooltip"
-                     data-bs-title="Edit user"
-                     data-bs-placement="top"
-                     class="btn btn-primary btn-sm"
-                     href="./edit/<%= //item._id %>"
-                   >
-                     <i class="bi bi-pencil"></i>
-                   </a>
+           
 
                    <% if (item.status === 'مسودة'&& item.salesEmployeeId===userId) { %>    
 
+
+
+ 
+
+                    
                   <form id="delete-form-<%= item._id %>" action="/delete-order/<%= item._id %>?_method=DELETE" method="post" style="display: none;">
                   </form>
                   <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('<%= item._id %>')"><i class="bi bi-trash"></i></button>

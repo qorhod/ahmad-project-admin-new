@@ -153,7 +153,7 @@ exports.initializePrices = async () => {
 
                 price: {
                     slidingD10: 530,
-                    slidingD10b: 500,
+                    slidingD10p: 500,
                     slidingD12: 550,
                     slidingS: 300,
                

@@ -205,7 +205,10 @@ yourSchema.pre('save', async function(next) {
       try {
           // احسب عدد الوثائق الموجودة في المجموعة وأضف 1 للحصول على القيمة الجديدة لحقل الترقيم
           const count = await this.constructor.countDocuments(); // هذي هي الداله التي لل تكرر الرقم لم اعرف كيف الصفرها إى الان ولاكن انقص العدد مثل ما سويت تحت
-          this.orderNumber = count -18 + 100;
+          this.orderNumber = count -225 + 100;
+          // this.orderNumber = count + 1;
+          // this.orderNumber = count > 0 ? count + 1 : 1;
+
       } catch (err) {
           next(err);
       }

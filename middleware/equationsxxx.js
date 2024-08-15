@@ -46,7 +46,7 @@ var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
     } else if (aluminumCode === "GOLF10") {
         resultH = lip==="YAS"?h + 6:h;
         resultW =  lip==="YAS"?w + 6:w;
-    } else if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Fixed S10" || aluminumCode === "Fixed D10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Fixed D4") {
+    } else if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Fixed S10" || aluminumCode === "Fixed D10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Fixed D4") {
         resultH = lip==="YAS"?h + 8:h;
         resultW = lip==="YAS"?w + 8:w;
     } else if (aluminumCode === "Fixed S4") {
@@ -74,7 +74,7 @@ var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
 
         var fixedD10= 450
         var  slidingD10= 530
-         var slidingD10b= 500
+         var slidingD10p= 500
          var slidingD12= 550
          var slidingS= 300
         
@@ -140,9 +140,9 @@ var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
     total = (GOLF12-discound)*totalMeters
     price=GOLF12
     
-    }else if(aluminumCode==="Sliding D10+"){
-    total = (slidingD10b-discound)*totalMeters
-    price=slidingD10b
+    }else if(aluminumCode==="Sliding D10p"){
+    total = (slidingD10p-discound)*totalMeters
+    price=slidingD10p
     
     }else if(aluminumCode==="Fixed D4"){
     total = (fixedD4-discound)*totalMeters
@@ -189,7 +189,7 @@ function  functionPrice(price) {
 
     var fixedD10= 450
     var  slidingD10= 530
-     var slidingD10b= 500
+     var slidingD10p= 500
      var slidingD12= 550
      var slidingS= 300
     
@@ -252,8 +252,8 @@ total = (slidingS-discound)*totalMetersp
 total = (GOLF12-discound)*totalMetersp
 
 
-}else if(input==="Sliding D10+"){
-total = (slidingD10b-discound)*totalMetersp
+}else if(input==="Sliding D10p"){
+total = (slidingD10p-discound)*totalMetersp
 
 
 }else if(input==="Fixed D4"){
@@ -526,7 +526,7 @@ function motherEquation(data){
     const B10 =data.h ; //W
     const C10 =data.w ;//H
     const D10 = 0; // الثابت باقي نضيفه
-    if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Sliding D10") {
+    if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Sliding D10") {
     const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);  // الحلق
     const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2; // الكعب
     const G10 = (B10 - 6.5 - D10) / 100 * 2; // الشنكل
@@ -637,7 +637,7 @@ function motherEquation(data){
 //                 sumO10 = 0,
 //                 sumP10 = 0;
     
-//             if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Sliding D10") {
+//             if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Sliding D10") {
 //                 sumE10 += item.E10;
 //                 sumF10 += item.F10;
 //                 sumG10 += item.G10;
@@ -894,7 +894,7 @@ function totalMotherEquation(order) {
             //     } else if (C4 === "ROYAL 2") {
             //         valueA = (C10 / 2) - 6;
             //         valueB = B10 - 19.6;
-            //     } else if (C4 === "Sliding D10+") {
+            //     } else if (C4 === "Sliding D10p") {
             //         valueA = (C10 / 2) - 8.8;
             //         valueB = B10 - 16;
             //     } else if (C4 === "Sliding S") {
@@ -948,7 +948,7 @@ function totalMotherEquation(order) {
                     valueA = (C10 / 2) - 6;
                     valueB = B10 - 19.6;
                     valueC = ((valueA * valueB) * 2)/10000
-                } else if (C4 === "Sliding D10+") {
+                } else if (C4 === "Sliding D10p") {
                     valueA = (C10 / 2) - 8.8;
                     valueB = B10 - 16;
                     valueC = ((valueA * valueB) * 2)/10000
@@ -1027,7 +1027,7 @@ function aluminumCuttingReport(M4,B10,C10,) {
         S4 = G4 - 1 + 1.3;
         T4 = H4 - 1 + 0.7 + 8.9;
         U4 = I4 - 1 + 1.4 - 0.1;
-    } else if (M4 === "Sliding D10" || M4 === "Sliding D10+" || M4 === "Sliding S") {
+    } else if (M4 === "Sliding D10" || M4 === "Sliding D10p" || M4 === "Sliding S") {
         Q4 = E4;
         R4 = F4;
         S4 = G4;

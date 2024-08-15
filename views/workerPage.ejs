@@ -27,6 +27,9 @@
         h1, h2, h3 {
             margin-top: 20px;
         }
+        .custom-image {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="container">
@@ -77,13 +80,12 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Number</th>
+                            <th>Aluminum Code</th>
                             <th>Color Code</th>
                             <th>H</th>
                             <th>W</th>
-                            <th >Design </th>
+                            <th>Design</th>
                             <th>Status</th>
-                            
-                            
                         </tr>
                     </thead>
                     <tbody>
@@ -91,30 +93,13 @@
                             <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                                     <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
-                                    <!-- <td><%=//(measurement.glassCuttingReport[0].H && measurement.glassCuttingReport[0].H ? measurement.glassCuttingReport[0].H : '--') %></td>
-                                    <td><%=//(measurement.glassCuttingReport[0].W && measurement.glassCuttingReport[0].W ? measurement.glassCuttingReport[0].W : '--') %></td> -->
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
                                     <td>
-                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                        
-                                        <!-- المودال لعرض الصورة بشكل كامل -->
-                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content bg-white">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
                                     <td>
                                         <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
@@ -125,9 +110,6 @@
                                             </button>
                                         </form>
                                     </td>
-
-                          
-
                                 </tr>
                             <% } %>
                         <% }) %>
@@ -141,13 +123,12 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Number</th>
+                            <th>Aluminum Code</th>
                             <th>Color Code</th>
-                            <th >illumination</th>
-
+                            <th>illumination</th>
                             <th>H</th>
                             <th>W</th>
-
-                            <th >Design </th>
+                            <th>Design</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -155,33 +136,15 @@
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
                                     <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.glassColorCode || '--' %></td>
                                     <td><%= measurement.illumination || '--' %></td>
-
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
-
                                     <td>
-                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                        
-                                        <!-- المودال لعرض الصورة بشكل كامل -->
-                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content bg-white">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
                                     <td>
                                         <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
@@ -216,9 +179,7 @@
                             <th>(B1)*2</th>
                             <th>(B2)*4</th>
                             <th>(B3)*2</th>
-                            <th>(N1)*2</th>
-                            <th>(N2)*2</th>
-                            <th >Design </th>
+                            <th>Design</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -226,45 +187,23 @@
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
-                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
-                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
-                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].U4 ? measurement.aluminumCuttingReport[0].U4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].T4 ? measurement.aluminumCuttingReport[0].T4 * 4 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].S4 ? measurement.aluminumCuttingReport[0].S4 * 2 : '--') %></td>
-                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
-                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
-
+                                    <td><%=(measurement.aluminumCuttingReport.H && measurement.aluminumCuttingReport.H ? measurement.aluminumCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.W && measurement.aluminumCuttingReport.W ? measurement.aluminumCuttingReport.W : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B1 && measurement.aluminumCuttingReport.B1 ? measurement.aluminumCuttingReport.B1 : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B2 && measurement.aluminumCuttingReport.B2 ? measurement.aluminumCuttingReport.B2 : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B3 && measurement.aluminumCuttingReport.B3 ? measurement.aluminumCuttingReport.B3 : '--') %></td>
                                     <td>
-                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                        
-                                        <!-- المودال لعرض الصورة بشكل كامل -->
-                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content bg-white">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
                                     <td>
-                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
-                                            <input type="hidden" name="idCustomer" value="<%= //idCustomer %>">
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <input type="hidden" name="taskType" value="cutting">
-                                            <button type="submit" class="btn <%= measurement.cuttingStatus ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                            <button type="submit" class="btn <%= measurement.cuttingStatusAluminum ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatusAluminum ? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
                                     </td>
@@ -280,7 +219,7 @@
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Sequence Number</th>
+                            <th>Number</th>
                             <th>Aluminum Code</th>
                             <th>Color Code</th>
                             <th>H(A1)*2</th>
@@ -288,9 +227,7 @@
                             <th>(B1)*2</th>
                             <th>(B2)*4</th>
                             <th>(B3)*2</th>
-                            <th>(N1)*2</th>
-                            <th>(N2)*2</th>
-                            <th >Design </th>
+                            <th>Design</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -298,45 +235,23 @@
                         <% order.orders.measurement.forEach(measurement => { %>
                             <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
-                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
-                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
-                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].U4 ? measurement.aluminumCuttingReport[0].U4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].T4 ? measurement.aluminumCuttingReport[0].T4 * 4 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].S4 ? measurement.aluminumCuttingReport[0].S4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].R4 ? measurement.aluminumCuttingReport[0].R4 * 2 : '--') %></td>
-                                    <td><%= (measurement.aluminumCuttingReport[0] && measurement.aluminumCuttingReport[0].Q4 ? measurement.aluminumCuttingReport[0].Q4 * 2 : '--') %></td>
-
+                                    <td><%=(measurement.aluminumCuttingReport.H && measurement.aluminumCuttingReport.H ? measurement.aluminumCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.W && measurement.aluminumCuttingReport.W ? measurement.aluminumCuttingReport.W : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B1 && measurement.aluminumCuttingReport.B1 ? measurement.aluminumCuttingReport.B1 : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B2 && measurement.aluminumCuttingReport.B2 ? measurement.aluminumCuttingReport.B2 : '--') %></td>
+                                    <td><%=(measurement.aluminumCuttingReport.B3 && measurement.aluminumCuttingReport.B3 ? measurement.aluminumCuttingReport.B3 : '--') %></td>
                                     <td>
-                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                        
-                                        <!-- المودال لعرض الصورة بشكل كامل -->
-                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content bg-white">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
                                     <td>
-                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
-                                            <input type="hidden" name="idCustomer" value="<%= //idCustomer %>">
+                                        <form action="/aluminum-assembly/update-status-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <input type="hidden" name="taskType" value="assembly">
-                                            <button type="submit" class="btn <%= measurement.assemblyStatus ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                            <button type="submit" class="btn <%= measurement.assemblyStatusAluminum ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.assemblyStatusAluminum ? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
                                     </td>
@@ -346,33 +261,36 @@
                     </tbody>
                 </table>
             <% } %>
-
         </div>
     <% }) %>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="./js/jquery.slim.min.js"></script>
-    <script src="./js/popper.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
+    <!-- المودال لعرض الصورة بشكل كامل -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Design Image" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./js/main.js"></script>
-
     <script>
-        function saveScrollPosition(orderNumber) {
-            localStorage.setItem('scrollPosition', 'order-' + orderNumber);
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
-            const orderId = localStorage.getItem('scrollPosition');
-            if (orderId) {
-                const element = document.getElementById(orderId);
-                if (element) {
-                    element.scrollIntoView();
+            // حدث عند فتح المودال
+            document.addEventListener('click', function(event) {
+                if (event.target.matches('.custom-image')) {
+                    var imageSrc = event.target.getAttribute('data-image-src');
+                    var modalImage = document.getElementById('modalImage');
+                    modalImage.src = imageSrc;
                 }
-                localStorage.removeItem('scrollPosition');
-            }
+            });
         });
     </script>
-   
 </body>
 </html>

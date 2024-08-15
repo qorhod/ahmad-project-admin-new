@@ -245,10 +245,13 @@
 
 </style>
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <script src="../js/color-modes.js"></script>
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <link
       rel="stylesheet"
       href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
@@ -262,7 +265,7 @@
       content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
     />
     <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
+    <title>measurement</title>
     <link rel="stylesheet" href="../css/overlay.css">
 
     
@@ -530,7 +533,7 @@
           
           
                               <label class="checkbox-wrapper">
-                                  <input value="Sliding D10+" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                  <input value="slidingD10p" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
                                   <span class="checkbox-tile">
                                       <span class="checkbox-icon">
                                           <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
@@ -705,23 +708,7 @@
 
 <h4>:ارسم شكل الألمنيوم</h4>
 
-<button id="showCanvasButton" class="btn btn-primary">رسم قياس</button>
-
-<!-- النافذة المنبثقة لمساحة الرسم -->
-<div id="drawingModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <canvas id="drawingCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
-    <div class="mt-2">
-      <button id="undoButton" class="btn btn-warning">الرجوع للوراء</button>
-      <button id="redoButton" class="btn btn-info">العودة إلى الأمام</button>
-      <button id="clearButton" class="btn btn-danger">مسح المساحة</button>
-      <button id="saveDrawingButton" class="btn btn-success">اعتماد الصورة</button>
-      <label for="lineWidth">عرض الخط:</label>
-<input type="range" id="lineWidth" min="1" max="10" value="2">
-    </div>
-  </div>
-</div>
+<%- include('../components/Fabric.ejs') %>
 
 <!-- مساحة لعرض الصورة المحفوظة -->
 <div id="savedImageContainer" style="display: none; margin-top: 20px;">
@@ -775,7 +762,7 @@
       placeholder="BM-###"
       type="text"
       class="form-control"
-      id="glassColorCodeId"
+      id="aluminumColorCodeId"
       value="<%=arrM.aluminumColorCode0?arrM.aluminumColorCode0:arrM.aluminumColorCode%>"
     />
   </div>
@@ -914,6 +901,10 @@
    
           
 <!-- mx-auto -->
+<div id="alertContainer" class="alert alert-danger d-none" role="alert">
+  القياسات غير مكتملة
+</div>
+
                   <div class="d-grid gap-2 col-6  mt-5">
 
                     <!-- href="/measurement/<%=// arrM._id %>" -->
@@ -953,33 +944,7 @@
     
     
 
-    <!-- <textarea id="myTextarea" rows="4" cols="50"></textarea>
-<button id="sendButton">إرسال</button>
-
-<script>
-    const sendButton = document.getElementById('sendButton');
-    const myTextarea = document.getElementById('myTextarea');
-
-    sendButton.addEventListener('click', async () => {
-        const textareaValue = myTextarea.value;
-
-        try {
-            const response = await fetch('/measurementxxx', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ comments: textareaValue })
-            });
-
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('حدث خطأ:', error);
-        }
-    });
-</script>
- -->
+ 
 <!-- انبوت مخفي يحمل id -->
 <input id="iid" type="hidden" value="<%= arrM.iid?arrM.iid:arrM._id %>"> 
   </body>
@@ -1073,532 +1038,12 @@
 
 
 
-// var n =decument.getElementById("lengthId").value
-
-// console.log(n)
-
-// click
-
-
-
-
-
-
-
-  // signupForm.addEventListener("submit", async (e) => {
-  //   e.preventDefault();
-  //   emailError.textContent = ""
-  //   passwordError.textContent = ""
-
-  //   const res = await fetch("sign-up", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       email: emailId.value,
-  //        password: passwordId.value,
-  //        userName:usernameId.value,
-  //     }),
-  //     headers: { "Content-Type": "application/json" },
-  //   });
-
-  //   const data = await res.json();
-
-
-  //   if (data.arrvalidationError) {
-  //     console.log(data.arrvalidationError)
-
-  //     data.arrvalidationError.forEach(item => {
-
-  //       if (item.path == "email") {
-  //         emailError.textContent = "please provide a valid email"
-  //       }
-
-
-  //       if (item.path == "password") {
-  //         passwordError.textContent = "Password must be at least 8 characters with 1 upper case letter and 1 number"
-  //       }
-        
-  //     });
-  //   }
-
-
-
-
-
 
 
 </script>
  
 
 
-
-<!-- <script>
-
-
-  
-
-
-//////////////////////////////////////////////////////////////
-
-// قائمة اشكال القطاعات زر اخفاء واضهار القوائم
-
-
-
-
-
-
-
-
-
-  // الاقائمة
-  // const div110 = document.getElementById("div110")
-  //           const div220 = document.getElementById("div220")
-  //           const div330 = document.getElementById("div330")
-
-  //           div220.style.setProperty("display", "none", "important")
-  //           div330.style.setProperty("display", "none", "important")
-
-  //           // كنترول الزر الأول
-  //           document.getElementById("btnradio110").addEventListener("change",function(){
-                
-  //               if (this.checked) {
-  //               console.log("Checkbox is checked1111..");
-                
-  //               div220.style.setProperty("display", "none", "important")
-  //               div330.style.setProperty("display", "none", "important")
-  //               div110.style.setProperty("display", "block", "important")
-
-
-              
-  //             } else  {
-  //               console.log("Checkbox is not checked..");
-
-  //             }
-
-
-  //           })
-
-
-
-  //           // كنترول الزر الثاني
-
-
-  //           document.getElementById("btnradio220").addEventListener("change",function(){
-              
-  //               if (this.checked) {
-  //               console.log("Checkbox is checked22222..");
-              
-  //             div110.style.setProperty("display", "none", "important")
-  //               div330.style.setProperty("display", "none", "important")
-  //               div220.style.setProperty("display", "block", "important")
-  //               // document.getElementById("ok1").value="ok1"
-            
-  //             } else  {
-  //               console.log("Checkbox is not checked..");
-               
-                
-  //             }
-
-
-  //           })
-
-
-
-
-
-
-  //           // كنترول الزر الثالث
-
-
-  //           document.getElementById("btnradio330").addEventListener("change",function(){
-              
-  //             if (this.checked) {
-  //             console.log("Checkbox is checked33333..");
-
-  //             div110.style.setProperty("display", "none", "important")
-  //             div220.style.setProperty("display", "none", "important")
-  //             div330.style.setProperty("display", "block", "important")
-
-
-              
-  //           } else  {
-  //             console.log("Checkbox is not checked..");
-
-              
-  //           }
-
-
-  //           })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-// next.addEventListener("click", async (e) => {
-//     e.preventDefault();
-    
-
-
-
-//         // يطبعلك زر واح برمزه في قاعدة البينات
-//         var getSelectedValue2 = document.querySelector( 
-//                 'input[name="c2"]:checked'); 
-      
-
-//                   var glasstypeValue = document.querySelector( 
-//                 'input[name="q1"]:checked');    
-
-// // /// قائمة اشكال القطاعات زر اخفاء واضهار القوائم//////
-/////////////////////////////////////////////
-
-
-
-// //  قائمة نوع الألمنيوم زر اخفاء واضهار القوائم
-
-  // الاقائمة
-            const div11 = document.getElementById("div11")
-            const div22 = document.getElementById("div22")
-            const div33 = document.getElementById("div33")
-
-            div22.style.setProperty("display", "none", "important")
-            div33.style.setProperty("display", "none", "important")
-
-            // كنترول الزر الأول
-            document.getElementById("btnradio11").addEventListener("change",function(){
-                
-                if (this.checked) {
-                console.log("Checkbox is checked1111..");
-                
-                div22.style.setProperty("display", "none", "important")
-                div33.style.setProperty("display", "none", "important")
-                div11.style.setProperty("display", "block", "important")
-
-
-              
-              } else  {
-                console.log("Checkbox is not checked..");
-
-              }
-
-
-            })
-
-
-
-            // كنترول الزر الثاني
-
-
-            document.getElementById("btnradio22").addEventListener("change",function(){
-              
-                if (this.checked) {
-                console.log("Checkbox is checked22222..");
-              
-              div11.style.setProperty("display", "none", "important")
-                div33.style.setProperty("display", "none", "important")
-                div22.style.setProperty("display", "block", "important")
-                // document.getElementById("ok1").value="ok1"
-            
-              } else  {
-                console.log("Checkbox is not checked..");
-               
-                
-              }
-
-
-            })
-
-
-
-
-            // كنترول الزر الثالث
-
-
-            document.getElementById("btnradio33").addEventListener("change",function(){
-              
-              if (this.checked) {
-              console.log("Checkbox is checked33333..");
-
-              div11.style.setProperty("display", "none", "important")
-              div22.style.setProperty("display", "none", "important")
-              div33.style.setProperty("display", "block", "important")
-
-
-              
-            } else  {
-              console.log("Checkbox is not checked..");
-
-              
-            }
-
-
-            })
-
-
-
-// // /// قائمة نوع الألمنيوم زر اخفاء واضهار القوائم////
-
-
-
-// var n =decument.getElementById("lengthId").value
-
-// console.log(n)
-
-// click
-//     next.addEventListener("click", async (e) => {
-//          e.preventDefault();
-                   
-
-
-
-
-
-
-
-
-
-
-
-
-//           const res = await fetch("basic-measurement", {
-//                       method: "POST",
-//                       body: JSON.stringify({
-//                         // email: emailId.value,
-//                         // password: passwordId.value,
-//                         // userName:usernameId.value,
-//                         // length:lengthid.value,
-//                         // width: widthid.value,
-//                         length:lengthid.value,
-//                         // width: widthid.value,
-//                         // n: getSelectedValue.value,
-//                         // location:locationId.value,
-//                         // aluminumCode:getSelectedValue2.value,
-//                         // thickness:thickness.value,
-//                         // glassColorCode:glassColorCodeId.value,
-                        
-                        
-//                       }),
-//                       headers: { "Content-Type": "application/json" },
-                      
-//               }); 
-//               const data = await res.json();
-// console.log(data)
-//             //  var jj= document.getElementById("locationId").value
-//             //   console.log("jj")
-//             //   console.log(locationId.value)
-//   });
-
-
-
-
-
-// استهداف العنصر
-const checkbox = document.getElementById('cb5');
-
-// إضافة مستمع لحدث التغيير
-checkbox.addEventListener('change', function() {
-    // التحقق من حالة الاختيار
-    if (this.checked) {
-        // إذا كان محددًا، ضع "داخلي" في القيمة
-        this.value = "داخلي";
-    } else {
-        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
-        this.value = "خارجي";
-    }
-    
-    // طباعة القيمة في الفاليو
-    console.log(this.value);
-});
-
-
-
-
-
-
-const checkbox6 = document.getElementById("cb6");
-
-// إضافة مستمع لحدث التغيير
-checkbox6.addEventListener('change', function() {
-    // التحقق من حالة الاختيار
-    if (this.checked) {
-        // إذا كان محددًا، ضع "داخلي" في القيمة
-        this.value = "YAS";
-
-    } else {
-        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
-        this.value = "NO";
-
-    }
-    
-    // طباعة القيمة في الفاليو
-    console.log(this.value);
-});
-
-
-//
-const checkbox7 = document.getElementById("cb7");
-
-// إضافة مستمع لحدث التغيير
-checkbox7.addEventListener('change', function() {
-    // التحقق من حالة الاختيار
-    if (this.checked) {
-        // إذا كان محددًا، ضع "داخلي" في القيمة
-        this.value = "YAS";
-        // this.value = "NO";
-    } else {
-        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
-        this.value = "NO";
-        // this.value = "YAS";
-    }
-    
-    // طباعة القيمة في الفاليو
-    console.log(this.value);
-});
-
-//
-
-
-
-
-
-
-
-
-
-
-        // هذا عشان يستخرج اليد من الرابط 
-
-// الحصول على عنوان الصفحة الحالي
-const url = window.location.href;
-
-// تقسيم العنوان بواسطة الشرطة (-) أو الشرطة السفلية (_) أو أي حرف آخر تستخدمه لفصل الأجزاء
-const parts = url.split("/");
-
-// الأيدي عادة تكون في الجزء الأخير من الرابط
-const idUrl = parts[parts.length - 1];
-
-console.log("الأيدي:", idUrl);
-
-        //// هذا عشان يستخرج اليد من الرابط ////
-
-
-
-
-next.addEventListener("click", async (e) => {
-    e.preventDefault();
-    
-// لاستخراج الزر المضغوط ونضيفة الركورست تحت
-    var t1 = document.querySelector( 
-                'input[name="t1"]:checked'); 
-
-
-            //     var m1 = document.querySelector( 
-            //     'input[id="cb5"]:checked'); 
-                
-            //        if(m1 != null) { 
-            //     document.getElementById("1").value="no" 
-            //         //  m1.value =="no"
-            //         // + " season is selected"; 
-                    
-            // } 
-
-
-
-
-// لاستخراج الزر المضغوط ونضيفة الركورست تحت
-        // يطبعلك زر واح برمزه في قاعدة البينات
-        var getSelectedValue2 = document.querySelector( 
-                'input[name="c2"]:checked'); 
-              //هي اضافات للي فوق ما نحتاجها الان
-            // if(getSelectedValue2 != null) { 
-            //     // document.getElementById("1").innerHTML 
-            //          getSelectedValue2.value 
-            //         // + " season is selected"; 
-                    
-            // } 
-            // else { 
-            //     // document.getElementById("1").innerHTML 
-            //         // = "*You have not selected any season"; 
-                    
-            // } 
-                  // يطبعلك زر واح برمزه في قاعدة البينات//
-
-              
-
-                  var glasstypeValue = document.querySelector( 
-                'input[name="q1"]:checked');    
-
-
-
-//                 var x = document.getElementById("exampleFormControlTextarea1").value;
-// console.log(x)
-
-
-
-// تحت ادوات لعرض المساحة الحرة وطريقة حم الركوست
-
-
-    const res = await fetch("measurement", {
-      method: "POST",
-      body: JSON.stringify({
-        // branch:branch.value,
-        //  location:locationId.value,
-         aluminumCode:getSelectedValue2.value,
-         aluminumThickness:thickness.value,
-         aluminumColorCode:glassColorCodeId.value,
-         glasstype:glasstypeValue.value,
-         glassThickness:glassThickness.value,
-         glassColorCode:glassColorCode.value,
-         id:"<%= //arrM._id %>",
-         
-
-         H:lengthid.value,
-          W: widthid.value,
-          designCode:t1.value,
-          insideOrOutside:checkbox.value,
-          temper:checkbox6.value,
-          lip:checkbox7.value,
-          comments:exampleFormControlTextarea1.value,
-          iid:iid.value,
-          idUrl:idUrl, // هذا الأيدي من الرابط
-         
-          
-          
-      }),
-      headers: { "Content-Type": "application/json" },
-      
-    });
-    
-    const data = await res.json();
-console.log(data.id)
-
-
-
-
-location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
-
-
-
-});
-
-
-
-</script> -->
 
 
 <script>
@@ -1689,78 +1134,6 @@ location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
       }
   });
 
-  const canvas = new fabric.Canvas('drawingCanvas');
-  let isDrawing = false;
-  let undoStack = [];
-  let redoStack = [];
-  let currentLine;
-  const lineWidthControl = document.getElementById('lineWidth');
-
-  function saveState() {
-      undoStack.push(canvas.toJSON());
-      redoStack = [];
-  }
-
-  canvas.on('mouse:down', function(options) {
-      isDrawing = true;
-      const pointer = canvas.getPointer(options.e);
-      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
-      currentLine = new fabric.Line(points, {
-          strokeWidth: parseInt(lineWidthControl.value, 10),
-          selectable: false,
-          stroke: 'black'
-      });
-      canvas.add(currentLine);
-      saveState();
-  });
-
-  canvas.on('mouse:move', function(options) {
-      if (!isDrawing) return;
-      const pointer = canvas.getPointer(options.e);
-      currentLine.set({ x2: pointer.x, y2: pointer.y });
-      canvas.renderAll();
-  });
-
-  canvas.on('mouse:up', function() {
-      isDrawing = false;
-  });
-
-  document.getElementById('saveDrawingButton').addEventListener('click', function() {
-      const dataURL = canvas.toDataURL('image/png');
-      const imgElement = document.getElementById('savedImage');
-      imgElement.src = dataURL;
-      document.getElementById('savedImageContainer').style.display = 'block';
-      document.getElementById('drawingModal').style.display = 'none';
-  });
-
-  document.getElementById('undoButton').addEventListener('click', function() {
-      if (undoStack.length > 0) {
-          redoStack.push(undoStack.pop());
-          const state = undoStack[undoStack.length - 1];
-          if (state) {
-              canvas.loadFromJSON(state);
-          } else {
-              canvas.clear();
-          }
-      }
-  });
-
-  document.getElementById('redoButton').addEventListener('click', function() {
-      if (redoStack.length > 0) {
-          const state = redoStack.pop();
-          if (state) {
-              undoStack.push(state);
-              canvas.loadFromJSON(state);
-          }
-      }
-  });
-
-  document.getElementById('clearButton').addEventListener('click', function() {
-      canvas.clear();
-      saveState();
-  });
-
-  saveState();
 
   // عرض الصورة إذا كانت موجودة في وضع التعديل
   const savedImagePath = '<%= arrM.designCode %>';
@@ -1770,54 +1143,85 @@ location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
       document.getElementById('savedImageContainer').style.display = 'block';
   }
 
-  document.getElementById('next').addEventListener('click', async function(e) {
-      e.preventDefault();
-      const dataURL = canvas.toDataURL('image/png');
-      const blankCanvas = document.createElement('canvas'); 
-      blankCanvas.width = canvas.width;
-      blankCanvas.height = canvas.height;
-      const blankDataURL = blankCanvas.toDataURL('image/png');
+  let isSent = false; // متغير لتتبع حالة الإرسال
 
-      const getSelectedValue2 = document.querySelector('input[name="c2"]:checked');
-      const glasstypeValue = document.querySelector('input[name="q1"]:checked');
+document.getElementById('next').addEventListener('click', async function(e) {
+    e.preventDefault();
+    
+    // تحقق من أن البيانات لم تُرسل بعد
+    if (isSent) return;
 
-      const designCode = (dataURL === blankDataURL) ? savedImagePath : dataURL;
+    isSent = true; // تغيير حالة العلم للإشارة إلى أن البيانات قد أُرسلت
 
+    const dataURL = canvas.toDataURL('image/png');
+    const blankCanvas = document.createElement('canvas'); 
+    blankCanvas.width = canvas.width;
+    blankCanvas.height = canvas.height;
+    const blankDataURL = blankCanvas.toDataURL('image/png');
 
-      const res = await fetch("measurement", {
-          method: "POST",
-          body: JSON.stringify({
-              aluminumCode: getSelectedValue2.value,
-              // aluminumCode: "SG50",
-              aluminumThickness: thickness.value,
-              aluminumColorCode: glassColorCodeId.value,
-              glasstype: glasstypeValue.value,
-              glassThickness: glassThickness.value,
-              glassColorCode: glassColorCode.value,
-              id: "<%= arrM._id %>",
-              H: lengthid.value,
-              W: widthid.value,
-              designCode: designCode,  // استخدم الصورة الجديدة إذا تم تغييرها، وإلا استخدم القديمة
-              insideOrOutside: checkbox.value,
-              temper: checkbox6.value,
-              lip: checkbox7.value,
-              comments: exampleFormControlTextarea1.value,
-              iid: iid.value,
-              idUrl: idUrl,
-          }),
-          headers: { "Content-Type": "application/json" },
-      });
+    const getSelectedValue2 = document.querySelector('input[name="c2"]:checked');
+    const glasstypeValue = document.querySelector('input[name="q1"]:checked');
 
-      const data = await res.json();
-      console.log(data.imagePath);
-      
-      // عرض الصورة المحفوظة
-      document.getElementById('savedImage').src = '/' + data.imagePath;
-      document.getElementById('savedImageContainer').style.display = 'block';
+    const designCode = (dataURL === blankDataURL) ? savedImagePath : dataURL;
 
-      // الانتقال إلى الصفحة التالية
-      location.assign(`/review/<%= arrM.iid ? arrM.iid : arrM._id %>`);
-  });
+    const lengthValue = document.getElementById('lengthid').value;
+    const widthValue = document.getElementById('widthid').value;
+    const glassColorCode = document.getElementById('glassColorCode').value;
+    const aluminumColorCode = document.getElementById('aluminumColorCodeId').value;
+
+    const glassThickness = document.getElementById('glassThickness').value;
+    const comments = document.getElementById('exampleFormControlTextarea1').value;
+
+    const aluminumThickness = document.getElementById('thickness').value; 
+
+    // التحقق من القيم الأساسية وإظهار رسالة تحذيرية في حال كانت أي من القيم مفقودة
+    if (!lengthValue || !widthValue || !glassColorCode || !glassThickness || !getSelectedValue2 || !glasstypeValue || !designCode || !aluminumThickness) {
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.classList.remove('d-none');
+        isSent = false; // إعادة تعيين العلم إذا فشل التحقق
+        return;
+    }
+
+    try {
+        const res = await fetch("measurement", {
+            method: "POST",
+            body: JSON.stringify({
+                aluminumCode: getSelectedValue2.value,
+                aluminumThickness: aluminumThickness,
+                aluminumColorCode: aluminumColorCode,
+                glasstype: glasstypeValue.value,
+                glassThickness: glassThickness,
+                glassColorCode: glassColorCode,
+                id: "<%= arrM._id %>",
+                H: lengthValue,
+                W: widthValue,
+                designCode: designCode,  // استخدم الصورة الجديدة إذا تم تغييرها، وإلا استخدم القديمة
+                insideOrOutside: checkbox.value,
+                temper: checkbox6.value,
+                lip: checkbox7.value,
+                comments: comments,
+                iid: iid.value,
+                idUrl: idUrl,
+            }),
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await res.json();
+        console.log(data.imagePath);
+
+        // عرض الصورة المحفوظة
+        document.getElementById('savedImage').src = '/' + data.imagePath;
+        document.getElementById('savedImageContainer').style.display = 'block';
+
+        // الانتقال إلى الصفحة التالية
+        location.assign(`/review/<%= arrM.iid ? arrM.iid : arrM._id %>`);
+    } catch (error) {
+        console.error('حدث خطأ أثناء إرسال البيانات:', error);
+    } finally {
+        isSent = false; // إعادة تعيين العلم بعد الإرسال
+    }
+});
+
 </script>
 
 
@@ -1928,106 +1332,6 @@ if (checkbox2 && checkbox2.value === "<%=arrM.lip%>") {
 
 
 </script>
-<!-- <script>
-  // فتح النافذة المنبثقة
-  document.getElementById('showCanvasButton').addEventListener('click', function() {
-      document.getElementById('drawingModal').style.display = 'block';
-  });
-
-  // إغلاق النافذة المنبثقة
-  document.getElementsByClassName('close')[0].addEventListener('click', function() {
-      document.getElementById('drawingModal').style.display = 'none';
-  });
-
-  // إغلاق النافذة المنبثقة عند النقر خارجها
-  window.addEventListener('click', function(event) {
-      if (event.target == document.getElementById('drawingModal')) {
-          document.getElementById('drawingModal').style.display = 'none';
-      }
-  });
-
-  // إعداد مساحة الرسم باستخدام Fabric.js
-  const canvas = new fabric.Canvas('drawingCanvas');
-  let isDrawing = false;
-
-  // سجلات للتراجع والإعادة
-  let undoStack = [];
-  let redoStack = [];
-
-  function saveState() {
-      undoStack.push(canvas.toJSON());
-      redoStack = []; // إعادة تعيين سجل الإعادة
-  }
-
-  canvas.on('mouse:down', function(options) {
-      isDrawing = true;
-      const pointer = canvas.getPointer(options.e);
-      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
-      const line = new fabric.Line(points, {
-          strokeWidth: 2,
-          selectable: false,
-          stroke: 'black'
-      });
-      canvas.add(line);
-      saveState();
-  });
-
-  canvas.on('mouse:move', function(options) {
-      if (!isDrawing) return;
-      const pointer = canvas.getPointer(options.e);
-      const line = canvas.getObjects().slice(-1)[0];
-      line.set({ x2: pointer.x, y2: pointer.y });
-      canvas.renderAll();
-  });
-
-  canvas.on('mouse:up', function() {
-      isDrawing = false;
-  });
-
-  // حفظ الرسمة وعرضها كصورة
-  document.getElementById('saveDrawingButton').addEventListener('click', function() {
-      const dataURL = canvas.toDataURL('image/png');
-      const imgElement = document.getElementById('savedImage');
-      imgElement.src = dataURL;
-      document.getElementById('savedImageContainer').style.display = 'block';
-      document.getElementById('drawingModal').style.display = 'none';
-  });
-
-  // زر الرجوع للوراء
-  document.getElementById('undoButton').addEventListener('click', function() {
-      if (undoStack.length > 0) {
-          redoStack.push(undoStack.pop());
-          const state = undoStack[undoStack.length - 1];
-          if (state) {
-              canvas.loadFromJSON(state);
-          } else {
-              canvas.clear();
-          }
-      }
-  });
-
-  // زر العودة إلى الأمام
-  document.getElementById('redoButton').addEventListener('click', function() {
-      if (redoStack.length > 0) {
-          const state = redoStack.pop();
-          if (state) {
-              undoStack.push(state);
-              canvas.loadFromJSON(state);
-          }
-      }
-  });
-
-  // زر مسح المساحة
-  document.getElementById('clearButton').addEventListener('click', function() {
-      canvas.clear();
-      saveState();
-  });
-
-  // حفظ الحالة الابتدائية
-  saveState();
-</script> -->
-
-
 
 
 

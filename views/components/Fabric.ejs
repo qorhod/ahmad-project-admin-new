@@ -1,0 +1,378 @@
+
+
+<!-- لازم تضيف هذا المكتبة البوستراب ان كنت تريد ان تضهر القائمة المنسدلة للخط  -->
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+<button id="showCanvasButton" class="btn btn-primary">رسم قياس</button>
+
+<!-- النافذة المنبثقة لمساحة الرسم -->
+<div id="drawingModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <canvas id="drawingCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+    <div class="mt-2">
+  <!-- أدوات الرسم -->
+  <button class="btn btn-primary" id="pencilTool" title="قلم">
+    <i class="fas fa-pencil-alt"></i>
+</button>
+<button class="btn btn-secondary" id="lineTool" title="خط">
+  <i class="fas fa-slash"></i>
+</button>
+<button class="btn btn-success" id="rectangleTool" title="مستطيل">
+  <i class="fas fa-square"></i>
+</button>
+<button class="btn btn-danger" id="circleTool" title="دائرة">
+  <i class="fas fa-circle"></i>
+</button>
+<button class="btn btn-warning" id="textTool" title="نص">
+  <i class="fas fa-font"></i>
+</button>
+<button class="btn btn-info" id="eraserTool" title="ممحاة">
+  <i class="fas fa-eraser"></i>
+</button>
+<button class="btn btn-primary" id="selectionTool" title="تحديد">
+  <i class="fas fa-mouse-pointer"></i>
+</button>
+<button class="btn btn-danger" id="undoTool" title="تراجع">
+  <i class="fas fa-undo-alt"></i>
+</button>
+<button class="btn btn-warning" id="redoTool" title="إعادة">
+  <i class="fas fa-redo-alt"></i>
+</button>
+<button class="btn btn-info" id="rotateTool" title="تدوير">
+  <i class="fas fa-sync-alt"></i>
+</button>
+
+<!-- قائمة منسدلة لسمك الخط -->
+<div class="btn-group ml-3">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      سمك الخط
+  </button>
+  <div class="dropdown-menu">
+      <a class="dropdown-item line-width-option" href="#" data-width="1">1px</a>
+      <a class="dropdown-item line-width-option" href="#" data-width="2">2px</a>
+      <a class="dropdown-item line-width-option" href="#" data-width="4">4px</a>
+      <a class="dropdown-item line-width-option" href="#" data-width="8">8px</a>
+      <a class="dropdown-item line-width-option" href="#" data-width="12">12px</a>
+      <a class="dropdown-item line-width-option" href="#" data-width="16">16px</a>
+  </div>
+</div>
+
+<!-- قائمة منسدلة لحجم النص -->
+<div class="btn-group ml-3">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      حجم النص
+  </button>
+  <div class="dropdown-menu">
+      <a class="dropdown-item font-size-option" href="#" data-size="10">10px</a>
+      <a class="dropdown-item font-size-option" href="#" data-size="14">14px</a>
+      <a class="dropdown-item font-size-option" href="#" data-size="18">18px</a>
+      <a class="dropdown-item font-size-option" href="#" data-size="24">24px</a>
+      <a class="dropdown-item font-size-option" href="#" data-size="32">32px</a>
+      <a class="dropdown-item font-size-option" href="#" data-size="40">40px</a>
+  </div>
+</div>
+
+<!-- زر اختيار اللون -->
+<button class="btn btn-dark ml-3" id="colorPickerButton" title="اختر اللون">
+  <i class="fas fa-palette"></i>
+</button>
+<input type="color" id="colorPicker" value="#000000" style="display: none;">
+
+<!-- //أدوات الرسم //-->
+
+
+      <button id="clearButton" class="btn btn-danger">مسح المساحة</button>
+      <button id="saveDrawingButton" class="btn btn-success">اعتماد الصورة</button>
+
+    </div>
+  </div>
+</div>
+<script>
+  const canvas = new fabric.Canvas('drawingCanvas');
+  let isDrawing = false;
+  let undoStack = [];
+  let redoStack = [];
+  let currentLine;
+
+  let currentTool = 'pencil';
+  let selectedColor = '#000000';  // اللون الافتراضي
+        let fontSize = 20;  // حجم الخط الافتراضي
+        let lineWidth = 2;  // سمك الخط الافتراضي
+        let textBox;  // متغير لتخزين مربع النص
+    
+  // const lineWidthControl = document.getElementById('lineWidth');
+// 
+
+ 
+
+
+
+
+  function saveState() {
+      undoStack.push(canvas.toJSON());
+      redoStack = [];
+  }
+
+  // canvas.on('mouse:down', function(options) {
+  //     isDrawing = true;
+  //     const pointer = canvas.getPointer(options.e);
+  //     const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+  //     currentLine = new fabric.Line(points, {
+  //         strokeWidth: parseInt(lineWidthControl.value, 10),
+  //         selectable: false,
+  //         stroke: 'black'
+  //     });
+  //     canvas.add(currentLine);
+  //     saveState();
+  // });
+
+
+// حق الخط السدة ألغيته 
+ // canvas.on('mouse:move', function(options) {
+   //   if (!isDrawing) return;
+      // const pointer = canvas.getPointer(options.e);
+  //     currentLine.set({ x2: pointer.x, y2: pointer.y });
+  //     canvas.renderAll();
+  // });
+// حق الخط السدة ألغيته 
+
+  // canvas.on('mouse:up', function() {
+  //     isDrawing = false;
+  // });
+// ظظظظظظظظظظظظظظظظظظظظ
+  document.getElementById('saveDrawingButton').addEventListener('click', function() {
+      const dataURL = canvas.toDataURL('image/png');
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = dataURL;
+      document.getElementById('savedImageContainer').style.display = 'block';
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+     // التحكم في الأدوات
+        document.getElementById('pencilTool').addEventListener('click', () => {
+            currentTool = 'pencil';
+            canvas.isDrawingMode = true;
+            canvas.selection = false;
+            canvas.freeDrawingBrush.color = selectedColor;
+            canvas.freeDrawingBrush.width = lineWidth;
+        });
+    
+        document.getElementById('lineTool').addEventListener('click', () => {
+            currentTool = 'line';
+            canvas.isDrawingMode = false;
+            canvas.selection = false;
+        });
+    
+        document.getElementById('rectangleTool').addEventListener('click', () => {
+            currentTool = 'rectangle';
+            canvas.isDrawingMode = false;
+            canvas.selection = false;
+        });
+    
+        document.getElementById('circleTool').addEventListener('click', () => {
+            currentTool = 'circle';
+            canvas.isDrawingMode = false;
+            canvas.selection = false;
+        });
+    
+        document.getElementById('textTool').addEventListener('click', () => {
+            currentTool = 'text';
+            canvas.isDrawingMode = false;
+            canvas.selection = false;
+        });
+    
+        document.getElementById('eraserTool').addEventListener('click', () => {
+            currentTool = 'eraser';
+            canvas.isDrawingMode = false;
+            canvas.selection = false;
+        });
+    
+        document.getElementById('undoTool').addEventListener('click', () => {
+            if (canvas._objects.length > 0) {
+                undoStack.push(canvas._objects.pop());
+                canvas.discardActiveObject();
+                canvas.renderAll();
+            }
+        });
+    
+        document.getElementById('redoTool').addEventListener('click', () => {
+            if (undoStack.length > 0) {
+                canvas.add(undoStack.pop());
+                canvas.renderAll();
+            }
+        });
+    
+        document.getElementById('rotateTool').addEventListener('click', () => {
+            if (canvas.getActiveObject()) {
+                canvas.getActiveObject().rotate(canvas.getActiveObject().angle + 45);
+                canvas.renderAll();
+            }
+        });
+    
+        document.querySelectorAll('.line-width-option').forEach(item => {
+            item.addEventListener('click', (event) => {
+                lineWidth = event.target.getAttribute('data-width');
+                if (currentTool === 'pencil') {
+                    canvas.freeDrawingBrush.width = lineWidth;
+                }
+            });
+        });
+    
+        document.querySelectorAll('.font-size-option').forEach(item => {
+            item.addEventListener('click', (event) => {
+                fontSize = event.target.getAttribute('data-size');
+            });
+        });
+
+        document.getElementById('colorPickerButton').addEventListener('click', () => {
+            document.getElementById('colorPicker').click();
+        });
+        
+        document.getElementById('colorPicker').addEventListener('input', (event) => {
+            selectedColor = event.target.value;
+            if (currentTool === 'pencil') {
+                canvas.freeDrawingBrush.color = selectedColor;
+            }
+        });
+
+        document.getElementById('selectionTool').addEventListener('click', () => {
+            currentTool = 'selection';
+            canvas.isDrawingMode = false;
+            canvas.selection = true;
+            canvas.forEachObject(function(obj) {
+                obj.set({
+                    selectable: true,
+                    evented: true
+                });
+            });
+        });
+
+        canvas.on('mouse:down', function (options) {
+            const pointer = canvas.getPointer(options.e);
+            isDrawing = true;
+        
+            if (currentTool === 'line') {
+                const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+                currentLine = new fabric.Line(points, {
+                    strokeWidth: lineWidth,
+                    fill: selectedColor,
+                    stroke: selectedColor,
+                    originX: 'center',
+                    originY: 'center'
+                });
+                canvas.add(currentLine);
+            } else if (currentTool === 'rectangle') {
+                currentRect = new fabric.Rect({
+                    left: pointer.x,
+                    top: pointer.y,
+                    originX: 'center',
+                    originY: 'center',
+                    width: 0,
+                    height: 0,
+                    fill: 'transparent',
+                    stroke: selectedColor,
+                    strokeWidth: lineWidth
+                });
+                canvas.add(currentRect);
+            } else if (currentTool === 'circle') {
+                currentCircle = new fabric.Circle({
+                    left: pointer.x,
+                    top: pointer.y,
+                    originX: 'center',
+                    originY: 'center',
+                    radius: 0,
+                    fill: 'transparent',
+                    stroke: selectedColor,
+                    strokeWidth: lineWidth
+                });
+                canvas.add(currentCircle);
+            } else if (currentTool === 'text') {
+                if (!textBox || !textBox.isEditing) {
+                    textBox = new fabric.Textbox('', {
+                        left: pointer.x,
+                        top: pointer.y,
+                        fontSize: fontSize,
+                        fill: selectedColor,
+                        width: 150
+                    });
+                    canvas.add(textBox);
+                    canvas.setActiveObject(textBox);
+                    textBox.enterEditing();
+                    textBox.hiddenTextarea.focus();
+                }
+            } else if (currentTool === 'eraser') {
+                const activeObj = canvas.getActiveObject();
+                if (activeObj) {
+                    canvas.remove(activeObj);
+                }
+            }
+        });
+        
+        canvas.on('mouse:move', function (options) {
+            if (!isDrawing) return;
+            const pointer = canvas.getPointer(options.e);
+        
+            if (currentTool === 'line' && currentLine) {
+                currentLine.set({ x2: pointer.x, y2: pointer.y });
+                canvas.renderAll();
+            } else if (currentTool === 'rectangle' && currentRect) {
+                const width = Math.abs(pointer.x - currentRect.left);
+                const height = Math.abs(pointer.y - currentRect.top);
+        
+                currentRect.set({
+                    width: width,
+                    height: height,
+                    originX: 'center',
+                    originY: 'center',
+                    left: pointer.x < currentRect.left ? pointer.x : currentRect.left,
+                    top: pointer.y < currentRect.top ? pointer.y : currentRect.top,
+                });
+        
+                canvas.renderAll();
+            } else if (currentTool === 'circle' && currentCircle) {
+                const radius = Math.sqrt(Math.pow(pointer.x - currentCircle.left, 2) + Math.pow(pointer.y - currentCircle.top, 2));
+                currentCircle.set({
+                    radius: radius / 2,
+                    left: currentCircle.left,
+                    top: currentCircle.top
+                });
+                canvas.renderAll();
+            }
+        });
+        
+        canvas.on('mouse:up', function () {
+            isDrawing = false;
+            currentRect = null;
+            currentCircle = null;
+        });
+
+        // إزالة النص إذا كان فارغًا عند الخروج من وضع التحرير
+        canvas.on('text:editing:exited', function(options) {
+            if (options.target.text === '') {
+                canvas.remove(options.target);
+            }
+            textBox = null;  // إعادة تعيين النص إلى null بعد الانتهاء من التحرير
+        });
+
+
+
+  document.getElementById('clearButton').addEventListener('click', function() {
+      canvas.clear();
+      saveState();
+  });
+
+  saveState();
+
+  
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+

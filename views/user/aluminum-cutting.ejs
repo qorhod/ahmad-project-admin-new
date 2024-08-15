@@ -1,38 +1,20 @@
-
-
-
-
-
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto" >
-  <head>
-   
+<html lang="en" data-bs-theme="auto">
+<head>
     <script src="../js/color-modes.js"></script>
-   
-    <link
-      rel="stylesheet"
-      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
-    />
+    <link rel="stylesheet" href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"/>
     <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta
-      name="author"
-      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-    />
-    <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors"/>
+    <meta name="generator" content="Hugo 0.112.5"/>
+    <title>aluminum cutting</title>
     <link rel="stylesheet" href="../css/overlay.css">
-
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
-    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="../css/dark-light.css"/>
-   
-
-    <!-- Custom styles for this template -->
-    <link href="../css/sidebars.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../css/myStyle.css" />
+    <link href="../css/sidebars.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/myStyle.css"/>
     <style>
         .status-btn {
             padding: 5px 10px;
@@ -56,6 +38,48 @@
         .form-container {
             margin-bottom: 20px;
         }
+
+        /* إعدادات الطباعة لمقاس A4 */
+        @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+
+            body {
+                font-size: 12pt;
+            }
+
+            .container {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .table {
+                width: 100% !important;
+            }
+
+            .status-btn {
+                font-size: 10pt;
+                padding: 2px 5px;
+            }
+
+            .navbar, .sidebar, .no-print, .web-content {
+                display: none !important;
+            }
+
+            .table-container {
+                margin-top: 0 !important;
+            }
+
+            .print-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
     </style>
     <script>
         function showTable(tableId) {
@@ -73,106 +97,209 @@
             showTable(activeTable);
         });
     </script>
-  </head>
-  <body>
+</head>
+<body>
 
     <%- include('../components/overlay.ejs') %>
+    <span class="web-content"> 
 
-    <!--ايقونات  -->
-    <%- include('../components/dark-light.ejs') %> 
-
-
+    <%- include('../components/dark-light.ejs') %>
+</span>
     <main class="d-flex flex-nowrap">
-      <!-- الواجهه الي على اليمين -->
-      <%- include('../components/sidebar.ejs', {currentPage:"aluminum-cutting"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+        <%- include('../components/sidebar.ejs', {currentPage:"aluminum-cutting"}) %>
 
-      <section class="w-100">
-      <%- include('../components/navbar.ejs') %>
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a href="/review/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
-          </li>
-        <li class="nav-item">
-          <a href="../total-meters/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-current="page" >مجموع الأمتار</a>
-        </li>
-        <% if (permissions.some(permission => permission.name === 'price')) { %>
-        <li class="nav-item">
-          <a href="../price/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
-        </li>
-        <% } %>
+        <section class="w-100">
+          <span class="web-content"> 
 
-        <li class="nav-item">
-          <a href="../total-materials/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
-        </li>
-        <li class="nav-item">
-          <a href="../glass-cutting/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج</a>
-        </li>
-        <li class="nav-item">
-          <a href="../report-temper/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page">تقرير قص الألمنيوم</a>
-          </li>
-      </ul>
-      <div class="container mt-4">
-       
-        <h1>Aluminum Report</h1>
-        <div class="btn-group mb-4" role="group">
-            <button type="button" class="btn btn-primary" onclick="showTable('all-table')">All</button>
-            <button type="button" class="btn btn-primary" onclick="showTable('cutting-table')">Cutting</button>
-            <button type="button" class="btn btn-primary" onclick="showTable('assembly-table')">Assembly</button>
-        </div>
+            <%- include('../components/navbar.ejs') %>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="/review/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">ورقة قياس</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../total-meters/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">مجموع الأمتار</a>
+                </li>
+                <% if (permissions.some(permission => permission.name === 'price')) { %>
+                <li class="nav-item">
+                    <a href="../price/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
+                </li>
+                <% } %>
+                <li class="nav-item">
+                    <a href="../total-materials/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">كميات المواد</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../glass-cutting/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">تقرير قص الزجاج</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../report-temper/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">تقرير السكريت</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page">تقرير قص الألمنيوم</a>
+                </li>
+            </ul>
 
-        <div id="all-table" class="table-container active">
-            <form action="/aluminum-cutting/assign" method="POST">
-                <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
-                <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
 
-                <table class="table table-bordered table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            
-                            <th>Select</th>
-                            <th>Sequence Number</th>
-                            <th>Cutting Technician</th>
-                            <th>Cutting Status</th>
-                            <th>Assembly Technician</th>
-                            <th>Assembly Status</th>
-                            
-                            <th>Aluminum Code</th>
-                            <th>Color Code</th>
-                            <th>H(A1)*2</th>
-                            <th>W(A2)*2</th>
-                            <th>(B1)*2</th>
-                            <th>(B2)*4</th>
-                            <th>(B3)*2</th>
-                            <th>(N1)*2</th>
-                            <th>(N2)*2</th>
-                            <th>Design</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (foundOrder.measurement && Array.isArray(foundOrder.measurement)) { %>
-                            <% foundOrder.measurement.forEach(measurement => { %>
+            <button id="print1" type="button" class="btn btn-secondary" onclick="window.print()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+              </svg>
+            </button>
+          </span>
+          
+          <div class="container print-content">
+            <div class="invoice-header">
+              <img style="width: 80px; height: 120px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+              <h1>REPORT ALUMINUM</h1>
+            </div>
+          </div>
+    
+          <div class="invoice-details print-content">
+            <br>
+            <p>Order Number: <strong><%= foundOrder.orderNumber %></strong></p>
+            <p>Date:<strong><%= moment(foundOrder.createdAt).format('YYYY-MM-DD') %></strong></p>
+            <p>Customer Name:<strong><%= allData.firstNamecustomer %><%= allData.lastNamecustomer %></strong></p>
+            <p>Branch: <strong><%= foundOrder.branch %></strong></p>
+          </div>
+
+
+
+
+
+            <div class="container mt-4">
+                <h1>Aluminum Report</h1>
+                <div class="btn-group mb-4 no-print" role="group">
+                    <button type="button" class="btn btn-primary" onclick="showTable('all-table')">All</button>
+                    <button type="button" class="btn btn-primary" onclick="showTable('cutting-table')">Cutting</button>
+                    <button type="button" class="btn btn-primary" onclick="showTable('assembly-table')">Assembly</button>
+                </div>
+
+                <div id="all-table" class="table-container active">
+                    <form action="/aluminum-cutting/assign" method="POST">
+                        <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                        <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="no-print">Select</th>
+                                    <th>Sequence Number</th>
+                                    <th>Cutting Technician</th>
+                                    <th>Cutting Status</th>
+                                    <th>Assembly Technician</th>
+                                    <th>Assembly Status</th>
+                                    <th>Aluminum Code</th>
+                                    <th>Color Code</th>
+                                    <th>H(A1)*2</th>
+                                    <th>W(A2)*2</th>
+                                    <th>(B1)*2</th>
+                                    <th>(B2)*4</th>
+                                    <th>(B3)*2</th>
+                                    <th>(N1)*2</th>
+                                    <th>(N2)*2</th>
+                                    <th>Design</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (foundOrder.measurement && Array.isArray(foundOrder.measurement)) { %>
+                                    <% foundOrder.measurement.forEach(measurement => { %>
+                                        <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                            <td class="no-print"><input type="checkbox" name="selectedMeasurements" value="<%= measurement._id %>"></td>
+                                            <td><%= measurement.sequenceNumber || '--' %></td>
+                                            <td><%= measurement.cuttingTechnician ? technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name : '--' %></td>
+                                            <td>
+                                                <button type="button" class="status-btn <%= measurement.cuttingStatus %>">
+                                                    <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                                </button>
+                                            </td>
+                                            <td><%= measurement.assemblyTechnician ? technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name : '--' %></td>
+                                            <td>
+                                                <button type="button" class="status-btn <%= measurement.assemblyStatus %>">
+                                                    <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                                </button>
+                                            </td>
+                                            <td><%= measurement.aluminumCode || '--' %></td>
+                                            <td><%= measurement.aluminumColorCode || '--' %></td>
+                                            <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                            <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                            <td>
+                                                <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content bg-white">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="15">No measurements found</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+
+                        <div class="form-group no-print">
+                            <label for="taskType">Select Task Type:</label>
+                            <select name="taskType" id="taskType" class="form-control">
+                                <option value="cutting">Cutting</option>
+                                <option value="assembly">Assembly</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group no-print">
+                            <label for="technicianId">Select Technician:</label>
+                            <select name="technicianId" id="technicianId" class="form-control">
+                                <% technicians.forEach(technician => { %>
+                                    <option value="<%= technician._id %>"><%= technician.name %> - <%= technician.role %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3 no-print">Assign</button>
+                    </form>
+                </div>
+
+                <div id="cutting-table" class="table-container">
+                    <h2>Cutting Status</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Sequence Number</th>
+                                <th>Aluminum Code</th>
+                                <th>Color Code</th>
+                                <th>Technician</th>
+                                <th>H(A1)*2</th>
+                                <th>W(A2)*2</th>
+                                <th>(B1)*2</th>
+                                <th>(B2)*4</th>
+                                <th>(B3)*2</th>
+                                <th>(N1)*2</th>
+                                <th>(N2)*2</th>
+                                <th>Design</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% foundOrder.measurement.forEach(measurement => { if (measurement.cuttingTechnician) { %>
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
-                                    <td><input type="checkbox" name="selectedMeasurements" value="<%= measurement._id %>"></td>
                                     <td><%= measurement.sequenceNumber || '--' %></td>
-                                    <td><%= measurement.cuttingTechnician ? technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name : '--' %></td>
-                                    <td>
-                                        <button type="button" class="status-btn <%= measurement.cuttingStatus %>">
-                                            <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
-                                        </button>
-                                    </td>
-                                    <td><%= measurement.assemblyTechnician ? technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name : '--' %></td>
-                                    <td>
-                                        <button type="button" class="status-btn <%= measurement.assemblyStatus %>">
-                                            <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
-                                        </button>
-                                    </td>
-                                    
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name %></td>
                                     <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                     <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
@@ -182,428 +309,113 @@
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                        
-                                        <!-- المودال لعرض الصورة بشكل كامل -->
                                         <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content bg-white">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                              </div>
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content bg-white">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                                    </div>
+                                                </div>
                                             </div>
-                                          </div>
                                         </div>
-                                      </td>
+                                    </td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status" method="POST">
+                                            <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                                            <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="cutting">
+                                            <button type="submit" class="status-btn <%= measurement.cuttingStatus %>">
+                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
-                            <% }) %>
-                        <% } else { %>
+                            <% } }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="assembly-table" class="table-container">
+                    <h2>Assembly Status</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
                             <tr>
-                                <td colspan="15">No measurements found</td>
+                                <th>Sequence Number</th>
+                                <th>Aluminum Code</th>
+                                <th>Color Code</th>
+                                <th>Technician</th>
+                                <th>H(A1)*2</th>
+                                <th>W(A2)*2</th>
+                                <th>(B1)*2</th>
+                                <th>(B2)*4</th>
+                                <th>(B3)*2</th>
+                                <th>(N1)*2</th>
+                                <th>(N2)*2</th>
+                                <th>Design</th>
+                                <th>Status</th>
                             </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-
-                <div class="form-group">
-                    <label for="taskType">Select Task Type:</label>
-                    <select name="taskType" id="taskType" class="form-control">
-                        <option value="cutting">Cutting</option>
-                        <option value="assembly">Assembly</option>
-                    </select>
+                        </thead>
+                        <tbody>
+                            <% foundOrder.measurement.forEach(measurement => { if (measurement.assemblyTechnician) { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                    <td><%= measurement.sequenceNumber || '--' %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content bg-white">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status" method="POST">
+                                            <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
+                                            <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="assembly">
+                                            <button type="submit" class="status-btn <%= measurement.assemblyStatus %>">
+                                                <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } }) %>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="technicianId">Select Technician:</label>
-                    <select name="technicianId" id="technicianId" class="form-control">
-                        <% technicians.forEach(technician => { %>
-                            <option value="<%= technician._id %>"><%= technician.name %> - <%= technician.role %></option>
-                        <% }) %>
-                    </select>
-                </div>
+            <script src="../js/bootstrap.bundle.min.js"></script>
 
-                <button type="submit" class="btn btn-primary mt-3">Assign</button>
-            </form>
-        </div>
-
-        <div id="cutting-table" class="table-container">
-            <h2>Cutting Status</h2>
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Sequence Number</th>
-                        <th>Aluminum Code</th>
-                        <th>Color Code</th>
-                        <th>Technician</th>
-                        <th>H(A1)*2</th>
-                        <th>W(A2)*2</th>
-                        <th>(B1)*2</th>
-                        <th>(B2)*4</th>
-                        <th>(B3)*2</th>
-                        <th>(N1)*2</th>
-                        <th>(N2)*2</th>
-                        <th>Design</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% foundOrder.measurement.forEach(measurement => { if (measurement.cuttingTechnician) { %>
-                        <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
-                            <td><%= measurement.sequenceNumber || '--' %></td>
-                            <td><%= measurement.aluminumCode || '--' %></td>
-                            <td><%= measurement.aluminumColorCode || '--' %></td>
-                            <td><%= technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name %></td>
-                            <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
-                            <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
-
-                            <td>
-                                <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                
-                                <!-- المودال لعرض الصورة بشكل كامل -->
-                                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content bg-white">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-
-                            <td>
-                                <form action="/aluminum-cutting/update-status" method="POST">
-                                    <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
-                                    <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
-                                    <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                    <input type="hidden" name="taskType" value="cutting">
-                                    <button type="submit" class="status-btn <%= measurement.cuttingStatus %>">
-                                        <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% } }) %>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="assembly-table" class="table-container">
-            <h2>Assembly Status</h2>
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Sequence Number</th>
-                        <th>Aluminum Code</th>
-                        <th>Color Code</th>
-                        <th>Technician</th>
-                        <th>H(A1)*2</th>
-                        <th>W(A2)*2</th>
-                        <th>(B1)*2</th>
-                        <th>(B2)*4</th>
-                        <th>(B3)*2</th>
-                        <th>(N1)*2</th>
-                        <th>(N2)*2</th>
-                        <th>Design</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% foundOrder.measurement.forEach(measurement => { if (measurement.assemblyTechnician) { %>
-                        <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
-
-                            <td><%= measurement.sequenceNumber || '--' %></td>
-                            <td><%= measurement.aluminumCode || '--' %></td>
-                            <td><%= measurement.aluminumColorCode || '--' %></td>
-                            <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name %></td>
-                            <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
-                            <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
-                            <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
-
-                            <td>
-                                <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
-                                
-                                <!-- المودال لعرض الصورة بشكل كامل -->
-                                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content bg-white">
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                        <img id="modalImage" src="<%= measurement.designCode %>" alt="Design Image" class="img-fluid">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            <td>
-                                <form action="/aluminum-cutting/update-status" method="POST">
-                                    <input type="hidden" name="idCustomer" value="<%= idCustomer %>">
-                                    <input type="hidden" name="orderId" value="<%= foundOrder._id %>">
-                                    <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                    <input type="hidden" name="taskType" value="assembly">
-                                    <button type="submit" class="status-btn <%= measurement.assemblyStatus %>">
-                                        <%= measurement.assemblyStatus ? 'Completed' : 'In Progress' %>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% } }) %>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script src="../js/bootstrap.bundle.min.js"></script>
-
-      </section>
+        </section>
     </main>
     <script src="../js/bootstrap.bundle.min.js"></script>
-
     <script src="../js/sidebars.js"></script>
-
     <script src="../js/main.js"></script>
-
     <script src="../js/overlay.js"></script>
 
-   
-  </body>
-
-
-
-
-
-
-
-  <script>
-
-
-
-
-  // الاقائمة
-  const table110 = document.getElementById("table110")
-            const table220 = document.getElementById("table220")
-            const table330 = document.getElementById("table330")
-
-            table220.style.display = 'none';
-            table330.style.display = 'none';
-
-            // كنترول الزر الأول
-            document.getElementById("btnradio11").addEventListener("change",function(){
-                
-                if (this.checked) {
-                console.log("Checkbox is checked1111..");
-                
-                table220.style.display = 'none';
-                table330.style.display = 'none';
-                table110.style.display = 'table';
-
-
-
-        
-
-
-              
-              } else  {
-                console.log("Checkbox is not checked..");
-
-              }
-
-
-            })
-
-
-
-            // كنترول الزر الثاني
-
-
-            document.getElementById("btnradio22").addEventListener("change",function(){
-              
-                if (this.checked) {
-                console.log("Checkbox is checked22222..");
-              
-              table110.style.display = 'none';
-                table330.style.display = 'none';
-                table220.style.display = 'table';
-                // document.getElementById("ok1").value="ok1"
-            
-
-        
-
-
-              } else  {
-                console.log("Checkbox is not checked..");
-               
-                
-              }
-
-
-            })
-
-
-
-
-
-
-            // كنترول الزر الثالث
-
-
-            document.getElementById("btnradio33").addEventListener("change",function(){
-              
-              if (this.checked) {
-              console.log("Checkbox is checked33333..");
-
-              table110.style.display = 'none';
-              table220.style.display = 'none';
-              table330.style.display = 'table';
-
-
-          
-            } else  {
-              console.log("Checkbox is not checked..");
-
-              
-            }
-
-
-            })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// اختيار الفني  والتكليف
-    function selectOperation(operation) {
-                      // تحديث نص الزر بالعملية المحددة
-                      document.getElementById('dropdownMenuButton').innerText = operation;
-                    }
-    
-      function selectOperation2(operation) {
-        // تحديث نص الزر بالعملية المحددة
-        document.getElementById('dropdownMenuButton2').innerText = operation;
-      }
-    
-    
-    
-      var selectedOperation1 = '';
-      var selectedOperation2 = '';
-    
-      function selectOperation(operation) {
-        // تحديث قيمة المتغير
-        selectedOperation1 = operation;
-        // تحديث نص الزر بالعملية المحددة
-        document.getElementById('dropdownMenuButton').innerText = operation;
-      }
-    
-      function selectOperation2(operation) {
-        // تحديث قيمة المتغير
-        selectedOperation2 = operation;
-        // تحديث نص الزر بالعملية المحددة
-        document.getElementById('dropdownMenuButton2').innerText = operation;
-      }
-    
-      function sendData() {
-        // هنا يمكنك استخدام المتغيرين المحددين لإرسال البيانات أو استخدامها بأي طريقة تحتاجها
-        // على سبيل المثال، يمكنك استخدام selectedOperation1 و selectedOperation2 لجمع البيانات وإرسالها
-        var combinedData = selectedOperation1 + ' و ' + selectedOperation2;
-        alert('البيانات المحددة: ' + combinedData);
-      }
-    
-         // اختيار الفني  والتكليف//
-
-   
-
-
-
-
-
-// زر تحديد الكل للجدول الأساسي 
-document.getElementById('select-all-checkbox').addEventListener('change', function() {
-  var checkboxes = document.querySelectorAll('#kk input[type="checkbox"]');
-  checkboxes.forEach(function(checkbox) {
-    checkbox.checked = this.checked;
-  }, this);
-});
-
-// زر تحديد الكل للجدول الأساسي //
-
-
-
-
-</script>
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

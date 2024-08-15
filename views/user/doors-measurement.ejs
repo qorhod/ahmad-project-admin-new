@@ -2,6 +2,7 @@
 <html lang="en" data-bs-theme="auto">
   <head>
 <!-- مكتبة الرسمة  -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 
@@ -523,23 +524,9 @@
 
 <h4>:ارسم شكل الألمنيوم</h4>
 
-<button id="showCanvasButton" class="btn btn-primary">رسم قياس</button>
 
 <!-- النافذة المنبثقة لمساحة الرسم -->
-<div id="drawingModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <canvas id="drawingCanvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
-    <div class="mt-2">
-      <button id="undoButton" class="btn btn-warning">الرجوع للوراء</button>
-      <button id="redoButton" class="btn btn-info">العودة إلى الأمام</button>
-      <button id="clearButton" class="btn btn-danger">مسح المساحة</button>
-      <button id="saveDrawingButton" class="btn btn-success">اعتماد الصورة</button>
-      <label for="lineWidth">عرض الخط:</label>
-<input type="range" id="lineWidth" min="1" max="10" value="2">
-    </div>
-  </div>
-</div>
+<%- include('../components/Fabric.ejs') %>
 
 <!-- مساحة لعرض الصورة المحفوظة -->
 <div id="savedImageContainer" style="display: none; margin-top: 20px;">
@@ -1505,79 +1492,7 @@ location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
       }
   });
 
-  const canvas = new fabric.Canvas('drawingCanvas');
-  let isDrawing = false;
-  let undoStack = [];
-  let redoStack = [];
-  let currentLine;
-  const lineWidthControl = document.getElementById('lineWidth');
-
-  function saveState() {
-      undoStack.push(canvas.toJSON());
-      redoStack = [];
-  }
-
-  canvas.on('mouse:down', function(options) {
-      isDrawing = true;
-      const pointer = canvas.getPointer(options.e);
-      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
-      currentLine = new fabric.Line(points, {
-          strokeWidth: parseInt(lineWidthControl.value, 10),
-          selectable: false,
-          stroke: 'black'
-      });
-      canvas.add(currentLine);
-      saveState();
-  });
-
-  canvas.on('mouse:move', function(options) {
-      if (!isDrawing) return;
-      const pointer = canvas.getPointer(options.e);
-      currentLine.set({ x2: pointer.x, y2: pointer.y });
-      canvas.renderAll();
-  });
-
-  canvas.on('mouse:up', function() {
-      isDrawing = false;
-  });
-
-  document.getElementById('saveDrawingButton').addEventListener('click', function() {
-      const dataURL = canvas.toDataURL('image/png');
-      const imgElement = document.getElementById('savedImage');
-      imgElement.src = dataURL;
-      document.getElementById('savedImageContainer').style.display = 'block';
-      document.getElementById('drawingModal').style.display = 'none';
-  });
-
-  document.getElementById('undoButton').addEventListener('click', function() {
-      if (undoStack.length > 0) {
-          redoStack.push(undoStack.pop());
-          const state = undoStack[undoStack.length - 1];
-          if (state) {
-              canvas.loadFromJSON(state);
-          } else {
-              canvas.clear();
-          }
-      }
-  });
-
-  document.getElementById('redoButton').addEventListener('click', function() {
-      if (redoStack.length > 0) {
-          const state = redoStack.pop();
-          if (state) {
-              undoStack.push(state);
-              canvas.loadFromJSON(state);
-          }
-      }
-  });
-
-  document.getElementById('clearButton').addEventListener('click', function() {
-      canvas.clear();
-      saveState();
-  });
-
-  saveState();
-
+ 
   // عرض الصورة إذا كانت موجودة في وضع التعديل
   const savedImagePath = '<%= arrM.designCode %>';
   if (savedImagePath) {
@@ -1586,8 +1501,19 @@ location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
       document.getElementById('savedImageContainer').style.display = 'block';
   }
 
+
+  let isSent = false; // متغير لتتبع حالة الإرسال
+
   document.getElementById('next').addEventListener('click', async function(e) {
       e.preventDefault();
+
+ // تحقق من أن البيانات لم تُرسل بعد
+ if (isSent) return;
+
+isSent = true; // تغيير حالة العلم للإشارة إلى أن البيانات قد أُرسلت
+
+
+
       const dataURL = canvas.toDataURL('image/png');
       const blankCanvas = document.createElement('canvas'); 
       blankCanvas.width = canvas.width;
