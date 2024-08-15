@@ -199,13 +199,27 @@
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
                                     <td>
-                                        <form action="/aluminum-cutting/update-status-aluminum-cutting" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <button type="submit" class="btn <%= measurement.cuttingStatusAluminum ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.cuttingStatusAluminum ? 'Completed' : 'In Progress' %>
+                                            <input type="hidden" name="taskType" value="cutting">
+
+                                            <button type="submit" class="btn <%= measurement.cuttingStatus ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
+
+
+
+
+
+
+
+
+
+
+
+
                                     </td>
                                 </tr>
                             <% } %>
@@ -247,11 +261,14 @@
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
                                     <td>
-                                        <form action="/aluminum-assembly/update-status-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <button type="submit" class="btn <%= measurement.assemblyStatusAluminum ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.assemblyStatusAluminum ? 'Completed' : 'In Progress' %>
+                                            <input type="hidden" name="taskType" value="assembly">
+
+                                            <button type="submit" class="btn <%= measurement.assemblyStatus ? 'completed' : 'in-progress' %>">
+                                                
+                                                <%= measurement.assemblyStatus? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
                                     </td>
