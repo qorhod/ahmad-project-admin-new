@@ -173,7 +173,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
 
                                                 //مختصه في صففخة ترير قص لالميم ذكاء صناعي                           
-                               cuttingTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                               cuttingTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },   // هذا لكتابة ايد الفني 
                                 cuttingStatus: { type: Boolean, default: false },
                                 assemblyTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
                                 assemblyStatus: { type: Boolean, default: false },

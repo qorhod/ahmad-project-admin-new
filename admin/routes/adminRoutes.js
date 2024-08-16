@@ -55,4 +55,15 @@ router.post('/manageAdmin', adminController.postManageAdmin);
 router.get('/editPrices', adminController.getPrices); // مسار لعرض الأسعار
 router.post('/editPrices', adminController.updatePrices); // مسار لتحديث الأسعار
 
+// اظهار وتعديل بيانات بدابة العد في الأوردرات المؤكدة
+router.get('/counter', adminController.getCounterPage);
+
+// مسار لتحديث lastNumber
+router.post('/update-counter', adminController.updateCounterPage);
+
+
+
+
+// مسار تسجيل الخروج
+router.post('/logout', adminController.logout);
 module.exports = router;

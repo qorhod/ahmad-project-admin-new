@@ -5,22 +5,44 @@
       <input name="searchText" class="form-control me-2" type="search" placeholder="بحث" aria-label="بحث" />
       <button class="btn btn-outline-light" type="submit">بحث</button>
     </form>
-    <label hidden class="ui-switch d-flex align-items-center"> <!-- إضافة d-flex align-items-center لضبط التخطيط -->
-      <span hidden id="themeToggleLabel" class="text-white me-2">الوضع النهاري</span> <!-- وضع النص على اليمين -->
-      <input hidden type="checkbox" id="themeToggle">
-      <div hidden class="slider">
-        <div hidden  class="circle"></div>
-      </div>
-    </label>
+    <div class="d-flex align-items-center">
+      <button class="btn btn-danger ms-2" id="logoutButton">تسجيل الخروج</button> <!-- زر تسجيل الخروج باللون الأحمر -->
+      <label hidden class="ui-switch d-flex align-items-center">
+        <span hidden id="themeToggleLabel" class="text-white me-2">الوضع النهاري</span>
+        <input hidden type="checkbox" id="themeToggle">
+        <div hidden class="slider">
+          <div hidden class="circle"></div>
+        </div>
+      </label>
+    </div>
   </div>
 </nav>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const logoutButton = document.getElementById('logoutButton');
+
+    logoutButton.addEventListener('click', function () {
+      fetch('/admin/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = '/admin'; // إعادة التوجيه إلى صفحة تسجيل الدخول بعد تسجيل الخروج
+        } else {
+          alert('فشل تسجيل الخروج. حاول مرة أخرى.');
+        }
+      }).catch(error => {
+        console.error('حدث خطأ:', error);
+        alert('حدث خطأ أثناء تسجيل الخروج.');
+      });
+    });
+
     const themeToggle = document.querySelector('.ui-switch input');
     const themeToggleLabel = document.getElementById('themeToggleLabel');
 
-    // تغيير الوضع حسب التفضيل المحفوظ في localStorage
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-bs-theme', 'dark');
@@ -35,7 +57,7 @@
     themeToggle.addEventListener('change', () => {
       if (themeToggle.checked) {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
+        localStorage.setItem('theme', 'dark');
         themeToggleLabel.textContent = 'الوضع الليلي';
       } else {
         document.documentElement.setAttribute('data-bs-theme', 'light');
@@ -45,3 +67,4 @@
     });
   });
 </script>
+

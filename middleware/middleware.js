@@ -5,6 +5,7 @@
 const AuthUser = require("../models/auth-user") // تسيما الحسابات اليوزرات
 
 const User = require("../models/customersSchema")
+const Counter = require('../models/counter'); // مكان حفظ اخر ترقيم للطلب
 
 
 
@@ -162,69 +163,44 @@ const checkPermission = (requiredPermission) => (req, res, next) => {
 
 
 
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
-const yourSchema = new mongoose.Schema({
-  // تعريف باقي حقول الوثيقة هنا
-  // مثال: firstName: String, lastName: String, وما إلى ذلك
-  // orderNumber: Number,
-  // firstNamecustomer: String,
-  // lastNamecustomer: String,
-  // phoneNumber: String,
-  // gender: String,
-  // branch: String,
-  // salesEmployeeId: String,
-  // salesEmployeeName: String,
-  // salesEmployeeUserName: String,
-  // orders: [{
-    orderNumber: Number, // حقل جديد لترقيم البيانات
-      status: String,
-      // branch: String,
-      // location: String,
-      // salesEmployeeId: String,
-      // salesEmployeeName: String,
-      // salesEmployeeUserName: String,
-      // aluminumCode0: String,
-      // aluminumThickness0: String,
-      // aluminumColorCode0: String,
-      // glasstype0: String,
-      // glassThickness0: String,
-      // glassColorCode0: String,
-      // measurement: [],
-      // totalMeters: [],
-      // price: [],
-      // createdAt: Date,
-      // updatedAt: { type: Date, default: Date.now }
-  // }]
-});
+// const yourSchema = new mongoose.Schema({
+//   // تعريف باقي حقول الوثيقة هنا
+//   // مثال: firstName: String, lastName: String, وما إلى ذلك
+ 
+//     orderNumber: Number, // حقل جديد لترقيم البيانات
+//       status: String,
+   
+// });
 
-// استخدام وظيفة pre لتحديد قيمة حقل الترقيم والحقل orderNumber قبل حفظ الوثيقة
-yourSchema.pre('save', async function(next) {
-  // إذا كانت هذه الوثيقة جديدة ولم يتم تحديد قيمة لحقل الترقيم (orderNumber)
-  if (this.isNew && !this.orderNumber) {
-      try {
-          // احسب عدد الوثائق الموجودة في المجموعة وأضف 1 للحصول على القيمة الجديدة لحقل الترقيم
-          const count = await this.constructor.countDocuments(); // هذي هي الداله التي لل تكرر الرقم لم اعرف كيف الصفرها إى الان ولاكن انقص العدد مثل ما سويت تحت
-          this.orderNumber = count -225 + 100;
-          // this.orderNumber = count + 1;
-          // this.orderNumber = count > 0 ? count + 1 : 1;
+// // استخدام وظيفة pre لتحديد قيمة حقل الترقيم والحقل orderNumber قبل حفظ الوثيقة
+// yourSchema.pre('save', async function(next) {
+//   // إذا كانت هذه الوثيقة جديدة ولم يتم تحديد قيمة لحقل الترقيم (orderNumber)
+//   if (this.isNew && !this.orderNumber) {
+//       try {
+//           // احسب عدد الوثائق الموجودة في المجموعة وأضف 1 للحصول على القيمة الجديدة لحقل الترقيم
+//           const count = await this.constructor.countDocuments(); // هذي هي الداله التي لل تكرر الرقم لم اعرف كيف الصفرها إى الان ولاكن انقص العدد مثل ما سويت تحت
+//           this.orderNumber = count -225 + 100;
+//           // this.orderNumber = count + 1;
+//           // this.orderNumber = count > 0 ? count + 1 : 1;
 
-      } catch (err) {
-          next(err);
-      }
-  }
+//       } catch (err) {
+//           next(err);
+//       }
+//   }
 
-  // تعيين القيمة الافتراضية لحقل updatedAt قبل حفظ الوثيقة
-  this.updatedAt = new Date();
+//   // تعيين القيمة الافتراضية لحقل updatedAt قبل حفظ الوثيقة
+//   this.updatedAt = new Date();
 
-  next();
-});
+//   next();
+// });
 
 
 
 
 
-const YourModel = mongoose.model('YourModel', yourSchema);
+// const YourModel = mongoose.model('YourModel', yourSchema);
 
 // module.exports = YourModel;
 //////معادلة الترقيم///
@@ -232,8 +208,20 @@ const YourModel = mongoose.model('YourModel', yourSchema);
 
 
 
+        //counter دالة ترقيم جديدة افضل من الي فوق هذه تقوم بحف اخر ترقيم في الداتا بأسم
+
+        async function getNextOrderNumber() {
+          const counter = await Counter.findOneAndUpdate(
+            { name: 'orderNumber' },
+            { $inc: { lastNumber: 1 } },
+            { new: true, upsert: true } 
+          );
+
+          return counter.lastNumber;
+        }
 
 
+        //counter دالة ترقيم جديدة افضل من الي فوق هذه تقوم بحف اخر ترقيم في الداتا بأسم
 
 
 
@@ -293,7 +281,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = {checkIfUser,requireAuth,YourModel,ensureRole,restrictFactoryWorker,verifyToken,checkPermission}
+module.exports = {checkIfUser,requireAuth,ensureRole,restrictFactoryWorker,verifyToken,checkPermission,getNextOrderNumber}
 
 // module.exports = {requireAuth}
 // module.exports = {checkIfUser}

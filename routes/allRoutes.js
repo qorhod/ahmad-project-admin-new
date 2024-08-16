@@ -20,7 +20,6 @@ const {requireAuth} = require("../middleware/middleware.js") // تسيما ال�
 
 const {checkIfUser} = require("../middleware/middleware.js")
 
-const {YourModel} = require('../middleware/middleware.js'); //دالة عشان ترقم البينات
 
 // const equations = require("../middleware/equations.js")
 const {calculateResults} = require("../middleware/equations.js")
@@ -37,6 +36,7 @@ const {ensureRole} = require('../middleware/middleware.js')
 const {restrictFactoryWorker} = require('../middleware/middleware');
 const {verifyToken} = require('../middleware/middleware');
 const {checkPermission} = require('../middleware/middleware');  //  التأكد من صلاحية المستخدم للوصول إلى هذه الركوست تستخدم هكذا checkPermission('اسم الصلاحية')
+const {getNextOrderNumber} = require('../middleware/middleware');  // دالة ترقيم الطلب المؤكد    
 
 // router.get("/calculator",calculator) // يعي تنفذ هذاي الداة على جميع الاكواد النجمه يعين جميع الاكواد
 // router.post("*",calculator)
@@ -594,49 +594,6 @@ return res.json({ id:"done" })
 
 
 
-            router.post("/basic-measurementbbb/:id",restrictFactoryWorker, async (req, res) => {
-              try {
-                  const v = req.body;
-                  const b = req.params.id;
-                  var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
-                  
-                  // إنشاء مثيل جديد من المودل مع ترقيم البيانات
-                  const n = new YourModel({
-                    
-                      status: 'مسودة',
-                      branch: v.branch,
-                      location: v.location,
-                      salesEmployeeId: decoded.id,
-                      salesEmployeeName: 'String',
-                      salesEmployeeUserName: 'String',
-                      aluminumCode0: v.aluminumCode0,
-                      aluminumThickness0: v.aluminumThickness0,
-                      aluminumColorCode0: v.aluminumColorCode0,
-                      glasstype0: v.glasstype0,
-                      glassThickness0: v.glassThickness0,
-                      glassColorCode0: v.glassColorCode0,
-                      measurement: []
-                     
-                  });
-                  
-                  // حفظ الوثيقة في قاعدة البيانات
-                  const savedDocument = await n.save();
-                  console.log('تمت إضافة البيانات بنجاح:', savedDocument);
-                  
-                  // تحديث مستخدم معين في مودل User بإضافة البيانات الجديدة إلى حقل الأوامر
-                  const updatedUser = await User.findOneAndUpdate(
-                      { _id: v.id },
-                      { $push: { orders: n } }, // انتبه هنا، لا تحتاج إلى array brackets لأن n هو بالفعل كائن واحد
-                      { new: true, upsert: true }
-                  );
-                  console.log('تمت إضافة البيانات بنجاح:', updatedUser);
-          
-                  return res.json({ id: "done" });
-              } catch (error) {
-                  console.error('حدث خطأ أثناء إضافة البيانات:', error);
-                  return res.status(500).json({ error: 'حدث خطأ أثناء إضافة البيانات' });
-              }
-          });
 
 
 
@@ -652,27 +609,11 @@ return res.json({ id:"done" })
                 const b = req.params.id;
                 console.log(v.id)
                 var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
-                
-                // إنشاء مثيل جديد من المودل مع ترقيم البيانات
-                const n = new YourModel({
-                  
-                    // status:v.confirming,
-                    status:"مؤكد",
-                    // branch: v.branch,
-                    // location: v.location,
-                    // salesEmployeeId: decoded.id,
-                    // salesEmployeeName: 'String',
-                    // salesEmployeeUserName: 'String',
-                    // aluminumCode0: v.aluminumCode0,
-                    // aluminumThickness0: v.aluminumThickness0,
-                    // aluminumColorCode0: v.aluminumColorCode0,
-                    // glasstype0: v.glasstype0,
-                    // glassThickness0: v.glassThickness0,
-                    // glassColorCode0: v.glassColorCode0,
-                    // measurement: []
-                   
-                });
 
+                const orderNumber = await getNextOrderNumber(); // دالة ترقيم الطلبات المؤكدة الجديدة
+
+                // إنشاء مثيل جديد من المودل مع ترقيم البيانات
+    
                
               const g = await  User.findOne( // هذا انا وضعته لزيادة الامان لكي لا يعدل احتهم من الفحص ويضهر زر اعتماد الطلب ويصدر طلب جديد فأستدعيت هذي من الداتات وتأكدت من رقم الايدي ووضعت شرط بحيث لا يتم التعديل إلا اذا كانة مسوادة
                   { "orders._id": v.id }
@@ -683,18 +624,15 @@ return res.json({ id:"done" })
                 // console.log("fffffffff")
 
                 if (foundObject.status == "مسودة" && Array.isArray(foundObject.measurement) && foundObject.measurement.length > 0) { // اشترط ان يكون مسودة لكي لايوكون موكد ونزيد نهب رقم طلب جديد
-                // حفظ الوثيقة في قاعدة البيانات
-                const savedDocument = await n.save();
-                console.log('تمت إضافة البيانات بنجاح:', savedDocument);
                 
-
+           
                
 
 
                 // تحديث مستخدم معين في مودل User بإضافة البيانات الجديدة إلى حقل الأوامر
                 const updatedUser = await User.updateOne(
                     { "orders._id": v.id },
-                    { $set: { "orders.$[orderElem].status": n.status,"orders.$[orderElem].status2": 'قيد التصنيع',"orders.$[orderElem].orderNumber": n.orderNumber } },
+                    { $set: { "orders.$[orderElem].status":'مؤكد',"orders.$[orderElem].status2": 'قيد التصنيع',"orders.$[orderElem].orderNumber": orderNumber } },
                     // { $set: { orders: n } }, // انتبه هنا، لا تحتاج إلى array brackets لأن n هو بالفعل كائن واحد
                     { arrayFilters: [{ "orderElem._id": v.id }], new: true, upsert: true }
 
@@ -2086,7 +2024,7 @@ router.delete('/review/:measurementId-:orderId', requireAuth,restrictFactoryWork
                        
 
 
-        res.render('user/total-meters',{arrR:foundObject,idCustomer:idCustomer ,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
+        res.render('user/total-meters',{arrR:foundObject,idCustomer:idCustomer ,allData:h,moment:moment} ) // المتغير الثاني حق اداة تغيير شكل اوقت
       }).catch((err)=>{
           console.log(err)
  })
@@ -2739,6 +2677,7 @@ router.post("/aluminum-cutting/assign",restrictFactoryWorker, async (req, res) =
         res.status(500).send('Server Error');
     }
 });
+
 
 
 

@@ -44,15 +44,63 @@
       transform: translateY(-50%);
     }
   </style>
+
+<style>
+  @media print {
+      /* إخفاء محتوى صفحة الويب عند الطباعة */
+      .web-content {
+          display: none;
+      }
+      /* إظهار محتوى الفاتورة عند الطباعة */
+      .print-content {
+          display: block !important;
+      }
+
+          /* إخفاء عمود Action عند الطباعة */
+          .no-print {
+            display: none !important;
+        }
+  }
+  /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+  .print-content {
+      display: none;
+  }
+  /* تنسيقات إضافية للفاتورة */
+  .invoice-header {
+      margin-bottom: 20px;
+      text-align: center;
+  }
+  .invoice-header h1 {
+      margin-bottom: 0;
+  }
+  .invoice-table th, .invoice-table td {
+      text-align: right;
+  }
+  .total {
+      font-weight: bold;
+  }
+/*  */
+.print-content {
+        display: none;
+    }
+
+
+</style>
+
+
 </head>
 <body>
+  <span class=" web-content"> 
 
   <%- include('../components/overlay.ejs') %>
 
   <%- include('../components/dark-light.ejs') %>
+</span>
   <main class="d-flex flex-nowrap">
     <%- include('../components/sidebar.ejs', {currentPage:"review"}) %>
     <section class="w-100">
+      <span class=" web-content"> 
+
       <%- include('../components/navbar.ejs') %>
       <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -84,6 +132,8 @@
         <% } %>
 
       </ul>
+    
+
       <h6>Order Number: <%= arrR.orderNumber %></h6>
       <div class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
         <button id="deleteButton" <%= arrR.orderNumber ? "hidden" : '' %> type="button" class="btn btn-danger">حذف <i class="bi bi-trash"></i></button>
@@ -119,6 +169,33 @@
 
 
       <% } %>
+
+      <!-- زر الطباعة -->
+
+  <button id="print1" type="button" class="btn btn-secondary mt-5" onclick="window.print()" >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+</svg>
+</button>
+<!--// زر الطباعة //-->
+
+
+</span>
+<!-- زر الطباعة -->
+
+
+<div class="container print-content">
+<div class="invoice-header">
+    <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+    <h1>مصنع المعدن الأبيض لصناعة</h1>
+    <!-- <p>خميس مشيط المدينة الصناعية</p> -->
+    <p> الفرع :<strong><%= arrR.branch %></strong></p>
+
+    <!-- <p>هاتف: 123456789</p> -->
+    <p>البريد الإلكتروني: info@whitemetalfactory.com.sa</p>
+</div>
+</div>
       <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
         <thead>
           <tr>
@@ -137,7 +214,7 @@
             <th scope="col">Aluminum Size</th>
             <th scope="col">Comments</th>
             <th scope="col">داخلي/خارجي</th>
-            <th scope="col">Action</th>
+            <th scope="col" class="no-print">Action</th>
           </tr>
         </thead>
         <tbody id="kk">
@@ -154,29 +231,27 @@
               <td><%= item.lip %></td>
               <td><%= item.illumination %></td>
               <td>
-                <img style="background-color: aliceblue; width: 100%; height: 100%; object-fit: cover;" src="<%= item.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal-<%= index %>">
-                
-                <!-- المودال لعرض الصورة بشكل كامل -->
-                <div class="modal fade" id="imageModal-<%= index %>" tabindex="-1" aria-labelledby="imageModalLabel-<%= index %>" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-white">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="imageModalLabel-<%= index %>">عرض الصورة</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <img src="<%= item.designCode %>" alt="Design Image" class="img-fluid">
-                      </div>
+                <img class="custom-image" src="<%= item.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-white">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="modalImage" src="<%= item.designCode %>" alt="Design Image" class="img-fluid">
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </td>
+            </td>
               
               <td><%= item.aluminumThickness %></td>
               <td><%= item.aluminumSize %></td>
               <td><%= item.comments %></td>
               <td><%= item.insideOrOutside %></td>
-              <td>
+              <td class="no-print">
                 <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
 
 <!-- هذا الشرط عشان يتم تغير امتداد التعديل عند الأرسال هذا للاستركتشر والتيوبات -->

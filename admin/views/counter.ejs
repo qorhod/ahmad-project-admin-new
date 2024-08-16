@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/admin/public/bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
     <link rel="shortcut icon" href="/admin/public/img/ali.png" type="image/x-icon">
     <meta charset="utf-8" />
-    <title>إدارة حساب الأدمن</title>
+    <title>لوحة التحكم</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="/admin/public/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/admin/public/css/dark-light.css"/>
@@ -49,7 +49,15 @@
             background-color: var(--divider-bg-color);
         }
         .small-sidebar-divider {
-            right: 80px;
+            right: 80px; /* تحديث الموقع عند تصغير الشريط الجانبي */
+        }
+        .sidebar .logo-img {
+            height: 50px;
+            width: 50px;
+        }
+        .sidebar .factory-img {
+            height: 40px;
+            width: 40px;
         }
         .sidebar ul.nav.nav-pills {
             list-style: none;
@@ -144,7 +152,7 @@
     </header>
     <main>
         <div id="sidebar-divider" class="sidebar-divider"></div>
-        <%- include('components/sidebar.ejs', {currentPage:"manageAdmin"}) %>
+        <%- include('components/sidebar.ejs', {currentPage:"counter"}) %>
         <section id="content" class="content p-4 mt-4">
             <!-- <div class="theme-toggle-container text-end">
                 <button class="btn btn-light btn-toggle" data-bs-theme-value="light">
@@ -154,26 +162,17 @@
                     <i class="bi bi-moon"></i> الوضع الليلي
                 </button>
             </div> -->
-            <h1 class="mt-4">اعادلة تعيد كلمة المرور او اسم المستخدم للأدمن</h1>
-
-            <% if (messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
-            <% } %>
-            <% if (messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
-            <% } %>
-
-            <form action="/admin/manageAdmin" method="POST">
+            <h1 class="mt-4">التحكم في الترقيم </h1>
+            <p></p>
+            <form action="/admin/update-counter" method="POST">
                 <div class="mb-3">
-                    <label for="username" class="form-label">اسم المستخدم</label>
-                    <input type="text" class="form-control" id="username" name="username" value="<%= admin.username %>" required>
+                    <label for="lastNumber" class="form-label">ترقيم الطلابات المؤكدة :</label>
+                    <input type="number" class="form-control" id="lastNumber" name="lastNumber" value="<%= lastNumber %>">
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">كلمة المرور</label>
-                    <input type="password" class="form-control" id="password" name="password">
-                </div>
-                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                <button type="submit" class="btn btn-primary">تحديث الرقم</button>
             </form>
+            
+            
         </section>
     </main>
     <script src="/admin/public/js/bootstrap.bundle.min.js"></script>

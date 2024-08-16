@@ -30,18 +30,62 @@
     <link rel="stylesheet" href="../css/myStyle.css" />
   
   </head>
-  <body>
-    <%- include('../components/overlay.ejs') %>
+  <style>
+    @media print {
+        /* إخفاء محتوى صفحة الويب عند الطباعة */
+        .web-content {
+            display: none;
+        }
+        /* إظهار محتوى الفاتورة عند الطباعة */
+        .print-content {
+            display: block !important;
+        }
 
+            /* إخفاء عمود Action عند الطباعة */
+            .no-print {
+              display: none !important;
+          }
+    }
+    /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+    .print-content {
+        display: none;
+    }
+    /* تنسيقات إضافية للفاتورة */
+    .invoice-header {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .invoice-header h1 {
+        margin-bottom: 0;
+    }
+    .invoice-table th, .invoice-table td {
+        text-align: right;
+    }
+    .total {
+        font-weight: bold;
+    }
+/*  */
+.print-content {
+          display: none;
+      }
+  
+
+</style>
+  <body>
+    <span class=" web-content"> 
+
+    <%- include('../components/overlay.ejs') %>
+ 
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
-
+  </span>
 
     <main class="d-flex flex-nowrap">
       <!-- الواجهه الي على اليمين -->
       <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
 
       <section class="w-100">
+        <span class=" web-content">
       <%- include('../components/navbar.ejs') %>
 
 
@@ -80,7 +124,35 @@
 
       </ul>
 
+  <!-- زر الطباعة -->
 
+  <button id="print1" type="button" class="btn btn-secondary" onclick="window.print()" >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+  <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+  </svg>
+  </button>
+  <!--// زر الطباعة //-->
+  
+  </span>
+  
+  <div class="container print-content">
+      <div class="invoice-header">
+          <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+          <h1>REPORT METERS</h1>
+  
+      </div>
+    
+    
+      
+    </div>
+    <div class="invoice-details print-content">
+      <br>
+        <p>Order Number: <strong><%= arrR.orderNumber %></strong></p>
+        <p>Date:<strong><%= moment(arrR.createdAt).format('YYYY-MM-DD') %></strong></p>
+        <p>Customer Name:<strong><%= allData.firstNamecustomer %><%= allData.lastNamecustomer %></strong></p>
+        <p>Branch: <strong><%= arrR.branch %></strong></p>
+    </div>
      <!-- form-control -->
      <!-- <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
       <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>

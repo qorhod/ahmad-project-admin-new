@@ -154,14 +154,14 @@
         <div id="sidebar-divider" class="sidebar-divider"></div>
         <%- include('components/sidebar.ejs', {currentPage:"editPrices"}) %>
         <section id="content" class="content p-4 mt-4">
-            <div class="theme-toggle-container text-end">
+            <!-- <div class="theme-toggle-container text-end">
                 <button class="btn btn-light btn-toggle" data-bs-theme-value="light">
                     <i class="bi bi-sun"></i> الوضع النهاري
                 </button>
                 <button class="btn btn-dark btn-toggle" data-bs-theme-value="dark">
                     <i class="bi bi-moon"></i> الوضع الليلي
                 </button>
-            </div>
+            </div> -->
             <h1 class="mt-4">تحديث الأسعار</h1>
             
          <!-- حقل TAX منفصل عن باقي الحقول -->
@@ -265,29 +265,31 @@
     </main>
     <script src="/admin/public/js/bootstrap.bundle.min.js"></script>
     <script src="/admin/public/js/main.js"></script>
+    
     <script>
-        function convertArabicNumbersToEnglish(input) {
-            return input.replace(/[٠-٩]/g, function (d) {
-                return d.charCodeAt(0) - 1632;
-            }).replace(/[۰-۹]/g, function (d) {
-                return d.charCodeAt(0) - 1776;
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
+            // تحويل الأرقام العربية إلى إنجليزية
+            function convertArabicNumbersToEnglish(input) {
+                return input.replace(/[٠-٩]/g, function (d) {
+                    return d.charCodeAt(0) - 1632;
+                }).replace(/[۰-۹]/g, function (d) {
+                    return d.charCodeAt(0) - 1776;
+                });
+            }
+    
             const inputs = document.querySelectorAll('.arabic-to-english');
-
+    
             // تحويل الأرقام العربية إلى إنجليزية عند تحميل الصفحة
             inputs.forEach(input => {
                 input.value = convertArabicNumbersToEnglish(input.value);
             });
-
+    
             inputs.forEach(input => {
                 input.addEventListener('input', function () {
                     // تحويل الأرقام العربية إلى الإنجليزية أثناء الكتابة
                     this.value = convertArabicNumbersToEnglish(this.value);
                 });
-
+    
                 input.addEventListener('keypress', function (e) {
                     // السماح فقط بإدخال الأرقام
                     if (e.which < 48 || e.which > 57) {
@@ -295,7 +297,36 @@
                     }
                 });
             });
+    
+            const sidebar = document.getElementById('sidebarId');
+            const content = document.getElementById('content');
+            const sidebarDivider = document.getElementById('sidebar-divider');
+            const navbar = document.querySelector('.navbar');
+            const themeToggleLabelSidebar = document.getElementById('themeToggleLabelSidebar');
+    
+            function toggleSidebar() {
+                sidebar.classList.toggle('small-sidebar');
+                content.classList.toggle('small-content');
+                sidebarDivider.classList.toggle('small-sidebar-divider');
+                navbar.classList.toggle('small-navbar');
+    
+                if (themeToggleLabelSidebar) {
+                    themeToggleLabelSidebar.classList.toggle('d-none');
+                }
+    
+                // Adjust the position of the sidebar-divider based on the sidebar width
+                if (sidebar.classList.contains('small-sidebar')) {
+                    sidebarDivider.style.right = '90px'; // Update this value based on your small-sidebar width
+                } else {
+                    sidebarDivider.style.right = '250px'; // Update this value based on your normal sidebar width
+                }
+            }
+    
+            const toggleButton = document.querySelector('.bi-x-circle');
+            toggleButton.addEventListener('click', toggleSidebar);
         });
     </script>
+    
+
 </body>
 </html>

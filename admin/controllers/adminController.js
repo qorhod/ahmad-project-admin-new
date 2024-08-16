@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
 const AuthUser = require('../models/auth-user');
 const Permissions = require('../models/permissions');
-const Prices = require('../models/prices');  
+const Prices = require('../models/prices'); 
+const Counter = require('../models/counter');
+
 // عرض صفحة تسجيل الدخول
 exports.getLogin = (req, res) => {
     res.render(path.join(__dirname, '../views/index'));
@@ -585,3 +587,73 @@ exports.postManageAdmin = async (req, res) => {
 
 
 
+
+// تعديل بيانات العداد
+
+// عرض صفحة تعديل العدادات
+exports.getCounterPage = async (req, res) => {
+    if (req.isAuthenticated()) { // تحقق من المصادقة
+        try {
+            const counter = await Counter.findOne({ name: 'orderNumber' }); // استبدل 'yourCounterName' بالاسم المناسب
+
+            res.render(path.join(__dirname, '../views/counter.ejs'), {
+                user: req.user, // تمرير المستخدم المصادق عليه
+                currentPage: 'counter', // لتحديد الصفحة الحالية
+                lastNumber: counter ? counter.lastNumber : 0, // تمرير lastNumber إلى القالب
+                messages: req.flash() // تمرير رسائل الفلاش إلى القالب
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
+
+exports.updateCounterPage = async (req, res) => {
+    if (req.isAuthenticated()) {
+        const { lastNumber } = req.body;
+        try {
+            // تحديث lastNumber باستخدام updateOne
+            const result = await Counter.updateOne({ name: 'orderNumber' }, { $set: { lastNumber: lastNumber } });
+            
+            if (result.nModified > 0) {
+                console.log("Counter updated successfully");
+            } else {
+                console.log("No documents matched the query. Updated 0 documents.");
+            }
+
+            // إعادة التوجيه إلى صفحة counter بعد التحديث
+            res.redirect('/admin/counter');
+        } catch (err) {
+            console.error("Error updating counter:", err);
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
+
+// تعديل بيانات العداد 
+
+
+
+
+
+
+
+
+
+
+// تسجيل خروج 
+
+exports.logout = (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).send('Failed to log out');
+      }
+      res.clearCookie('connect.sid'); // قم بمسح ملفات تعريف الارتباط لجلسة المستخدم
+      res.redirect('/admin/login'); // إعادة التوجيه إلى صفحة تسجيل الدخول الخاصة بالمسؤول
+    });
+  };

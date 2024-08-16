@@ -179,6 +179,8 @@
                             <th>(B1)*2</th>
                             <th>(B2)*4</th>
                             <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
                             <th>Design</th>
                             <th>Status</th>
                         </tr>
@@ -190,22 +192,38 @@
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.H && measurement.aluminumCuttingReport.H ? measurement.aluminumCuttingReport.H : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.W && measurement.aluminumCuttingReport.W ? measurement.aluminumCuttingReport.W : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B1 && measurement.aluminumCuttingReport.B1 ? measurement.aluminumCuttingReport.B1 : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B2 && measurement.aluminumCuttingReport.B2 ? measurement.aluminumCuttingReport.B2 : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B3 && measurement.aluminumCuttingReport.B3 ? measurement.aluminumCuttingReport.B3 : '--') %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
                                     <td>
-                                        <form action="/aluminum-cutting/update-status-aluminum-cutting" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <button type="submit" class="btn <%= measurement.cuttingStatusAluminum ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.cuttingStatusAluminum ? 'Completed' : 'In Progress' %>
+                                            <input type="hidden" name="taskType" value="cutting">
+
+                                            <button type="submit" class="btn <%= measurement.cuttingStatus ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
+
+
+
+
+
+
+
+
+
+
+
+
                                     </td>
                                 </tr>
                             <% } %>
@@ -227,6 +245,8 @@
                             <th>(B1)*2</th>
                             <th>(B2)*4</th>
                             <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
                             <th>Design</th>
                             <th>Status</th>
                         </tr>
@@ -238,20 +258,25 @@
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.H && measurement.aluminumCuttingReport.H ? measurement.aluminumCuttingReport.H : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.W && measurement.aluminumCuttingReport.W ? measurement.aluminumCuttingReport.W : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B1 && measurement.aluminumCuttingReport.B1 ? measurement.aluminumCuttingReport.B1 : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B2 && measurement.aluminumCuttingReport.B2 ? measurement.aluminumCuttingReport.B2 : '--') %></td>
-                                    <td><%=(measurement.aluminumCuttingReport.B3 && measurement.aluminumCuttingReport.B3 ? measurement.aluminumCuttingReport.B3 : '--') %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
                                     <td>
-                                        <form action="/aluminum-assembly/update-status-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
                                             <input type="hidden" name="orderId" value="<%= measurement.iid %>">
                                             <input type="hidden" name="measurementId" value="<%= measurement._id %>">
-                                            <button type="submit" class="btn <%= measurement.assemblyStatusAluminum ? 'completed' : 'in-progress' %>">
-                                                <%= measurement.assemblyStatusAluminum ? 'Completed' : 'In Progress' %>
+                                            <input type="hidden" name="taskType" value="assembly">
+
+                                            <button type="submit" class="btn <%= measurement.assemblyStatus ? 'completed' : 'in-progress' %>">
+                                                
+                                                <%= measurement.assemblyStatus? 'Completed' : 'In Progress' %>
                                             </button>
                                         </form>
                                     </td>
