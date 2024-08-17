@@ -6,6 +6,7 @@ const AuthUser = require('../models/auth-user');
 const Permissions = require('../models/permissions');
 const Prices = require('../models/prices'); 
 const Counter = require('../models/counter');
+const User = require('../models/customersSchema');
 
 // عرض صفحة تسجيل الدخول
 exports.getLogin = (req, res) => {
@@ -640,6 +641,106 @@ exports.updateCounterPage = async (req, res) => {
 
 
 
+// عرض قائمة العملاء
+exports.getCustomers = async (req, res) => {
+    if (req.isAuthenticated()) { // تحقق من المصادقة
+        try {
+            const customers = await User.find(); // جلب جميع العملاء من قاعدة البيانات
+
+            res.render(path.join(__dirname, '../views/customers.ejs'), {
+                user: req.user, // تمرير المستخدم المصادق عليه
+                currentPage: 'customers', // لتحديد الصفحة الحالية
+                customers: customers // تمرير قائمة العملاء إلى القالب
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
+
+
+// حذف عميل معين
+exports.deleteCustomer = async (req, res) => {
+    if (req.isAuthenticated()) { // تحقق من المصادقة
+        try {
+            const customerId = req.params.id; // الحصول على ID العميل من المعاملات
+
+            await User.findByIdAndDelete(customerId); // حذف العميل باستخدام الـ ID
+
+            req.flash('success', 'تم حذف العميل بنجاح');
+            res.redirect('/admin/customers'); // إعادة التوجيه إلى صفحة العملاء بعد الحذف
+        } catch (err) {
+            console.error("Error deleting customer:", err);
+            req.flash('error', 'حدث خطأ ما أثناء حذف العميل');
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
+
+
+// عرض الوردرات
+exports.getOrdersPage = async (req, res) => {
+    if (req.isAuthenticated()) { // تحقق من المصادقة
+        try {
+            // جلب جميع الأوامر من السكيما User (هنا يتم افتراض أن `orders` هو حقل فرعي في سكيما `User`)
+            const users = await User.find(); 
+            const orders = users.map(user => user.orders).flat(); // تجميع جميع الأوامر في مصفوفة واحدة
+
+            res.render(path.join(__dirname, '../views/orders.ejs'), {
+                user: req.user, // تمرير المستخدم المصادق عليه
+                currentPage: 'orders', // لتحديد الصفحة الحالية
+                orders: orders // تمرير قائمة الأوامر إلى القالب
+            });
+        } catch (err) {
+            console.error("Error fetching orders:", err);
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
+
+
+
+
+
+// مسح الطلب
+exports.deleteOrder = async (req, res) => {
+    if (req.isAuthenticated()) { // تحقق من المصادقة
+        try {
+            const orderId = req.params.id; // الحصول على ID الأمر من المعاملات
+
+            // البحث عن المستخدم الذي يحتوي على هذا الأمر
+            const user = await User.findOne({ "orders._id": orderId });
+
+            if (user) {
+                // استخدام filter لإزالة الأمر من المصفوفة
+                user.orders = user.orders.filter(order => order._id.toString() !== orderId);
+
+                // حفظ التغييرات
+                await user.save();
+
+                req.flash('success', 'تم حذف الأمر بنجاح');
+                res.redirect('/admin/orders'); // إعادة التوجيه إلى صفحة الأوامر بعد الحذف
+            } else {
+                req.flash('error', 'لم يتم العثور على الأمر');
+                res.redirect('/admin/orders');
+            }
+
+        } catch (err) {
+            console.error("Error deleting order:", err);
+            req.flash('error', 'حدث خطأ ما أثناء حذف الأمر');
+            res.status(500).send("حدث خطأ ما!");
+        }
+    } else {
+        res.redirect('/admin'); // إعادة التوجيه إذا لم يكن المستخدم مصادق عليه
+    }
+};
 
 
 

@@ -64,6 +64,21 @@ router.post('/update-counter', adminController.updateCounterPage);
 
 
 
+
+// عرض قائمة العملاء
+router.get('/customers', adminController.getCustomers);
+
+// حذف عميل معين
+router.post('/customers/delete/:id', adminController.deleteCustomer);
+
+
+// مسار عرض صفحة الطلبات
+router.get('/orders', adminController.getOrdersPage);
+
+// مسار حذف الطلب
+router.post('/orders/delete/:id', adminController.deleteOrder);
+
+
 // مسار تسجيل الخروج
 router.post('/logout', adminController.logout);
 module.exports = router;

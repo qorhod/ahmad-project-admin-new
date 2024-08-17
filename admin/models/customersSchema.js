@@ -276,9 +276,8 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
  
  
 // Create a model based on that schema
-// const User = mongoose.model("customer", userSchema);  //كأنه نشأ اري وداخل اري يبدا يكتب البيانات الي نبغا بصيغة ابجكت customer عشان ننشاء مكان في الداتا بيز بهذا الأسم 
- 
 const User = mongoose.models.customer || mongoose.model('customer', userSchema);
 
+ 
 // export the model
 module.exports = User;  //app.js نصدر الداتا عشان نستقبلها في صفحة 
