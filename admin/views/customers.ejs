@@ -153,45 +153,46 @@
     </header>
     <main>
         <div id="sidebar-divider" class="sidebar-divider"></div>
-        <%- include('components/sidebar.ejs', {currentPage:"dashboard"}) %>
+        <%- include('components/sidebar.ejs', {currentPage:"customers"}) %>
         <section id="content" class="content p-4 mt-4">
             <h1 class="mt-4">إدارة العملاء</h1>
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th>الاسم الأول</th>
-                        <th>الاسم الأخير</th>
-                        <th>رقم الهاتف</th>
-                        <th>الجنس</th>
-                        <th>الفرع</th>
-                        <th>موظف المبيعات (ID)</th>
-                        <th>اسم موظف المبيعات</th>
-                        <th>اسم مستخدم موظف المبيعات</th>
-                        <th>إجراءات</th>
-                    </tr>
+                  <tr>
+                    <th>الاسم الأول</th>
+                    <th>الاسم الأخير</th>
+                    <th>رقم الهاتف</th>
+                    <th>الجنس</th>
+                    <th>الفرع</th>
+                    <th>موظف المبيعات (ID)</th>
+                    <th>اسم موظف المبيعات</th>
+                    <th>اسم مستخدم موظف المبيعات</th>
+                    <th>إجراءات</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <% customers.forEach(function(customer) { %>
-                        <tr>
-                            <td><%= customer.firstNamecustomer %></td>
-                            <td><%= customer.lastNamecustomer %></td>
-                            <td><%= customer.phoneNumber %></td>
-                            <td><%= customer.gender %></td>
-                            <td><%= customer.branch %></td>
-                            <td><%= customer.salesEmployeeId %></td>
-                            <td><%= customer.salesEmployeeName %></td>
-                            <td><%= customer.salesEmployeeUserName %></td>
-                            <td>
-                                <form action="/admin/customers/delete/<%= customer._id %>" method="POST">
-                                    <button type="submit" class="btn btn-delete">
-                                        <i class="bi bi-trash"></i> حذف
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% }); %>
+                  <% customers.forEach(function(customer) { %>
+                    <tr>
+                      <td><%= customer.firstNamecustomer %></td>
+                      <td><%= customer.lastNamecustomer %></td>
+                      <td><%= customer.phoneNumber %></td>
+                      <td><%= customer.gender %></td>
+                      <td><%= customer.branch %></td>
+                      <td><%= customer.salesEmployeeId %></td>
+                      <td><%= customer.salesEmployeeName %></td>
+                      <td><%= customer.salesEmployeeUserName %></td>
+                      <td>
+                        <button type="button" class="btn btn-delete" onclick="confirmDelete('<%= customer._id %>')">
+                          <i class="bi bi-trash"></i> حذف
+                        </button>
+                        <form id="delete-form-<%= customer._id %>" action="/admin/customers/delete/<%= customer._id %>" method="POST" style="display: none;">
+                          <input type="hidden" name="_method" value="DELETE">
+                        </form>
+                      </td>
+                    </tr>
+                  <% }); %>
                 </tbody>
-            </table>
+              </table>
         </section>
     </main>
     <script src="/admin/public/js/bootstrap.bundle.min.js"></script>
@@ -223,5 +224,31 @@
             toggleButton.addEventListener('click', toggleSidebar);
         });
     </script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(customerId) {
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'نعم، احذف!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('delete-form-' + customerId).submit();
+      }
+    })
+  }
+</script>
+
+
+
 </body>
 </html>
