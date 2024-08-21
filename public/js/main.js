@@ -16,6 +16,12 @@ const toggleSidebar = () => {
 
 
 
+
+
+
+
+
+
 //==============خاص بأضهر الون الأحمر على القياسات الممسوحة===============
 // deleted-script.js
 document.addEventListener('DOMContentLoaded', function () {

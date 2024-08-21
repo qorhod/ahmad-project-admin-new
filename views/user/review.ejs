@@ -136,15 +136,22 @@
 
       <h6>Order Number: <%= arrR.orderNumber %></h6>
       <div class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
-        <button id="deleteButton" <%= arrR.orderNumber ? "hidden" : '' %> type="button" class="btn btn-danger">حذف <i class="bi bi-trash"></i></button>
+        <!-- <button id="deleteButton" <%= //arrR.orderNumber ? "hidden" : '' %> type="button" class="btn btn-danger">حذف <i class="bi bi-trash"></i></button> -->
         <a <%= arrR.orderNumber ? "hidden" : '' %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">البقاء في المسودة <i class="bi bi-journal-text"></i></a>
         <a <%= arrR.orderNumber ? '' : "hidden" %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">العودة إلى صفحة العميل <i class="bi bi-arrow-left"></i></a>
-        <form action="/review/<%= arrR._id %>" method="post" class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
+
+        <button id="submitButton" class="btn btn-success" onclick="confirmDelete()" <%= arrR.orderNumber ? 'hidden' : '' %>>
+          اعتماد الطلب
+      </button>
+
+
+        <form id="submit" action="/review/<%= arrR._id %>" method="post" class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
           <!-- <input name="confirming" value="مؤكد" type="hidden" class="form-control" /> -->
           <!-- <input name="confirming2" value="قيد التصنيع" type="hidden" class="form-control" /> -->
+
           <input name="id" value="<%= arrR._id %>" type="hidden" class="form-control" />
           <input name="idCustomer" value="<%= idCustomer %>" type="hidden" class="form-control" />
-          <input id="submitButton" type="<%= arrR.orderNumber ? 'hidden' : 'submit' %>" value="اعتماد الطلب" class="btn btn-success">
+          <input id="submitButton" type="hidden" value="اعتماد الطلب" class="btn btn-success">
         </form>
       </div>
       <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
@@ -303,7 +310,26 @@
   <script src="../js/overlay.js"></script>
   
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
 
+    
+    function confirmDelete() {
+      Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "لن تتمكن من التراجع عن هذا!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'اعتماد الطلب'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('submit').submit();
+        }
+      })
+    }
+  </script>
 
 </body>
 </html>

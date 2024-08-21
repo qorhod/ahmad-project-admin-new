@@ -40,6 +40,7 @@
 
 <!-- خاصه بزر الدار لايت مود من اجل الستايل  -->
 <style>
+/* الكود الخاص بالزر الجديد */
 .custom-switch .form-check-input {
   width: 50px;
   height: 25px;
@@ -75,6 +76,85 @@
 }
 
   
+</style>
+
+
+
+<style>
+
+/* زر الإضائة */
+/* From Uiverse.io by DawidMazurek4 */ 
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0);
+  transition: .4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 20px;
+  left: 0.3em;
+  bottom: 0.3em;
+  background-color: rgb(219, 198, 2);
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #000000;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #000000;
+}
+
+input:checked + .slider:before {
+  transform: translateX(1.5em);
+}
+
+.slider::after {
+  width: 20px;
+  height: 20px;
+  left: 20%;
+  top: 10%;
+  border-radius: 50%;
+  position: absolute;
+  content: "";
+  background-color: rgb(0, 0, 0);
+  transition: ease 0.4s;
+}
+
+input:checked + .slider::after {
+  left: 80%;
+  width: 0px;
+  height: 0px;
+}
+
 </style>
 <!-- خاصه بزر الدار لايت مود من اجل الستايل  -->
 
@@ -189,67 +269,37 @@
     </ul>
 
     <div class="text-center">
-      <div class="form-check form-switch custom-switch d-inline-flex">
-        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-        <label class="form-check-label" for="darkModeSwitch">
-          <!-- محتوى السويتش مثل الأيقونات وغيرها -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sun-fill" viewBox="0 0 16 16" id="sunIcon" style="display: none;">
-            <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5-.5zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16" id="moonIcon">
-            <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
-            <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
-          </svg>
-        </label>
-      </div>
+      <!-- هنا الزر الجديد -->
+
+   
+      <label class="switch">
+        <input type="checkbox" id="theme">
+        <span class="slider"></span>
+      </label>
     </div>
     
     <hr />
-    <!-- <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-      <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
-    </div> -->
-    <!--  -->
 
-  
     
+<!-- سكربت لتفعيل الدارك مود واللايت مود مع الزر الجديد -->
 <script>
-
-document.getElementById('darkModeSwitch').addEventListener('change', function () {
-  const sunIcon = document.getElementById('sunIcon');
-  const moonIcon = document.getElementById('moonIcon');
+  document.getElementById('theme').addEventListener('change', function () {
+    // تغيير التبديل بحيث يستخدم 'light' عند تفعيل السويتش و'dark' عند عدم تفعيله
+    const theme = this.checked ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-bs-theme', theme);
   
-  if (this.checked) {
-    document.documentElement.setAttribute('data-bs-theme', 'dark');
-    moonIcon.style.display = 'block';
-    sunIcon.style.display = 'none';
-  } else {
-    document.documentElement.setAttribute('data-bs-theme', 'light');
-    moonIcon.style.display = 'none';
-    sunIcon.style.display = 'block';
-  }
+    // حفظ التفضيل في localStorage
+    localStorage.setItem('theme', theme);
+  });
+  
+  window.addEventListener('load', function () {
+    const theme = localStorage.getItem('theme') || 'dark'; // الوضع الافتراضي هو الداكن
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    document.getElementById('theme').checked = theme === 'light'; // عكس التفعيل
+  });
+  </script>
+  
 
-  // حفظ التفضيل في localStorage
-  localStorage.setItem('theme', this.checked ? 'dark' : 'light');
-});
-
-window.addEventListener('load', function () {
-  const theme = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-bs-theme', theme);
-  document.getElementById('darkModeSwitch').checked = theme === 'dark';
-  if (theme === 'dark') {
-    document.getElementById('moonIcon').style.display = 'block';
-    document.getElementById('sunIcon').style.display = 'none';
-  } else {
-    document.getElementById('moonIcon').style.display = 'none';
-    document.getElementById('sunIcon').style.display = 'block';
-  }
-});
-
-
-</script>
-
-<!-- ظظظظظظظظظظظظظ -->
 
     <div class="web-content dropdown sticky-top">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -298,27 +348,5 @@ window.addEventListener('load', function () {
     })
   </script>
 </body>
-<script>
 
-document.getElementById('darkModeSwitch').addEventListener('change', function () {
-  if (this.checked) {
-    document.documentElement.setAttribute('data-bs-theme', 'dark');
-  } else {
-    document.documentElement.setAttribute('data-bs-theme', 'light');
-  }
-});
-
-// استعادة الوضع عند التحميل بناءً على القيمة المخزنة سابقًا
-window.addEventListener('load', function () {
-  const theme = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-bs-theme', theme);
-  document.getElementById('darkModeSwitch').checked = theme === 'dark';
-});
-
-// حفظ الوضع في localStorage
-document.documentElement.addEventListener('data-bs-theme', function () {
-  localStorage.setItem('theme', document.documentElement.getAttribute('data-bs-theme'));
-});
-
-</script>
 </html>
