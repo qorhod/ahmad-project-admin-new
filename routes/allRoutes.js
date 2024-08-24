@@ -2259,8 +2259,13 @@ router.post('/edit-price/:id', requireAuth, restrictFactoryWorker, async functio
   const measurementId = v.id; // الحصول على معرف القياس من مسار URL
   const  price  = v.price; // الحصول على القيمة الجديدة للسعر من جسم الطلب
   const totalMeters=v.totalMeters
-  const total = price?price:0 * totalMeters;
+  // const total = price  * totalMeters;
+  const total = price?price* totalMeters:0 ;
+
   try {
+    console.log()
+
+    console.log(totalMeters)
       // البحث عن الطلب وتحديث حقل price داخل القياس المحدد
       const user = await User.findOneAndUpdate(
           { 'orders._id': orderId, 'orders.measurement._id': measurementId }, // البحث عن الطلب والقياس
