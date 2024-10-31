@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const port = process.env.PORT || 3001;
+// const port = process.env.PORT || 3001; 
+
+const port = process.env.PORT || 80; // لسيرفر
+const HOST = '0.0.0.0'; // لسيرفر 
+
+
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
@@ -78,9 +83,16 @@ mongoose.connect(process.env.DATABASE_PASSWORD)
     adminController.initializeDefaultPermissions();
     adminController.initializePrices();
     
-    app.listen(port, () => {
-      console.log(`http://localhost:${port}/`);
-    });
+    // app.listen(port, () => {
+    //   console.log(`http://localhost:${port}/`); // السيرف المحلي
+    // });
+
+    app.listen(port, HOST, () => { // لسيرفر 
+      console.log(`Server running on http://${HOST}:${port}/`);
+  });
+  
+
+
   })
   .catch((err) => {
     console.log(err);
