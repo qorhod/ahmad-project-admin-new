@@ -81,9 +81,11 @@
                         <tr>
                             <th>Number</th>
                             <th>Aluminum Code</th>
-                            <th>Color Code</th>
-                            <th>H</th>
+                            <th scope="col">Glass Color Inside</th>
+                            <th scope="col">Glass Color Outside</th>       
+                           <th>H</th>
                             <th>W</th>
+                            <th>Comment</th>
                             <th>Design</th>
                             <th>Status</th>
                         </tr>
@@ -94,9 +96,11 @@
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
-                                    <td><%= measurement.glassColorCode || '--' %></td>
-                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%= measurement.glassColorCodeInside || '--' %></td>
+                                    <td><%= measurement.glassColorCodeOutside || '--' %></td>                                         <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
+
+                                    <td><%= measurement.comments || '--' %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
@@ -124,10 +128,11 @@
                         <tr>
                             <th>Number</th>
                             <th>Aluminum Code</th>
-                            <th>Color Code</th>
-                            <th>illumination</th>
+                            <th scope="col">Glass Color Inside</th>
+                            <th scope="col">Glass Color Outside</th>                            <th>illumination</th>
                             <th>H</th>
                             <th>W</th>
+                            <th>Comment</th>
                             <th>Design</th>
                             <th>Status</th>
                         </tr>
@@ -138,10 +143,12 @@
                                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
-                                    <td><%= measurement.glassColorCode || '--' %></td>
-                                    <td><%= measurement.illumination || '--' %></td>
+                                    <td><%= measurement.glassColorCodeInside || '--' %></td>
+                                    <td><%= measurement.glassColorCodeOutside || '--' %></td>                                         <td><%= measurement.illumination || '--' %></td>
                                     <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                                     <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
+
+                                    <td><%= measurement.comments || '--' %></td>
                                     <td>
                                         <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
                                     </td>
@@ -174,6 +181,10 @@
                             <th>Number</th>
                             <th>Aluminum Code</th>
                             <th>Color Code</th>
+                            <th>Fixed</th>
+                            <th>Aluminum Thickness</th>
+                            <th>Aluminum Size</th>
+                            <th>Comments</th>
                             <th>H(A1)*2</th>
                             <th>W(A2)*2</th>
                             <th>(B1)*2</th>
@@ -192,8 +203,17 @@
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
+
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
+
                                     <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                     <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+
+
+
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
@@ -240,6 +260,10 @@
                             <th>Number</th>
                             <th>Aluminum Code</th>
                             <th>Color Code</th>
+                            <th>Fixed</th>
+                            <th>Aluminum Thickness</th>
+                            <th>Aluminum Size</th>
+                            <th>Comments</th>
                             <th>H(A1)*2</th>
                             <th>W(A2)*2</th>
                             <th>(B1)*2</th>
@@ -258,6 +282,10 @@
                                     <td><%= measurement.sequenceNumber %></td>
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
                                     <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                     <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>

@@ -47,7 +47,19 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
     
         // الابواب 
         SLICES_DOOR: Number,
-        DOUBLE_GLASS_DOOR: Number
+        DOUBLE_GLASS_DOOR: Number,
+
+
+        TempersPriceMeters: Number, // الاسعر الافتراض لسعر متر السكريت 
+
+
+
+
+// الوحدات الاضافات
+        Structure: Number, // الاسعر الافتارضي لوحدة الاستركتشر
+        Hinges: Number , // السعر الافتاضي لوحدة المفصلات 
+        RollWindow: Number // السعر الافتراضي لسعر الشباك الرول الواحد
+
     },
                     
 

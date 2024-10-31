@@ -1,5 +1,6 @@
 const express = require('express') //اكواد جاهزة من اكسبرس
 const router = express.Router() // اكواد جاهزة من اكسبرس
+const mongoose = require('mongoose');
 
 const User = require("../models/customersSchema.js") // اسكيما العملاء
 
@@ -14,6 +15,8 @@ var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
 
 const AsyncLock = require('async-lock'); //هذا ولي تحت كود عشان يعمل قفلعلى الداتا يمنع من تكرار البينات عطاني اياه الذاكاء الصناعي عسانمشكلة تكرار مجموع المواد في الداتا
 const lock = new AsyncLock();
+// const converter = require("arabic-digits-converter"); // مكتبه تحويل الارقم الغير انجليزيه إلى انجليزي
+
 
 
 const {requireAuth} = require("../middleware/middleware.js") // تسيما الحسابات اليوزرات
@@ -37,6 +40,12 @@ const {restrictFactoryWorker} = require('../middleware/middleware');
 const {verifyToken} = require('../middleware/middleware');
 const {checkPermission} = require('../middleware/middleware');  //  التأكد من صلاحية المستخدم للوصول إلى هذه الركوست تستخدم هكذا checkPermission('اسم الصلاحية')
 const {getNextOrderNumber} = require('../middleware/middleware');  // دالة ترقيم الطلب المؤكد    
+
+const {calculateTotalTempersMeters} = require("../middleware/equations.js"); // دالة تجمع امتار السكريت في الاوردر كامل 
+const {calculateTotalPrice} = require("../middleware/equations.js"); // دالة لجمع مجموع اسعار النواف الضافية 
+
+
+
 
 // router.get("/calculator",calculator) // يعي تنفذ هذاي الداة على جميع الاكواد النجمه يعين جميع الاكواد
 // router.post("*",calculator)
@@ -903,13 +912,245 @@ router.get("/doors-measurement/:id",restrictFactoryWorker,checkPermission('add_e
 });
 
 
+// ////
+// إضافة قياس جديد
+router.post("/measurement/:id", restrictFactoryWorker, async (req, res) => {
+  try {
+    const allPricesData = await Prices.findOne({});
+    if (!allPricesData) return res.status(500).json({ error: "بيانات الأسعار غير متوفرة." });
+
+    const v = req.body;
+    const decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+
+    const data = {
+      aluminumCode: v.aluminumCode,
+      h: parseFloat(v.H),
+      w: parseFloat(v.W),
+      lip: v.lip,
+      prices: allPricesData.price
+    };
+
+    const { resultH, resultW, totalMeters, total, price } = calculateResults(data);
+    const { E10, F10, G10, H10, I10, J10, M10, N10, Q10, K10, L10, O10, P10 } = motherEquation(data);
+
+    // إعداد تقرير قص الزجاج وإضافة حقل reportTemper
+    const glassCuttingReport = calculateValues(v.aluminumCode, v.H, v.W);
+    const reportTemper = glassCuttingReport.valueC;
+
+    // إعداد تقرير قص الألمنيوم
+    const aluminumCuttingReportData = aluminumCuttingReport(v.aluminumCode, v.H, v.W);
+
+    // إعداد بيانات القياس الجديد
+    const newMeasurement = {
+      iid: v.iid,
+      status: 'مسودة',
+      branch: v.branch,
+      location: v.location,
+      salesEmployeeId: decoded.id,
+      aluminumCode: v.aluminumCode,
+      aluminumThickness: v.aluminumThickness,
+      aluminumSize: v.aluminumSize,
+      aluminumColorCode: v.aluminumColorCode,
+      glasstype: v.glasstype,
+      glassThickness: v.glassThickness,
+      glassColorCodeInside: v.glassColorCodeInside,
+      glassColorCodeOutside: v.glassColorCodeOutside,
+      H: v.H,
+      W: v.W,
+      designCode: v.designCode,
+      insideOrOutside: v.insideOrOutside,
+      temper: v.temper,
+      lip: v.lip,
+      fixed:v.fixed,
+      illumination: v.illumination,
+      comments: v.comments,
+      totalMeters: { H1: resultH, W1: resultW, totalMeters },
+      price: { umberOfMeters: totalMeters, price, discount: 0, total, totalWithDiscount: total },
+      motherEquation: { E10, F10, G10, H10, I10, J10, M10, N10, Q10, K10, L10, O10, P10 },
+      additions: {
+        Structure: {
+          number: v.StructureNumber || 0,
+          price: allPricesData.price.Structure || 0,
+          totalPrice: (v.StructureNumber || 0) * (allPricesData.price.Structure || 0),
+        },
+        Hinges: {
+          number: v.HingesNumber || 0,
+          price: allPricesData.price.Hinges || 0,
+          totalPrice: (v.HingesNumber || 0) * (allPricesData.price.Hinges || 0),
+        },
+        RollWindow: {
+          number: v.RollWindowNumber || 0,
+          price: allPricesData.price.RollWindow || 0,
+          totalPrice: (v.RollWindowNumber || 0) * (allPricesData.price.RollWindow || 0),
+        },
+      },
+      glassCuttingReport: {
+        H: glassCuttingReport.valueB,
+        W: glassCuttingReport.valueA,
+        reportTemper: reportTemper,
+      },
+      // aluminumCuttingReport: {
+      //   Q4: aluminumCuttingReportData.Q4.toFixed(2),
+      //   R4: aluminumCuttingReportData.R4.toFixed(2),
+      //   S4: aluminumCuttingReportData.S4.toFixed(2),
+      //   T4: aluminumCuttingReportData.T4.toFixed(2),
+      //   U4: aluminumCuttingReportData.U4.toFixed(2),
+      // }
+      
+      aluminumCuttingReport: {
+        Q4: aluminumCuttingReportData.Q4 !== undefined ? aluminumCuttingReportData.Q4.toFixed(2) : null,
+        R4: aluminumCuttingReportData.R4 !== undefined ? aluminumCuttingReportData.R4.toFixed(2) : null,
+        S4: aluminumCuttingReportData.S4 !== undefined ? aluminumCuttingReportData.S4.toFixed(2) : null,
+        T4: aluminumCuttingReportData.T4 !== undefined ? aluminumCuttingReportData.T4.toFixed(2) : null,
+        U4: aluminumCuttingReportData.U4 !== undefined ? aluminumCuttingReportData.U4.toFixed(2) : null,
+    }
+    
 
 
+    };
+
+    const user = await User.findOne({ "orders._id": v.iid });
+    if (!user) return res.status(404).send('User not found');
+    const order = user.orders.id(v.iid);
+    if (!order) return res.status(404).send('Order not found');
+
+    let sequenceNumber = order.measurement.length > 0 ? order.measurement[order.measurement.length - 1].sequenceNumber + 1 : 1;
+    newMeasurement.sequenceNumber = sequenceNumber;
+
+    await User.updateOne(
+      { "orders._id": v.iid },
+      { $push: { "orders.$[orderElem].measurement": newMeasurement } },
+      { arrayFilters: [{ "orderElem._id": v.iid }] }
+    );
+
+    await calculateTotalPrice(v.iid);
+    await refreshDiscount({ iid: v.iid, aluminumCodeFront: v.aluminumCode });
+    await calculateTotalTempersMeters(v.iid);
+    await updateTotal(v.iid);
+
+    res.json({ message: "Measurement added successfully" });
+  } catch (error) {
+    console.error("حدث خطأ:", error);
+    res.status(500).json({ error: "حدث خطأ أثناء إضافة بيانات القياس." });
+  }
+});
 
 
+// // تعديل قياس موجود
+router.put("/measurement/:id", restrictFactoryWorker, async (req, res) => {
+  try {
+    const allPricesData = await Prices.findOne({});
+    if (!allPricesData) return res.status(500).json({ error: "بيانات الأسعار غير متوفرة." });
 
+    const v = req.body;
 
+    const data = {
+      aluminumCode: v.aluminumCode,
+      h: parseFloat(v.H),
+      w: parseFloat(v.W),
+      lip: v.lip,
+      prices: allPricesData.price
+    };
 
+    const { resultH, resultW, totalMeters, total, price } = calculateResults(data);
+    const { E10, F10, G10, H10, I10, J10, M10, N10, Q10, K10, L10, O10, P10 } = motherEquation(data);
+
+    // إعداد تقرير قص الزجاج وإضافة حقل reportTemper
+    const glassCuttingReport = calculateValues(v.aluminumCode, v.H, v.W);
+    const reportTemper = glassCuttingReport.valueC;
+
+    // إعداد تقرير قص الألمنيوم
+    const aluminumCuttingReportData = aluminumCuttingReport(v.aluminumCode, v.H, v.W);
+
+    // إعداد بيانات التحديث
+    const updateData = {
+      aluminumCode: v.aluminumCode,
+      aluminumThickness: v.aluminumThickness,
+      aluminumSize: v.aluminumSize,
+      aluminumColorCode: v.aluminumColorCode,
+      glasstype: v.glasstype,
+      glassThickness: v.glassThickness,
+      glassColorCodeInside: v.glassColorCodeInside,
+      glassColorCodeOutside: v.glassColorCodeOutside,
+      H: v.H,
+      W: v.W,
+      designCode: v.designCode,
+      insideOrOutside: v.insideOrOutside,
+      temper: v.temper,
+      fixed:v.fixed,
+      lip: v.lip,
+      illumination: v.illumination,
+      comments: v.comments,
+      totalMeters: { H1: resultH, W1: resultW, totalMeters },
+      price: { umberOfMeters: totalMeters, price, discount: 0, total, totalWithDiscount: total },
+      motherEquation: { E10, F10, G10, H10, I10, J10, M10, N10, Q10, K10, L10, O10, P10 },
+      additions: {
+        Structure: {
+          number: v.StructureNumber || 0,
+          price: v.StructurePrice || 0,
+          totalPrice: (v.StructureNumber || 0) * (v.StructurePrice || 0),
+        },
+        Hinges: {
+          number: v.HingesNumber || 0,
+          price: v.HingesPrice || 0,
+          totalPrice: (v.HingesNumber || 0) * (v.HingesPrice || 0),
+        },
+        RollWindow: {
+          number: v.RollWindowNumber || 0,
+          price: v.RollWindowPrice || 0,
+          totalPrice: (v.RollWindowNumber || 0) * (v.RollWindowPrice || 0),
+        },
+      },
+      glassCuttingReport: {
+        H: glassCuttingReport.valueB,
+        W: glassCuttingReport.valueA,
+        reportTemper: reportTemper,
+      },
+      // aluminumCuttingReport: {
+      //   Q4: aluminumCuttingReport.Q4.toFixed(2),
+      //   R4: aluminumCuttingReport.R4.toFixed(2),
+      //   S4: aluminumCuttingReport.S4.toFixed(2),
+      //   T4: aluminumCuttingReport.T4.toFixed(2),
+      //   U4: aluminumCuttingReport.U4.toFixed(2),
+      // }
+
+      aluminumCuttingReport: {
+        Q4: aluminumCuttingReportData.Q4 !== undefined ? aluminumCuttingReportData.Q4.toFixed(2) : null,
+        R4: aluminumCuttingReportData.R4 !== undefined ? aluminumCuttingReportData.R4.toFixed(2) : null,
+        S4: aluminumCuttingReportData.S4 !== undefined ? aluminumCuttingReportData.S4.toFixed(2) : null,
+        T4: aluminumCuttingReportData.T4 !== undefined ? aluminumCuttingReportData.T4.toFixed(2) : null,
+        U4: aluminumCuttingReportData.U4 !== undefined ? aluminumCuttingReportData.U4.toFixed(2) : null,
+    }
+    
+
+    };
+
+    // تحديث الحقول في `updateData`
+    const updateFields = {};
+    Object.keys(updateData).forEach(key => {
+      updateFields[`orders.$[outer].measurement.$[inner].${key}`] = updateData[key];
+    });
+
+    await User.updateOne(
+      { "orders.measurement._id": v.idUrl },
+      { $set: updateFields },
+      { arrayFilters: [{ "outer.measurement._id": v.idUrl }, { "inner._id": v.idUrl }] }
+    );
+
+    // تحديثات إضافية بعد التحديث الأولي
+    await calculateTotalPrice(v.iid);
+    await refreshDiscount({ iid: v.iid, aluminumCodeFront: v.aluminumCode });
+    await calculateTotalTempersMeters(v.iid);
+    await updateTotal(v.iid);
+
+    res.json({ message: "Measurement updated successfully" });
+  } catch (error) {
+    console.error("حدث خطأ:", error);
+    res.status(500).json({ error: "حدث خطأ أثناء تحديث بيانات القياس." });
+  }
+});
+
+// //
 
 
 
@@ -919,17 +1160,17 @@ router.get("/doors-measurement/:id",restrictFactoryWorker,checkPermission('add_e
 //  تم دمج ركوستات البوست التابعة لصفحة المقاس ركوست من رفع قياس جديد والأخر من تعديل القياس 
 
 
-router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
+// router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
 
 
 
 
-  try {
-    // استدعاء بيانات الأسعار
-    const allPricesData = await Prices.findOne({});
+//   try {
+//     // استدعاء بيانات الأسعار
+//     const allPricesData = await Prices.findOne({});
     
-    // إذا كنت بحاجة لاستخدام بيانات الأسعار هنا
-    // console.log('بيانات الأسعار:', allPricesData);
+//     // إذا كنت بحاجة لاستخدام بيانات الأسعار هنا
+//     // console.log('بيانات الأسعار:', allPricesData);
 
 
 
@@ -938,685 +1179,720 @@ router.post("/measurement/:id",restrictFactoryWorker, async (req, res) => {
 
 
 
-  const v = req.body;
-  console.log(v.aluminumCode)
+//   const v = req.body;
+//   console.log(v.aluminumCode)
 
-/// دالة مجموع الامتار
-  const data = {
-    aluminumCode: v.aluminumCode, // يمكنك استبدال القيم بالقيم الفعلية
-    h: parseFloat(v.H ),
-    w: parseFloat(v.W ),
-    lip:v.lip,
-    prices:allPricesData.price
+// /// دالة مجموع الامتار
+//   const data = {
+//     aluminumCode: v.aluminumCode, // يمكنك استبدال القيم بالقيم الفعلية
+//     h: parseFloat(v.H ),
+//     w: parseFloat(v.W ),
+//     lip:v.lip,
+//     prices:allPricesData.price
 
   
-};
+// };
 
-const { resultH, resultW ,totalMeters,total,price } = calculateResults(data);
-console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
-//// دالة مجموع الامتار///
 
-/// دالة المعادلات الام
-// let datas ={
-//   H:200,
-//   W:100,
-//   aluminumCode:"ROYAL 2"
+
+
+
+
+
+
+// const { resultH, resultW ,totalMeters,total,price } = calculateResults(data);
+// console.log("النتائج:", resultH, resultW ,totalMeters,total,price);
+
+//   // هذا تضرب عدين في بعض و تم انشاها من اجل تطلع اجمال سعر الوحدات ضرب الوحدات في السعر الافتراضي
+
+
+
+  
+
+// //// دالة مجموع الامتار///
+
+// /// دالة المعادلات الام
+// // let datas ={
+// //   H:200,
+// //   W:100,
+// //   aluminumCode:"ROYAL 2"
+  
+// //   }
+  
+//   const { E10, F10 ,G10,H10,I10,J10,M10,N10,Q10,K10,L10,O10,P10 } = motherEquation(data)
+  
+//   if(F10!=undefined){
+
+
+//     console.log('قيمة الخلية E10 ', E10);
+//     console.log('قيمة الخلية F10 ', F10);
+//     console.log('قيمة الخلية G10 ', G10);
+//     console.log('قيمة الخلية H10 ', H10);
+//     console.log('قيمة الخلية I10 ', I10);
+//     console.log('قيمة الخلية J10 ', J10);
+//     console.log('قيمة الخلية M10 ', M10);
+//     console.log('قيمة الخلية N10 ', N10);
+//     console.log('قيمة الخلية Q10 ', Q10);
+    
+//     console.log('قيمة الخلية K10 ', K10);
+//     console.log('قيمة الخلية L10 ', L10);
+//     console.log('قيمة الخلية O10 ', O10);
+//     console.log('قيمة الخلية P10 ', P10);
+//     }else{
+//         console.log('قيمة الخلية Q10 ', Q10);
+//         console.log('قيمة الخلية E10 ', E10);
+//         console.log('قيمة الخلية P10 ', P10);
+//     }
+
+
+
+// /// دالة المعادلات الام///
+  
+//   // try {
+//     const decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+
+
+//     // خاص باترقيم القياسات يعني اذا كان القياس الاخير مرقم فجمع عليه رقم 1 وكتب الترقيم لهاذا القياس واذا كان  غير ذالك فلا تفعل شي
+//     const user = await User.findOne({ "orders._id": v.iid });
+
+//     if (!user) {
+//         console.log('User not found');
+//         return res.status(404).send('User not found');
+//     }
+
+//     const order = user.orders.id(v.iid);
+
+//     if (!order) {
+//         console.log('Order not found');
+//         return res.status(404).send('Order not found');
+//     }
+
+//     // إضافة المنطق للترقيم
+//     let sequenceNumber = null;
+//     if (order.measurement.length > 0) {
+//         const lastMeasurement = order.measurement[order.measurement.length - 1];
+//         if (lastMeasurement.sequenceNumber && !isNaN(lastMeasurement.sequenceNumber)) {
+//             sequenceNumber = lastMeasurement.sequenceNumber + 1;
+//         }
+//     }
+
+
+
+//     ////خاص للترقيم
+//     const n = {
+//       iid: v.iid,
+//       status: 'مسودة',
+//       branch: v.branch,
+//       location: v.location,
+//       salesEmployeeId: decoded.id,
+//       salesEmployeeName: '',
+//       salesEmployeeUserName: '',
+//       aluminumCode: v.aluminumCode,
+//       aluminumThickness: v.aluminumThickness,
+//       aluminumSize:v.aluminumSize,
+//       aluminumColorCode: v.aluminumColorCode,
+//       glasstype: v.glasstype,
+//       glassThickness: v.glassThickness,
+//       glassColorCodeInside: v.glassColorCodeInside,
+//       glassColorCodeOutside: v.glassColorCodeOutside,
+      
+
+    
+//       H: v.H,
+//       W: v.W,
+//       designCode: v.designCode,
+//       insideOrOutside: v.insideOrOutside,
+//       temper: v.temper,
+//       lip: v.lip,
+//       illumination: v.illumination,
+//       comments: v.comments,
+//       sequenceNumber: sequenceNumber, // إضافة الترقيم
+//       totalMeters:{
+//         H1: resultH,
+//         W1: resultW,
+//         totalMeters: totalMeters,
+       
+//     },
+
+//     price:{ // التسعيرة
+
+//     //   // item: String,
+
+//       umberOfMeters: totalMeters,
+//       price: price,
+//       discount: 0,
+//       total: total,
+//       totalWithDiscount:total,
+
+
+//     //   // totalBeforeTax: Number,
+//     //   // tax: Number,
+//     //   // totalWithTax: Number,
+//       },
+//       motherEquation: {
+
+//         E10 :E10,  // الحلق
+//         F10 :F10, // الكعب
+//         G10 :G10, // الشنكل
+//         H10 :H10, // الجنب
+//         I10 :I10,// درفة الشبك
+//         J10 :J10, //ربل درفة
+//         M10 :M10,// زجاج
+//         N10 :N10,// شبك حديد 2م
+//         Q10 :Q10, // زجاج الثابت
+//         K10 :K10, // كفرات درفه 
+//         L10 :L10, // كفرات شبك 
+//         O10 :O10, //مسكة
+//         P10 :P10, // سيلكون المنيوم
+       
+
+
+//    },
+
+
+//  totalPrice:{ // التسعيرة
+
+
+//     },
+
+//                             // اضافه الوحدات مثل زيادة الشبابيك في نفس الطاقة
+//                           additions:{
+//                           // الاستركتشر
+//                           Structure: {
+//                             number: v.StructureNumber ? v.StructureNumber : 0,
+//                             price: allPricesData.price.Structure?allPricesData.price.Structure: 0,
+//                             totalPrice: (v.StructureNumber ? v.StructureNumber : 0) * (allPricesData.price.Structure ? allPricesData.price.Structure : 0),
+//                           },
+
+//                           // مفصلات
+//                           Hinges: {
+//                             number: v.HingesNumber ? v.HingesNumber : 0,
+//                             price: allPricesData.price.Hinges?allPricesData.price.Hinges: 0,
+//                             totalPrice: (v.HingesNumber ? v.HingesNumber : 0) * (allPricesData.price.Hinges ? allPricesData.price.Hinges : 0),
+//                           },
+
+//                           // شباك رول
+//                           RollWindow: {
+
+
+//                             number: v.RollWindowNumber ? v.RollWindowNumber : 0,
+//                             price: allPricesData.price.RollWindow?allPricesData.price.RollWindow: 0,
+//                             totalPrice: (v.RollWindowNumber ? v.RollWindowNumber : 0) * (allPricesData.price.RollWindow ? allPricesData.price.RollWindow : 0),
+
+//                           }
+
+                             
+//              }
+
+
+
+
+//     };
+
+
+//     const nn = {
+//       iid: v.iid,
+//       status: 'مسودة',
+//       branch: v.branch,
+//       location: v.location,
+//       salesEmployeeId: decoded.id,
+//       salesEmployeeName: '',
+//       salesEmployeeUserName: '',
+//       aluminumCode: v.aluminumCode,
+//       aluminumThickness: v.aluminumThickness,
+//       aluminumSize:v.aluminumSize,
+//       aluminumColorCode: v.aluminumColorCode,
+//       glasstype: v.glasstype,
+//       glassThickness: v.glassThickness,
+//       glassColorCodeInside: v.glassColorCodeInside,
+//       glassColorCodeOutside: v.glassColorCodeOutside,
+//       H: v.H,
+//       W: v.W,
+//       designCode: v.designCode,
+//       insideOrOutside: v.insideOrOutside,
+//       temper: v.temper,
+//       lip: v.lip,
+//       illumination: v.illumination,
+//       comments: v.comments,
+      
+//       totalMeters:{
+//         H1: resultH,
+//         W1: resultW,
+//         totalMeters: totalMeters,
+       
+//     },
+
+//     // price:{ // التسعيرة
+
+//     //   // item: String,
+
+//       // umberOfMeters: totalMeters,
+//       // price: price,
+//       // discount: 0,
+//       // total: total,
+//       // totalWithDiscount:total,
+
+
+//     //   // totalBeforeTax: Number,
+//     //   // tax: Number,
+//     //   // totalWithTax: Number,
+//       // },
+//       motherEquation: {
+
+//         E10 :E10,  // الحلق
+//         F10 :F10, // الكعب
+//         G10 :G10, // الشنكل
+//         H10 :H10, // الجنب
+//         I10 :I10,// درفة الشبك
+//         J10 :J10, //ربل درفة
+//         M10 :M10,// زجاج
+//         N10 :N10,// شبك حديد 2م
+//         Q10 :Q10, // زجاج الثابت
+//         K10 :K10, // كفرات درفه 
+//         L10 :L10, // كفرات شبك 
+//         O10 :O10, //مسكة
+//         P10 :P10, // سيلكون المنيوم
+       
+
+
+//    },
+
+
+//  totalPrice:{ // التسعيرة
+
+
+//     },
+
+
+
+
+
+
+//     };
+
+// // هذه الدالة تمسح القديم في الدالتا وتكتب الجديد الي هو توتل القياسات بعد حسابها 
+//     async function  updatetotalMotherEquation(resultsArrayAfter,id) {
+//       const dgd = await User.updateOne(
+//         { "orders._id": id }, 
+//         { $unset: { "orders.$[orderElem].motherEquationTotal": "" } }, 
+//         { 
+//             arrayFilters: [ { "orderElem._id": id } ],
+//             new: true 
+//         }
+//     );
+  
+  
+//       resultsArrayAfter.forEach(async function(result ) {
+
+
+// // 
+//  function sanitizeValue(value) {
+//     // إذا كانت القيمة undefined أو null أو ليست رقمًا، نعيد القيمة 0
+//     if (value === undefined || value === null || isNaN(Number(value))) {
+//         return 0;
+//     }
+//     // إذا كانت القيمة رقمًا، نعيدها مع تقريبها إلى رقمين عشريين
+//     if (typeof value === 'number' || !isNaN(Number(value))) {
+//         return Number(value).toFixed(2);
+//     }
+//     // لأي قيمة أخرى، نعيدها كما هي دون تعديل
+//     return value;
+// }
+
+// // استخدم الدالة sanitizeValue لتعيين القيم في الكائن k
+// var k = {
+//     aluminumCode: result.aluminumCode,
+//     E10T: sanitizeValue(result.E10T),  // الحلق
+//     F10T: sanitizeValue(result.F10T), // الكعب
+//     G10T: sanitizeValue(result.G10T), // الشنكل
+//     H10T: sanitizeValue(result.H10T), // الجنب
+//     I10T: sanitizeValue(result.I10T), // درفة الشبك
+//     J10T: sanitizeValue(result.J10T), // ربل درفة
+//     M10T: sanitizeValue(result.M10T), // زجاج
+//     N10T: sanitizeValue(result.N10T), // شبك حديد 2م
+//     Q10T: sanitizeValue(result.Q10T), // زجاج الثابت
+//     K10T: sanitizeValue(result.K10T), // كفرات درفه 
+//     L10T: sanitizeValue(result.L10T), // كفرات شبك 
+//     O10T: sanitizeValue(result.O10T), // مسكة
+//     P10T: sanitizeValue(result.P10T), // سيلكون المنيوم
+
+//     E10TF: sanitizeValue(result.E10F),  // الحلق
+//     F10TF: sanitizeValue(result.F10F), // الكعب
+//     G10TF: sanitizeValue(result.G10F), // الشنكل
+//     H10TF: sanitizeValue(result.H10F), // الجنب
+//     I10TF: sanitizeValue(result.I10F), // درفة الشبك
+//     J10TF: sanitizeValue(result.J10F), // ربل درفة
+//     M10TF: sanitizeValue(result.M10F), // زجاج
+//     N10TF: sanitizeValue(result.N10F), // شبك حديد 2م
+//     Q10TF: sanitizeValue(result.Q10F), // زجاج الثابت
+//     K10TF: sanitizeValue(result.K10F), // كفرات درفه 
+//     L10TF: sanitizeValue(result.L10F), // كفرات شبك 
+//     O10TF: sanitizeValue(result.O10F), // مسكة
+//     P10TF: sanitizeValue(result.P10F) // سيلكون المنيوم
+// };
+
+
+
+
+
+
+
+//       const vgfg = await User.updateOne(
+//         { "orders._id": id }, 
+//         { $push: { "orders.$[orderElem].motherEquationTotal": k } }, 
+//         { 
+//           arrayFilters: [ { "orderElem._id": id } ],
+//           new: true 
+//         }
+  
+//       );
+//     // }
+//     });
+  
   
 //   }
-  
-  const { E10, F10 ,G10,H10,I10,J10,M10,N10,Q10,K10,L10,O10,P10 } = motherEquation(data)
-  
-  if(F10!=undefined){
 
-
-    console.log('قيمة الخلية E10 ', E10);
-    console.log('قيمة الخلية F10 ', F10);
-    console.log('قيمة الخلية G10 ', G10);
-    console.log('قيمة الخلية H10 ', H10);
-    console.log('قيمة الخلية I10 ', I10);
-    console.log('قيمة الخلية J10 ', J10);
-    console.log('قيمة الخلية M10 ', M10);
-    console.log('قيمة الخلية N10 ', N10);
-    console.log('قيمة الخلية Q10 ', Q10);
-    
-    console.log('قيمة الخلية K10 ', K10);
-    console.log('قيمة الخلية L10 ', L10);
-    console.log('قيمة الخلية O10 ', O10);
-    console.log('قيمة الخلية P10 ', P10);
-    }else{
-        console.log('قيمة الخلية Q10 ', Q10);
-        console.log('قيمة الخلية E10 ', E10);
-        console.log('قيمة الخلية P10 ', P10);
-    }
+// // هذه الدالة تمسح القديم في الدالتا وتكتب الجديد الي هو توتل القياسات بعد حسابها //
 
 
 
-/// دالة المعادلات الام///
-  
-  // try {
-    const decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
+//     const result1 = await User.findOne({'orders._id': v.idUrl});
+//     if (result1 && resultH && resultW && totalMeters) { // حطيت مع التأكد من صحة بينات القياس وانواع الالمنيوم
+//       const vgf = await User.updateOne(
+//         { "orders._id": v.id }, 
+//         { $push: { "orders.$[orderElem].measurement": n } }, 
+//         { 
+//           arrayFilters: [ { "orderElem._id": v.id } ],
+//           new: true 
+//         }
+
+//       );
 
 
-    // خاص باترقيم القياسات يعني اذا كان القياس الاخير مرقم فجمع عليه رقم 1 وكتب الترقيم لهاذا القياس واذا كان  غير ذالك فلا تفعل شي
-    const user = await User.findOne({ "orders._id": v.iid });
-
-    if (!user) {
-        console.log('User not found');
-        return res.status(404).send('User not found');
-    }
-
-    const order = user.orders.id(v.iid);
-
-    if (!order) {
-        console.log('Order not found');
-        return res.status(404).send('Order not found');
-    }
-
-    // إضافة المنطق للترقيم
-    let sequenceNumber = null;
-    if (order.measurement.length > 0) {
-        const lastMeasurement = order.measurement[order.measurement.length - 1];
-        if (lastMeasurement.sequenceNumber && !isNaN(lastMeasurement.sequenceNumber)) {
-            sequenceNumber = lastMeasurement.sequenceNumber + 1;
-        }
-    }
-    ////خاص للترقيم
-    const n = {
-      iid: v.iid,
-      status: 'مسودة',
-      branch: v.branch,
-      location: v.location,
-      salesEmployeeId: decoded.id,
-      salesEmployeeName: '',
-      salesEmployeeUserName: '',
-      aluminumCode: v.aluminumCode,
-      aluminumThickness: v.aluminumThickness,
-      aluminumSize:v.aluminumSize,
-      aluminumColorCode: v.aluminumColorCode,
-      glasstype: v.glasstype,
-      glassThickness: v.glassThickness,
-      glassColorCode: v.glassColorCode,
-      H: v.H,
-      W: v.W,
-      designCode: v.designCode,
-      insideOrOutside: v.insideOrOutside,
-      temper: v.temper,
-      lip: v.lip,
-      illumination: v.illumination,
-      comments: v.comments,
-      sequenceNumber: sequenceNumber, // إضافة الترقيم
-      totalMeters:{
-        H1: resultH,
-        W1: resultW,
-        totalMeters: totalMeters,
-       
-    },
-
-    price:{ // التسعيرة
-
-    //   // item: String,
-
-      umberOfMeters: totalMeters,
-      price: price,
-      discount: 0,
-      total: total,
-      totalWithDiscount:total,
-
-
-    //   // totalBeforeTax: Number,
-    //   // tax: Number,
-    //   // totalWithTax: Number,
-      },
-      motherEquation: {
-
-        E10 :E10,  // الحلق
-        F10 :F10, // الكعب
-        G10 :G10, // الشنكل
-        H10 :H10, // الجنب
-        I10 :I10,// درفة الشبك
-        J10 :J10, //ربل درفة
-        M10 :M10,// زجاج
-        N10 :N10,// شبك حديد 2م
-        Q10 :Q10, // زجاج الثابت
-        K10 :K10, // كفرات درفه 
-        L10 :L10, // كفرات شبك 
-        O10 :O10, //مسكة
-        P10 :P10, // سيلكون المنيوم
-       
-
-
-   },
-
-
- totalPrice:{ // التسعيرة
-
-
-    }
+//       // const userId = req.params.id; // استبدلها بالـ userId الذي تريده
+//       const orderId = v.iid; // استبدلها بالـ orderId الذي تريده
+//        await calculateTotalPrice(orderId); // دالة تحديث مجموع سعر الإضافات
 
 
 
-    };
-
-
-    const nn = {
-      iid: v.iid,
-      status: 'مسودة',
-      branch: v.branch,
-      location: v.location,
-      salesEmployeeId: decoded.id,
-      salesEmployeeName: '',
-      salesEmployeeUserName: '',
-      aluminumCode: v.aluminumCode,
-      aluminumThickness: v.aluminumThickness,
-      aluminumSize:v.aluminumSize,
-      aluminumColorCode: v.aluminumColorCode,
-      glasstype: v.glasstype,
-      glassThickness: v.glassThickness,
-      glassColorCode: v.glassColorCode,
-      H: v.H,
-      W: v.W,
-      designCode: v.designCode,
-      insideOrOutside: v.insideOrOutside,
-      temper: v.temper,
-      lip: v.lip,
-      illumination: v.illumination,
-      comments: v.comments,
-      
-      totalMeters:{
-        H1: resultH,
-        W1: resultW,
-        totalMeters: totalMeters,
-       
-    },
-
-    // price:{ // التسعيرة
-
-    //   // item: String,
-
-      // umberOfMeters: totalMeters,
-      // price: price,
-      // discount: 0,
-      // total: total,
-      // totalWithDiscount:total,
-
-
-    //   // totalBeforeTax: Number,
-    //   // tax: Number,
-    //   // totalWithTax: Number,
-      // },
-      motherEquation: {
-
-        E10 :E10,  // الحلق
-        F10 :F10, // الكعب
-        G10 :G10, // الشنكل
-        H10 :H10, // الجنب
-        I10 :I10,// درفة الشبك
-        J10 :J10, //ربل درفة
-        M10 :M10,// زجاج
-        N10 :N10,// شبك حديد 2م
-        Q10 :Q10, // زجاج الثابت
-        K10 :K10, // كفرات درفه 
-        L10 :L10, // كفرات شبك 
-        O10 :O10, //مسكة
-        P10 :P10, // سيلكون المنيوم
-       
-
-
-   },
-
-
- totalPrice:{ // التسعيرة
-
-
-    }
-
-
-
-    };
-    //رمز الأمن لموقع twilio يصنع بوت واتساب
-    // SZWG4Z4SX8NC7N3J1WL6T3AW
-// هذه الدالة تمسح القديم في الدالتا وتكتب الجديد الي هو توتل القياسات بعد حسابها 
-    async function  updatetotalMotherEquation(resultsArrayAfter,id) {
-      const dgd = await User.updateOne(
-        { "orders._id": id }, 
-        { $unset: { "orders.$[orderElem].motherEquationTotal": "" } }, 
-        { 
-            arrayFilters: [ { "orderElem._id": id } ],
-            new: true 
-        }
-    );
-  
-  
-      resultsArrayAfter.forEach(async function(result ) {
-        // for (const result of allResults) {
-  
-  // var k =({
-  
-  //   // motherEquationTotal: {
-  //       aluminumCode:result.aluminumCode,
-  //       E10T :result.E10T,  // الحلق
-  //       F10T :result.F10T, // الكعب
-  //       G10T :result.G10T, // الشنكل
-  //       H10T :result.H10T, // الجنب
-  //       I10T :result.I10T,// درفة الشبك
-  //       J10T :result.J10T, //ربل درفة
-  //       M10T :result.M10T,// زجاج
-  //       N10T :result.N10T,// شبك حديد 2م
-  //       Q10T :result.Q10T, // زجاج الثابت
-  //       K10T :result.K10T, // كفرات درفه 
-  //       L10T :result.L10T, // كفرات شبك 
-  //       O10T :result.O10T, //مسكة
-  //       P10T :result.P10T, // سيلكون المنيوم
-       
-  
-  
-  //       E10TF :result.E10F,  // الحلق
-  //       F10TF :result.F10F, // الكعب
-  //       G10TF :result.G10F, // الشنكل
-  //       H10TF :result.H10F, // الجنب
-  //       I10TF :result.I10F,// درفة الشبك
-  //       J10TF :result.J10F, //ربل درفة
-  //       M10TF :result.M10F,// زجاج
-  //       N10TF :result.N10F,// شبك حديد 2م
-  //       Q10TF :result.Q10F, // زجاج الثابت
-  //       K10TF :result.K10F, // كفرات درفه 
-  //       L10TF :result.L10F, // كفرات شبك 
-  //       O10TF :result.O10F, //مسكة
-  //       P10TF :result.P10F, // سيلكون المنيوم
-  
-  
-  // //  },
-  
-  // })
-
-// 
- function sanitizeValue(value) {
-    // إذا كانت القيمة undefined أو null أو ليست رقمًا، نعيد القيمة 0
-    if (value === undefined || value === null || isNaN(Number(value))) {
-        return 0;
-    }
-    // إذا كانت القيمة رقمًا، نعيدها مع تقريبها إلى رقمين عشريين
-    if (typeof value === 'number' || !isNaN(Number(value))) {
-        return Number(value).toFixed(2);
-    }
-    // لأي قيمة أخرى، نعيدها كما هي دون تعديل
-    return value;
-}
-
-// استخدم الدالة sanitizeValue لتعيين القيم في الكائن k
-var k = {
-    aluminumCode: result.aluminumCode,
-    E10T: sanitizeValue(result.E10T),  // الحلق
-    F10T: sanitizeValue(result.F10T), // الكعب
-    G10T: sanitizeValue(result.G10T), // الشنكل
-    H10T: sanitizeValue(result.H10T), // الجنب
-    I10T: sanitizeValue(result.I10T), // درفة الشبك
-    J10T: sanitizeValue(result.J10T), // ربل درفة
-    M10T: sanitizeValue(result.M10T), // زجاج
-    N10T: sanitizeValue(result.N10T), // شبك حديد 2م
-    Q10T: sanitizeValue(result.Q10T), // زجاج الثابت
-    K10T: sanitizeValue(result.K10T), // كفرات درفه 
-    L10T: sanitizeValue(result.L10T), // كفرات شبك 
-    O10T: sanitizeValue(result.O10T), // مسكة
-    P10T: sanitizeValue(result.P10T), // سيلكون المنيوم
-
-    E10TF: sanitizeValue(result.E10F),  // الحلق
-    F10TF: sanitizeValue(result.F10F), // الكعب
-    G10TF: sanitizeValue(result.G10F), // الشنكل
-    H10TF: sanitizeValue(result.H10F), // الجنب
-    I10TF: sanitizeValue(result.I10F), // درفة الشبك
-    J10TF: sanitizeValue(result.J10F), // ربل درفة
-    M10TF: sanitizeValue(result.M10F), // زجاج
-    N10TF: sanitizeValue(result.N10F), // شبك حديد 2م
-    Q10TF: sanitizeValue(result.Q10F), // زجاج الثابت
-    K10TF: sanitizeValue(result.K10F), // كفرات درفه 
-    L10TF: sanitizeValue(result.L10F), // كفرات شبك 
-    O10TF: sanitizeValue(result.O10F), // مسكة
-    P10TF: sanitizeValue(result.P10F) // سيلكون المنيوم
-};
-
-
-
-
-
-
-
-      const vgfg = await User.updateOne(
-        { "orders._id": id }, 
-        { $push: { "orders.$[orderElem].motherEquationTotal": k } }, 
-        { 
-          arrayFilters: [ { "orderElem._id": id } ],
-          new: true 
-        }
-  
-      );
-    // }
-    });
-  
-  
-  }
-
-// هذه الدالة تمسح القديم في الدالتا وتكتب الجديد الي هو توتل القياسات بعد حسابها //
-
-
-
-    const result1 = await User.findOne({'orders._id': v.idUrl});
-    if (result1 && resultH && resultW && totalMeters) { // حطيت مع التأكد من صحة بينات القياس وانواع الالمنيوم
-      const vgf = await User.updateOne(
-        { "orders._id": v.id }, 
-        { $push: { "orders.$[orderElem].measurement": n } }, 
-        { 
-          arrayFilters: [ { "orderElem._id": v.id } ],
-          new: true 
-        }
-
-      );
 
       
-// دالة تحديث الخصم
-      let dataId ={
+// // دالة تحديث الخصم
+//       let dataId ={
 
-        iid:v.id ,
-        // id:,
-            aluminumCodeFront:v.aluminumCode
-        }
-        await refreshDiscount(dataId)
-// دالة تحديث الخصم//
-await updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
+//         iid:v.id ,
+//         // id:,
+//             aluminumCodeFront:v.aluminumCode
+//         }
+//         await refreshDiscount(dataId)
 
+//         await calculateTotalTempersMeters(v.iid)
 
-//
-let = aluminumCode=v.aluminumCode
+// // دالة تحديث الخصم//
+// await updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
 
-
-
-
+// //
+// let = aluminumCode=v.aluminumCode
 
 
-const gg = await User.findOne({'orders._id': v.iid})
-    const h =  gg
-    const idToFind = v.iid; // من الرابط id 
 
-    const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+
+
+
+// const gg = await User.findOne({'orders._id': v.iid})
+//     const h =  gg
+//     const idToFind = v.iid; // من الرابط id 
+
+//     const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
     
     
-   var {resultsArrayBefore,resultsArrayAfter} = totalMotherEquation(foundObject);
+//    var {resultsArrayBefore,resultsArrayAfter} = totalMotherEquation(foundObject);
     
-    console.log("Before:",resultsArrayBefore);
+//     console.log("Before:",resultsArrayBefore);
     
-    console.log("After:",resultsArrayAfter);
+//     console.log("After:",resultsArrayAfter);
     
 
 
 
-    // measurement._id": v.idUrl
+//     // measurement._id": v.idUrl
 
-updatetotalMotherEquation(resultsArrayAfter,v.id)
-
-
-
-//================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================
-const foundObjectg = foundObject.measurement.pop(); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-var C4 = foundObjectg.aluminumCode;
-var B10 = foundObjectg.H; // الأرتفاع H
-var C10 = foundObjectg.W; // العرض
-var results = calculateValues(C4, B10, C10); // دالة قص الزجاج
-// console.log("aasswwwwwwwwwwwwwwwwwww",results.valueA,C4); // Output the calculated value of A
-// console.log("resultsthhhhhhhhhhhhh",results.valueB); // Output the calculated value of B
-
-
-var glassCuttingReportSchema={
-  H: results.valueB,
-  W: results.valueA,
-  reportTemper: results.valueC, // تقرير عدد امتار التنبر
-}
-
-
-const cv = await User.updateOne(
-  { "orders._id": v.id },
-  { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].glassCuttingReport": glassCuttingReportSchema } },
-  {
-    arrayFilters: [
-      { "orderElem._id": v.id },
-      { "lastMeasurement._id": foundObjectg._id }
-    ],
-    new: true
-  }
-);
-
-//================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================//
-
-
-// ========================تقرير قص الألمنيوم===============================
+// updatetotalMotherEquation(resultsArrayAfter,v.id)
 
 
 
-let B100 = foundObjectg.H
-let C100= foundObjectg.W
-let M4= foundObjectg.aluminumCode
-const {Q4,R4,S4,T4,U4} = aluminumCuttingReport(M4,B100,C100);// معادلة تقرير قص الألمنيوم
-console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",Q4,R4,S4,T4,U4);
+// //================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================
+// const foundObjectg = foundObject.measurement.pop(); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
 
-var aluminumCuttingReportSchema={
-  Q4: Q4.toFixed(2),
-  R4: R4.toFixed(2),
-  S4: S4.toFixed(2),
-  T4: T4.toFixed(2),
-  U4: U4.toFixed(2),
-}
+// var C4 = foundObjectg.aluminumCode;
+// var B10 = foundObjectg.H; // الأرتفاع H
+// var C10 = foundObjectg.W; // العرض
+// var results = calculateValues(C4, B10, C10); // دالة قص الزجاج
+// // console.log("aasswwwwwwwwwwwwwwwwwww",results.valueA,C4); // Output the calculated value of A
+// // console.log("resultsthhhhhhhhhhhhh",results.valueB); // Output the calculated value of B
 
 
-const cvd = await User.updateOne(
-  { "orders._id": v.id },
-  { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].aluminumCuttingReport": aluminumCuttingReportSchema } },
-  {
-    arrayFilters: [
-      { "orderElem._id": v.id },
-      { "lastMeasurement._id": foundObjectg._id }
-    ],
-    new: true
-  }
-);
-
-// ========================تقرير قص الألمنيوم===============================//
-
-    return res.json({ id: "done" });
-
-
-           } else if( resultH && resultW && totalMeters) { // حطيت مع التأكد من صحة بينات القياس وانواع الالمنيوم
-      // const updateData =await {};
-      // Object.keys(nn).forEach(key => {
-      //   updateData[`orders.$[outer].measurement.$[inner].${key}`] = nn[key];
-      // });
-
-      // const y = await User.updateOne(
-      //   { "orders.measurement._id": v.idUrl }, 
-      //   { $set: updateData
-      //     // "orders.$[outer].measurement.$[inner].total": total}
-      //   },
-      //   { 
-      //     arrayFilters: [
-      //       { "outer.measurement._id": v.idUrl },
-      //       { "inner._id": v.idUrl }
-      //     ],
-      //     // new: true 
-      //   }
-
-
-      // );
-
-      console.log("aass",v.idUrl); // Output the calculated value of A
-
-
-
-
-      const updateData = {};
-      Object.keys(nn).forEach(key => {
-        updateData[`orders.$[outer].measurement.$[inner].${key}`] = nn[key];
-      });
-      
-      const y = await User.updateOne(
-        { "orders.measurement._id": v.idUrl }, 
-        { 
-          $set: { 
-            ...updateData,
-            "orders.$[outer].measurement.$[inner].price.total": total
-          }
-        },
-        { 
-          arrayFilters: [
-            { "outer.measurement._id": v.idUrl },
-            { "inner._id": v.idUrl }
-          ]
-          
-        }
-        
-      );
-
-
-// دالة تحديث الخصم
-let dataIdd ={
-
-  iid:v.iid ,
-  id:v.idUrl,
-      // aluminumCodeFront:
-  }
-  await refreshDiscount(dataIdd)
-// دالة تحديث الخصم//
-
-
-     await updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
-
-
-      // const k = await User.updateOne(
-      //   { "orders.measurement._id": v.idUrl }, 
-      //   { $set: 
-      //     {"orders.$[outer].measurement.$[inner].price.total": total}
-      //   },
-      //   { 
-      //     arrayFilters: [
-      //       { "outer.measurement._id": v.idUrl },
-      //       { "inner._id": v.idUrl }
-      //     ],
-      //     // new: true 
-      //   }
-
-
-      // );
-      // console.log("total:",v.iid)
-
-
-
-
-
-      const gg = await User.findOne({'orders._id': v.iid})
-      const h =  gg
-      const idToFind = v.iid; // من الرابط id 
-  
-      const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-      
-      
-     var {resultsArrayBefore,resultsArrayAfter} = totalMotherEquation(foundObject);
-      
-      console.log("Before:",resultsArrayBefore);
-      
-      console.log("After:",resultsArrayAfter);
-      
-  
-  
-  
-  
-  updatetotalMotherEquation(resultsArrayAfter,v.iid)
-
-
-
-
-//================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================
-const foundObjectgc = foundObject.measurement.find(item => item.id === v.idUrl); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-
-// console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",foundObjectgc); // Output the calculated value of B
-
-var C4 = foundObjectgc.aluminumCode;
-var B10 = foundObjectgc.H; // الأرتفاع H
-var C10 = foundObjectgc.W; // العرض
-var results = calculateValues(C4, B10, C10);
-// console.log("aasswwwwwwwwwwwwwwwwwww",results.valueA,C4); // Output the calculated value of A
-// console.log("resultsthhhhhhhhhhhhh",results.valueB); // Output the calculated value of B
-
-
-var glassCuttingReportSchema={
-// glassCuttingReport:{
-  H: results.valueB,
-  W: results.valueA,
-  reportTemper: results.valueC,
+// var glassCuttingReportSchema={
+//   H: results.valueB,
+//   W: results.valueA,
+//   reportTemper: results.valueC, // تقرير عدد امتار التنبر
 // }
-}
-
-const cv = await User.updateOne(
-  { "orders._id": v.iid }, 
-  { $set: { "orders.$[orderElem].measurement.$[measurementElem].glassCuttingReport": glassCuttingReportSchema } }, 
-  { 
-    arrayFilters: [ { "orderElem._id": v.iid}, { "measurementElem._id": v.idUrl } ],
-    new: true 
-  }
-);
 
 
-//================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================//
+// const cv = await User.updateOne(
+//   { "orders._id": v.id },
+//   { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].glassCuttingReport": glassCuttingReportSchema } },
+//   {
+//     arrayFilters: [
+//       { "orderElem._id": v.id },
+//       { "lastMeasurement._id": foundObjectg._id }
+//     ],
+//     new: true
+//   }
+// );
+
+// //================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================//
+
+
+// // ========================تقرير قص الألمنيوم===============================
 
 
 
-// ========================تقرير قص الألمنيوم===============================
-
-
-
-let B100 = foundObjectgc.H
-let C100= foundObjectgc.W
-let M4= foundObjectgc.aluminumCode
-const {Q4,R4,S4,T4,U4} = aluminumCuttingReport(M4,B100,C100);// معادلة تقرير قص الألمنيوم
+// let B100 = foundObjectg.H
+// let C100= foundObjectg.W
+// let M4= foundObjectg.aluminumCode
+// const {Q4,R4,S4,T4,U4} = aluminumCuttingReport(M4,B100,C100);// معادلة تقرير قص الألمنيوم
 // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",Q4,R4,S4,T4,U4);
 
-var aluminumCuttingReportSchema={
-  Q4: Q4.toFixed(2),
-  R4: R4.toFixed(2),
-  S4: S4.toFixed(2),
-  T4: T4.toFixed(2),
-  U4: U4.toFixed(2),
-}
+// var aluminumCuttingReportSchema={
+//   Q4: Q4.toFixed(2),
+//   R4: R4.toFixed(2),
+//   S4: S4.toFixed(2),
+//   T4: T4.toFixed(2),
+//   U4: U4.toFixed(2),
+// }
+
+
+// const cvd = await User.updateOne(
+//   { "orders._id": v.id },
+//   { $set: { "orders.$[orderElem].measurement.$[lastMeasurement].aluminumCuttingReport": aluminumCuttingReportSchema } },
+//   {
+//     arrayFilters: [
+//       { "orderElem._id": v.id },
+//       { "lastMeasurement._id": foundObjectg._id }
+//     ],
+//     new: true
+//   }
+// );
+
+// // ========================تقرير قص الألمنيوم===============================//
+
+//     return res.json({ id: "done" });
+
+
+//            } else if( resultH && resultW && totalMeters) { // حطيت مع التأكد من صحة بينات القياس وانواع الالمنيوم
+//       // const updateData =await {};
+//       // Object.keys(nn).forEach(key => {
+//       //   updateData[`orders.$[outer].measurement.$[inner].${key}`] = nn[key];
+//       // });
+
+//       // const y = await User.updateOne(
+//       //   { "orders.measurement._id": v.idUrl }, 
+//       //   { $set: updateData
+//       //     // "orders.$[outer].measurement.$[inner].total": total}
+//       //   },
+//       //   { 
+//       //     arrayFilters: [
+//       //       { "outer.measurement._id": v.idUrl },
+//       //       { "inner._id": v.idUrl }
+//       //     ],
+//       //     // new: true 
+//       //   }
+
+
+//       // );
+
+//       console.log("aass",v.idUrl); // Output the calculated value of A
 
 
 
-const cvx = await User.updateOne(
-  { "orders._id": v.iid }, 
-  { $set: { "orders.$[orderElem].measurement.$[measurementElem].aluminumCuttingReport": aluminumCuttingReportSchema } }, 
-  { 
-    arrayFilters: [ { "orderElem._id": v.iid}, { "measurementElem._id": v.idUrl } ],
-    new: true 
-  }
-);
+
+//       const updateData = {};
+//       Object.keys(nn).forEach(key => {
+//         updateData[`orders.$[outer].measurement.$[inner].${key}`] = nn[key];
+//       });
+      
+//       const y = await User.updateOne(
+//         { "orders.measurement._id": v.idUrl }, 
+//         { 
+//           $set: { 
+//             ...updateData,
+//             "orders.$[outer].measurement.$[inner].price.total": total
+//           }
+//         },
+//         { 
+//           arrayFilters: [
+//             { "outer.measurement._id": v.idUrl },
+//             { "inner._id": v.idUrl }
+//           ]
+          
+//         }
+        
+//       );
+
+
+//       const orderId = v.iid; // استبدلها بالـ orderId الذي تريده
+//        await calculateTotalPrice(orderId); // دالة تحديث مجموع سعر الإضافات
 
 
 
-//// ========================تقرير قص الألمنيوم===============================//
+
+// // دالة تحديث الخصم
+// let dataIdd ={
+
+//   iid:v.iid ,
+//   id:v.idUrl,
+//       // aluminumCodeFront:
+//   }
+
+//   await calculateTotalTempersMeters(v.iid)
 
 
-      if (y) {
+//   await refreshDiscount(dataIdd)
+// // دالة تحديث الخصم//
 
-        console.log("تم تحديث بيانات القياس بنجاح:", y);
-        res.json({ id: "done" });
-      } else {
-        console.log("لم يتم العثور على القياس في أي من الاستعلامات");
-      }
-    }
+
+//      await updateTotal(v.iid)// معادلة تحديث الجمالي والضريبة
+
+
+//       // const k = await User.updateOne(
+//       //   { "orders.measurement._id": v.idUrl }, 
+//       //   { $set: 
+//       //     {"orders.$[outer].measurement.$[inner].price.total": total}
+//       //   },
+//       //   { 
+//       //     arrayFilters: [
+//       //       { "outer.measurement._id": v.idUrl },
+//       //       { "inner._id": v.idUrl }
+//       //     ],
+//       //     // new: true 
+//       //   }
+
+
+//       // );
+//       // console.log("total:",v.iid)
+
+
+
+
+
+//       const gg = await User.findOne({'orders._id': v.iid})
+//       const h =  gg
+//       const idToFind = v.iid; // من الرابط id 
+  
+//       const foundObject = h.orders.find(item => item.id === idToFind); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+      
+      
+//      var {resultsArrayBefore,resultsArrayAfter} = totalMotherEquation(foundObject);
+      
+//       console.log("Before:",resultsArrayBefore);
+      
+//       console.log("After:",resultsArrayAfter);
+      
+  
+  
+  
+  
+//   updatetotalMotherEquation(resultsArrayAfter,v.iid)
+
+
+
+
+// //================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================
+// const foundObjectgc = foundObject.measurement.find(item => item.id === v.idUrl); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+
+// // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",foundObjectgc); // Output the calculated value of B
+
+// var C4 = foundObjectgc.aluminumCode;
+// var B10 = foundObjectgc.H; // الأرتفاع H
+// var C10 = foundObjectgc.W; // العرض
+// var results = calculateValues(C4, B10, C10);
+// // console.log("aasswwwwwwwwwwwwwwwwwww",results.valueA,C4); // Output the calculated value of A
+// // console.log("resultsthhhhhhhhhhhhh",results.valueB); // Output the calculated value of B
+
+
+// var glassCuttingReportSchema={
+// // glassCuttingReport:{
+//   H: results.valueB,
+//   W: results.valueA,
+//   reportTemper: results.valueC,
+// // }
+// }
+
+// const cv = await User.updateOne(
+//   { "orders._id": v.iid }, 
+//   { $set: { "orders.$[orderElem].measurement.$[measurementElem].glassCuttingReport": glassCuttingReportSchema } }, 
+//   { 
+//     arrayFilters: [ { "orderElem._id": v.iid}, { "measurementElem._id": v.idUrl } ],
+//     new: true 
+//   }
+// );
+
+
+// //================== هنا معادلة تقرير قص الزجاج السحاب مع رفعها على الداتا===================//
+
+
+
+// // ========================تقرير قص الألمنيوم===============================
+
+
+
+// let B100 = foundObjectgc.H
+// let C100= foundObjectgc.W
+// let M4= foundObjectgc.aluminumCode
+// const {Q4,R4,S4,T4,U4} = aluminumCuttingReport(M4,B100,C100);// معادلة تقرير قص الألمنيوم
+// // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",Q4,R4,S4,T4,U4);
+
+// var aluminumCuttingReportSchema={
+//   Q4: Q4.toFixed(2),
+//   R4: R4.toFixed(2),
+//   S4: S4.toFixed(2),
+//   T4: T4.toFixed(2),
+//   U4: U4.toFixed(2),
+// }
+
+
+
+// const cvx = await User.updateOne(
+//   { "orders._id": v.iid }, 
+//   { $set: { "orders.$[orderElem].measurement.$[measurementElem].aluminumCuttingReport": aluminumCuttingReportSchema } }, 
+//   { 
+//     arrayFilters: [ { "orderElem._id": v.iid}, { "measurementElem._id": v.idUrl } ],
+//     new: true 
+//   }
+// );
+
+
+
+// //// ========================تقرير قص الألمنيوم===============================//
+
+
+//       if (y) {
+
+//         console.log("تم تحديث بيانات القياس بنجاح:", y);
+//         res.json({ id: "done" });
+//       } else {
+//         console.log("لم يتم العثور على القياس في أي من الاستعلامات");
+//       }
+//     }
 
   
 
-  } catch (error) {
-    console.error("حدث خطأ:", error);
-    res.status(500).json({ error: "حدث خطأ أثناء تحديث بيانات القياس." });
-  }
-});
+//   } catch (error) {
+//     console.error("حدث خطأ:", error);
+//     res.status(500).json({ error: "حدث خطأ أثناء تحديث بيانات القياس." });
+//   }
+// });
 
 
 
@@ -1638,216 +1914,6 @@ const cvx = await User.updateOne(
 
 
 
-
-
-
-// DELETE مسح القياس
-
-// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
-//   try {
-//     const { measurementId, orderId } = req.params;
-
-//     const user = await User.findOne({ 'orders._id': orderId });
-//     if (!user) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     const order = user.orders.id(orderId);
-//     if (!order) {
-//       return res.status(404).send('Order not found');
-//     }
-
-//     const measurement = order.measurement.id(measurementId);
-//     if (!measurement) {
-//       return res.status(404).send('Measurement not found');
-//     }
-
-//     if (order.status === 'مؤكد') {
-//       measurement.delete = !measurement.delete;
-//     } else {
-//       order.measurement.pull(measurementId);
-//     }
-
-//     // حفظ التغييرات باستخدام findOneAndUpdate
-//     await User.findOneAndUpdate(
-//       { 'orders._id': orderId, 'orders.measurement._id': measurementId },
-//       { $set: { 'orders.$.measurement': order.measurement } }
-//     );
-
-//     // تحديث الخصم والإجمالي والضريبة
-//     let dataIdd = {
-//       iid: orderId,
-//       aluminumCodeFront: measurement.aluminumCode // تأكد من استخدام الكود الصحيح هنا
-//     };
-
-//     await refreshDiscount(dataIdd);
-//     await updateTotal(orderId);
-
-//     res.status(200).json({ message: 'Measurement delete status updated successfully.' });
-//   } catch (error) {
-//     console.error('Error updating measurement:', error);
-//     res.status(500).send('An error occurred while updating the measurement.');
-//   }
-// });
-
-
-
-// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
-//   try {
-//     const { measurementId, orderId } = req.params;
-
-//     const user = await User.findOne({ 'orders._id': orderId });
-//     if (!user) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     const order = user.orders.id(orderId);
-//     if (!order) {
-//       return res.status(404).send('Order not found');
-//     }
-
-//     const measurement = order.measurement.id(measurementId);
-//     if (!measurement) {
-//       return res.status(404).send('Measurement not found');
-//     }
-
-//     if (order.status === 'مؤكد') {
-//       measurement.delete = !measurement.delete;
-//     } else {
-//       order.measurement.pull(measurementId);
-//     }
-
-//     // حفظ التغييرات باستخدام findOneAndUpdate
-//     await User.findOneAndUpdate(
-//       { 'orders._id': orderId, 'orders.measurement._id': measurementId },
-//       { $set: { 'orders.$.measurement': order.measurement } }
-//     );
-
-//     // تحديث الخصم والإجمالي والضريبة
-//     let dataIdd = {
-//       iid: orderId,
-//       aluminumCodeFront: measurement.aluminumCode // تأكد من استخدام الكود الصحيح هنا
-//     };
-
-//     await refreshDiscount(dataIdd);
-//     await updateTotal(orderId);
-
-//     // إعادة حساب دوال المعادلات الأم
-//     const { resultsArrayBefore, resultsArrayAfter } = totalMotherEquation(order);
-//     await updatetotalMotherEquation(resultsArrayAfter, orderId);
-
-//     // إعادة حساب تقارير القص
-//     const foundObjectgc = order.measurement.find(item => item._id === measurementId);
-
-//     if (foundObjectgc) {
-//       const C4 = foundObjectgc.aluminumCode;
-//       const B10 = foundObjectgc.H;
-//       const C10 = foundObjectgc.W;
-
-//       const glassResults = calculateValues(C4, B10, C10);
-//       const glassCuttingReportSchema = {
-//         H: glassResults.valueB,
-//         W: glassResults.valueA,
-//         reportTemper: glassResults.valueC,
-//       };
-
-//       await User.updateOne(
-//         { 'orders._id': orderId },
-//         { $set: { 'orders.$[orderElem].measurement.$[measurementElem].glassCuttingReport': glassCuttingReportSchema } },
-//         { arrayFilters: [{ 'orderElem._id': orderId }, { 'measurementElem._id': measurementId }], new: true }
-//       );
-
-//       const aluminumResults = aluminumCuttingReport(C4, B10, C10);
-//       const aluminumCuttingReportSchema = {
-//         Q4: aluminumResults.Q4.toFixed(2),
-//         R4: aluminumResults.R4.toFixed(2),
-//         S4: aluminumResults.S4.toFixed(2),
-//         T4: aluminumResults.T4.toFixed(2),
-//         U4: aluminumResults.U4.toFixed(2),
-//       };
-
-//       await User.updateOne(
-//         { 'orders._id': orderId },
-//         { $set: { 'orders.$[orderElem].measurement.$[measurementElem].aluminumCuttingReport': aluminumCuttingReportSchema } },
-//         { arrayFilters: [{ 'orderElem._id': orderId }, { 'measurementElem._id': measurementId }], new: true }
-//       );
-//     }
-
-//     res.status(200).json({ message: 'Measurement delete status updated successfully.' });
-//   } catch (error) {
-//     console.error('Error updating measurement:', error);
-//     res.status(500).send('An error occurred while updating the measurement.');
-//   }
-// });
-
-
-
-// router.delete('/review/:measurementId-:orderId', requireAuth, async (req, res) => {
-//   console.log(`Request received for measurementId: ${req.params.measurementId}, orderId: ${req.params.orderId}`);
-//   try {
-//       const { measurementId, orderId } = req.params;
-
-//       const user = await User.findOne({ 'orders._id': orderId });
-//       if (!user) {
-//           return res.status(404).send('User not found');
-//       }
-
-//       const order = user.orders.id(orderId);
-//       if (!order) {
-//           return res.status(404).send('Order not found');
-//       }
-
-//       const measurement = order.measurement.id(measurementId);
-//       if (!measurement) {
-//           return res.status(404).send('Measurement not found');
-//       }
-
-//       console.log('Current measurement before toggle:', measurement);
-
-//       if (order.status === 'مؤكد') {
-//           measurement.delete = !measurement.delete;
-//           console.log('Toggled delete status:', measurement.delete);
-//       } else {
-//           order.measurement.pull(measurementId);
-//           console.log('Measurement removed:', measurementId);
-//       }
-
-//       await User.findOneAndUpdate(
-//           { 'orders._id': orderId },
-//           { $set: { 'orders.$.measurement': order.measurement } }
-//       );
-
-//       console.log(`Updated measurement for order id: ${orderId}`);
-//       console.log('Updated order measurements:', order.measurement);
-
-//       let dataIdd = {
-//           iid: orderId,
-//           aluminumCodeFront: measurement.aluminumCode
-//       };
-
-//       await refreshDiscount(dataIdd);
-//       await updateTotal(orderId);
-
-//       const gg = await User.findOne({ 'orders._id': orderId });
-//       const foundObject = gg.orders.find(item => item._id.equals(orderId));
-
-//       var { resultsArrayBefore, resultsArrayAfter } = totalMotherEquation(foundObject);
-//       console.log("Before:", resultsArrayBefore);
-//       console.log("After:", resultsArrayAfter);
-
-//       await updatetotalMotherEquation(resultsArrayAfter, orderId);
-
-//       const finalUser = await User.findOne({ 'orders._id': orderId });
-//       const finalOrder = finalUser.orders.id(orderId);
-//       const finalMeasurement = finalOrder.measurement.id(measurementId);
-//       console.log('Final measurement after all updates:', finalMeasurement);
-
-//       res.status(200).json({ message: 'Measurement delete status updated successfully.' });
-//   } catch (error) {
-//       console.error('Error updating measurement:', error);
-//       res.status(500).send('An error occurred while updating the measurement.');
-//   }
-// });
 
 
 
@@ -1895,7 +1961,14 @@ router.delete('/review/:measurementId-:orderId', requireAuth,restrictFactoryWork
           aluminumCodeFront: measurement.aluminumCode
       };
 
+      await calculateTotalPrice(orderId); // تحديث  مجموع قياسات الشبابيك الضافيه 
+
+
+      await calculateTotalTempersMeters(orderId); // دالة السكريت
+
+
       await refreshDiscount(dataIdd);
+
       await updateTotal(orderId);
 
       const gg = await User.findOne({ 'orders._id': orderId });
@@ -2723,84 +2796,6 @@ router.post("/aluminum-cutting/update-status",restrictFactoryWorker, async (req,
 
 
 
-// router.post("/aluminum-cutting/assign", async (req, res) => {
-//   const { idCustomer, orderId, technicianId, taskType } = req.body;
-//   let { selectedMeasurements } = req.body;
-
-//   try {
-//       const user = await User.findOne({ _id: idCustomer });
-//       if (user) {
-//           const order = user.orders.id(orderId);
-//           if (!order) {
-//               return res.status(404).send('Order not found');
-//           }
-
-//           // تأكد من أن selectedMeasurements هو مصفوفة
-//           if (!Array.isArray(selectedMeasurements)) {
-//               selectedMeasurements = [selectedMeasurements];
-//           }
-
-//           selectedMeasurements.forEach(measurementId => {
-//               const measurement = order.measurement.id(measurementId);
-//               if (measurement) {
-//                   if (taskType === 'cutting') {
-//                       measurement.cuttingTechnician = technicianId;
-//                       measurement.cuttingStatus = false;
-//                   } else if (taskType === 'assembly') {
-//                       measurement.assemblyTechnician = technicianId;
-//                       measurement.assemblyStatus = false;
-//                   }
-//               }
-//           });
-
-//           await user.save();
-//           res.redirect(`/aluminum-cutting/${orderId}`);
-//       } else {
-//           res.status(404).send('User not found');
-//       }
-//   } catch (err) {
-//       console.log(err);
-//       res.status(500).send('Server Error');
-//   }
-// });
-
-
-
-
-
-// مسار للحصول على تفاصيل طلب القطع
-// مسار للحصول على تفاصيل طلب القطع
-// router.get("/aluminum-cutting/:id", (req, res) => {
-//   User.findOne({'orders._id': req.params.id})
-//     .then((result) => {
-//       const user = result;
-//       const idCustomer = user._id; // استخدم _id للحصول على معرف العميل
-//       const idToFind = req.params.id; // الحصول على المعرف من الرابط
-//       const foundObject = user.orders.find(item => item._id.toString() === idToFind); // إيجاد الطلب باستخدام المعرف
-
-//       if (!foundObject) {
-//         return res.status(404).send('Order not found');
-//       }
-
-//       // إضافة الجزء الخاص بجلب الفنيين
-//       Worker.find().then((workers) => {
-//         res.render('user/aluminum-cutting', {
-//           arrR: foundObject,
-//           idCustomer: idCustomer,
-//           workers: workers,
-//           moment: moment
-//         });
-//       }).catch((err) => {
-//         console.log(err);
-//         res.status(500).send('Server Error');
-//       });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).send('Server Error');
-//     });
-// });
-
 
 
 
@@ -2981,116 +2976,6 @@ router.get("/total-materials/:id",restrictFactoryWorker, (req, res) => {
   
                             // sign up
 
-                            
-                              // هذا اذا تبغى تخلي تسجيل مستخدم جديد بدون قيود
-                                          
-
-                                        //   router.post('/sign-up', async(req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
-                                        // //  console.log(req.body)
-                                        //   let result= await AuthUser.create(req.body)
-                                        //     try{
-                                        //       console.log(result)
-                                        //       // res.render("/home" ) // هذا يطبع
-                                        //       res.redirect('/home') // هذا يحولك
-                                        //      }
-                                        //       catch(err){
-                                        //       console.log(err)
-                                        //     }
-                                          
-                                        //   })
-                              // ////هذا اذا تبغى تخلي تسجيل مستخدم جديد بدون قيود////
-
-
-
-// تم إقافة لأن استغنينا عنه في الأدمن
-            // const { check, validationResult } = require("express-validator"); // تبع الي تحت حق التأكد من صحة الايميل و قوقة الباسورد
-
-        //     router.post('/sign-up', // هذا ركزس عادي حق تسجيل مستخدم جديد واضفنا معه الاكواد التالية عشان يتأكد من ان اليوزر والمز السري مكتوبة بشكل قوي طبعا فيه دالة حزمه ثبتناها وخذا الكواد هذي من مرجعها
-        //     check("email", "Please provide a valid email").isEmail(),
-        //     check("password", "Password must be at least 8 characters with 1 upper case letter and 1 number"
-        //     ).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/),
-        //     async(req, res) => { // هنا نكمل الركزست
-        //       //  console.log(req.body)
-        //       try{
-        //         const objError = validationResult(req);  // يجمع الاخطاء هنا
-        //         console.log(objError.errors)  // ملاحظة هذي تعتبر مصفوفةمن الأخطاء تصنعة حزمة التأكد من صحة الايمل و قوة الباسورد م
-        //         console.log("----------------------")
-        //           if(objError.errors.length > 0 ){ // طبعا هنا مصفوة الأخطاء لاتنطبع إلى اذا فيه خطاء في الايميل او قوة الباسورد عشان كذا انشأنا هذ الشرط و نقول فيه اذا النث حق الاري اكبر من صف نفذ الشر يعني فيه اخطاء بختصار
-        //             return   res.json({ arrvalidationError: objError.errors}) // app نرسل رسالة الخطاء للفرنت اند بستخدام صيغة الجيسون طبعا معرقين صيغة الجيسزن في ملف 
-        //           }
-
-
-
-
-        //       const n = await AuthUser.findOne({email: req.body.email}) // عشان يبحث عن اليميل المراد تسجيله اذا هو موجد من قبل اولا في قاعدة البيانات
-        //       console.log(n)
-                
-
-
-              
-        //       if(n){
-        //         return res.json({ existEmail: "Email already exist"}) // اذا موجود يرسل هذا النص إلى الفرنت اند هصيغة الجيسون يعني هذا الحساب مسجل مسبقاً و يوقف الاسطر الي بعدة
-        //         // res.redirect('/sign-up')
-                  
-
-        //       }
-        //         const newUser = await AuthUser.create(req.body) // اذا كل ماسبق صحيح راح يوصل إيلا هذه النقطة وينشأ الحساب 
-
-        //           // اكواد التوكن جاهزة
-        //       var token = jwt.sign({ id: newUser._id , name: newUser.name, userName: newUser.userName }, "shhhhh"); // انشانا منتغير وطلمبنا مكتلة التوكن ونحط اي اسم للبينات الي راح نخليها تصير توكن وبعده نحط البينات الي تبغاه يحطها في في التوكن من الافضل وضع الرأيد فقط وعدم وضع اليوزر والباسورد للأمان فقط واخر شي تحط رمز سري على التوكن حطيته اي شي
-        //       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // هذا يحفظ داخل الكوكيز الوكل كلمة بين الاقواس هذا الكي الي راح يحفظ به والي بعدة التوكن والي بين القواس المطعجة اول واحد خاص في الحماية تقدر تبحث عن في قوقل واخر شي كم مدة حفظ التوكن وبعدين ينحذف بالملي سكند طبعا مسجل انا يوم كامل
-        //       // res.redirect("/home") // هذي يحول عليه مايتأكد من التوكن اذا ماكتبت هذا الكود مارح يشتغل معك 
-        //  // ///اكواد التوكن جاهزة//
-                  
-        //             res.json({ id: newUser._id }) // مثل ما تشوف فوق لازم تعلمه وين يروح بعد حفظ التوكن ولاكن راح يخرب تسجيل الدخول لذالك قنا له بعد ما تخلص انرسل هذا الجيسون
-        //            }
-        //             catch(err){
-        //             console.log(err)
-        //           }
-                
-        //         })
-
-
-
-  
-        //login
-       
-
-        // router.post('/login', async(req, res) => { // وكتبنا نفس الأسماء في ملف الاسكيما name="" حطينا المسار الي يرسل منه الركوست طبعنا الفور هذا داخلة الفرغات الي نعبيها طبعا سمينا كل واحد فيه  action="/user/add.html" نوع الركوست وفي   method="post"  لو تلاحظ حطينا حطينا في  <form  action="/user/add.html" method="post" class="mx-0 row gx-3 gy-4 mt-3"> بهذي الطريقة  add طبعاً هنا خطوة جداً مهمه المسار الي موجد كتبناه في ملف 
-        //   console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        //     const loginUser= await AuthUser.findOne({email: req.body.email});
-        //     console.log(loginUser);
-           
-            
-        //    if(loginUser==null)
-        //    {
-        //     console.log("the email not register")
-        //    }else{
-        //     const match = await bcrypt.compare(req.body.password, loginUser.password); // كود جاهز من مكتبة تشفير الباسورد عشان يتأكد من الباس المدخل مع الباس الي في قاعدة البيانات اذا صحيح يصير المتغير قيمة ترو واذا خطاء يصير فولص
-        //     if(match){
-        //       console.log("correct email and password ")
-        //       // اكواد التوكن جاهزة
-        //       var token = jwt.sign({ id: loginUser._id }, "shhhhh"); // انشانا منتغير وطلمبنا مكتلة التوكن ونحط اي اسم للبينات الي راح نخليها تصير توكن وبعده نحط البينات الي تبغاه يحطها في في التوكن من الافضل وضع الرأيد فقط وعدم وضع اليوزر والباسورد للأمان فقط واخر شي تحط رمز سري على التوكن حطيته اي شي
-        //       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // هذا يحفظ داخل الكوكيز الوكل كلمة بين الاقواس هذا الكي الي راح يحفظ به والي بعدة التوكن والي بين القواس المطعجة اول واحد خاص في الحماية تقدر تبحث عن في قوقل واخر شي كم مدة حفظ التوكن وبعدين ينحذف بالملي سكند طبعا مسجل انا يوم كامل
-        //       res.redirect("/home") // هذي يحول عليه مايتأكد من التوكن اذا ماكتبت هذا الكود مارح يشتغل معك 
-        //  // ///اكواد التوكن جاهزة//
-
-        //     }else{
-        //       console.log("email and password not correct ")
-        //     }
-
-        //    }
-        //       // console.log(result)
-        //       // try{
-        //       //   console.log(loginUser)
-                
-        //       //   res.redirect('/home') // هذا يحولك
-        //       //  }
-        //       //   catch(err){
-        //       //   console.log(err)
-        //       // }
-            
-        //     })
         
 
 
@@ -3512,7 +3397,192 @@ router.delete('/delete-order/:orderId',restrictFactoryWorker, async (req, res) =
 
 
 
+// لتغير سعر المتر من التنبر لنفس الاوردر 
 
+
+
+
+
+router.post('/meter-temper-price/:id', async (req, res) => {
+  try {
+      const orderId = req.params.id; // معرف الطلب الرئيسي
+      const newMetersPrice = parseFloat(req.body.MetersPrice); // السعر الجديد
+      const iid = req.body.iid; // معرف الطلب الفرعي
+
+      console.log('Received Data:', { orderId, newMetersPrice, iid });
+
+      // التحقق من أن القيم ليست فارغة أو غير صالحة
+      if (!orderId || !iid) {
+          return res.status(400).send('Invalid request: missing order ID or item ID');
+      }
+
+      // استدعاء دالة الحساب مع السعر الجديد إذا كان موجودًا
+      await calculateTotalTempersMeters(iid, newMetersPrice);
+      await updateTotal(iid)
+      console.log('Total tempers meters recalculated successfully');
+
+      res.redirect(`/price/${iid}`);
+    } catch (error) {
+      console.error('Error updating MetersPrice:', error.message);
+      res.status(500).send('Server error');
+  }
+});
+
+
+// post بوستات تعديل سعر الشبابسك الاضافيه 
+
+router.post('/update-structure-price/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { measurementId, newPrice, iid } = req.body;
+
+    // الحصول على `number` من قاعدة البيانات
+    const user = await User.findOne(
+      { "orders._id": new mongoose.Types.ObjectId(orderId), "orders.measurement._id": new mongoose.Types.ObjectId(measurementId) },
+      { "orders.$": 1 } // جلب فقط الطلب المحدد
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Order or measurement not found" });
+    }
+
+    // العثور على `number` داخل الإضافات
+    const measurement = user.orders[0].measurement.find(meas => meas._id.equals(measurementId));
+    const numberValue = measurement.additions.Structure.number;
+
+    // حساب `totalPrice` الجديد بناءً على `number` و `newPrice`
+    const totalPrice = numberValue * newPrice;
+
+    // تحديث `price` و `totalPrice` في قاعدة البيانات
+    const updatePathPrice = "orders.$[order].measurement.$[measurement].additions.Structure.price";
+    const updatePathTotalPrice = "orders.$[order].measurement.$[measurement].additions.Structure.totalPrice";
+
+    const result = await User.findOneAndUpdate(
+      { "orders._id": new mongoose.Types.ObjectId(orderId) },
+      { 
+        $set: { 
+          [updatePathPrice]: newPrice,
+          [updatePathTotalPrice]: totalPrice 
+        } 
+      },
+      {
+        arrayFilters: [
+          { "order._id": new mongoose.Types.ObjectId(orderId) },
+          { "measurement._id": new mongoose.Types.ObjectId(measurementId) }
+        ],
+        new: true
+      }
+    );
+
+    await calculateTotalPrice(orderId); // دالة تحديث مجموع سعر الإضافات
+    await updateTotal(iid)
+
+    res.redirect(`/price/${iid}#measurement-${measurementId}`);
+
+  } catch (error) {
+    console.error("Error updating Structure price:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+router.post('/update-hinges-price/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { measurementId, newPrice, iid } = req.body;
+
+    const updatePathPrice = "orders.$[order].measurement.$[measurement].additions.Hinges.price";
+    const updatePathTotalPrice = "orders.$[order].measurement.$[measurement].additions.Hinges.totalPrice";
+
+    const user = await User.findOne(
+      { "orders._id": new mongoose.Types.ObjectId(orderId), "orders.measurement._id": new mongoose.Types.ObjectId(measurementId) },
+      { "orders.$": 1 }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Order or measurement not found" });
+    }
+
+    const measurement = user.orders[0].measurement.find(meas => meas._id.equals(measurementId));
+    const numberValue = measurement.additions.Hinges.number;
+
+    const totalPrice = numberValue * newPrice;
+
+    const result = await User.findOneAndUpdate(
+      { "orders._id": new mongoose.Types.ObjectId(orderId) },
+      {
+        $set: {
+          [updatePathPrice]: newPrice,
+          [updatePathTotalPrice]: totalPrice
+        }
+      },
+      {
+        arrayFilters: [
+          { "order._id": new mongoose.Types.ObjectId(orderId) },
+          { "measurement._id": new mongoose.Types.ObjectId(measurementId) }
+        ],
+        new: true
+      }
+    );
+
+    await calculateTotalPrice(orderId);
+    await updateTotal(iid)
+
+    res.redirect(`/price/${iid}#measurement-${measurementId}`);
+  } catch (error) {
+    console.error("Error updating Hinges price:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post('/update-rollwindow-price/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { measurementId, newPrice, iid } = req.body;
+
+    const updatePathPrice = "orders.$[order].measurement.$[measurement].additions.RollWindow.price";
+    const updatePathTotalPrice = "orders.$[order].measurement.$[measurement].additions.RollWindow.totalPrice";
+
+    const user = await User.findOne(
+      { "orders._id": new mongoose.Types.ObjectId(orderId), "orders.measurement._id": new mongoose.Types.ObjectId(measurementId) },
+      { "orders.$": 1 }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Order or measurement not found" });
+    }
+
+    const measurement = user.orders[0].measurement.find(meas => meas._id.equals(measurementId));
+    const numberValue = measurement.additions.RollWindow.number;
+
+    const totalPrice = numberValue * newPrice;
+
+    const result = await User.findOneAndUpdate(
+      { "orders._id": new mongoose.Types.ObjectId(orderId) },
+      {
+        $set: {
+          [updatePathPrice]: newPrice,
+          [updatePathTotalPrice]: totalPrice
+        }
+      },
+      {
+        arrayFilters: [
+          { "order._id": new mongoose.Types.ObjectId(orderId) },
+          { "measurement._id": new mongoose.Types.ObjectId(measurementId) }
+        ],
+        new: true
+      }
+    );
+
+    await calculateTotalPrice(orderId);
+    await updateTotal(iid)
+
+    res.redirect(`/price/${iid}#measurement-${measurementId}`);
+  } catch (error) {
+    console.error("Error updating RollWindow price:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 

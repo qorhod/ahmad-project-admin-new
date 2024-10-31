@@ -369,34 +369,8 @@
      <br>  <br> <hr>  <br>
         
    
-     <form >
-      <!-- <form class="row g-3"> -->
-          <div class="col-md-6">
-              <label for="inputage4" class="form-label">:الطول </label>
-              <input
-              name="length"
-                placeholder="cm"
-                type="number"
-                class="form-control"
-                id="lengthid"
-                value="<%= arrM.H %>"
-              />
-            </div>
-          </form>
-            <form >
-            <div class="col-md-6">
-              <label for="inputage4" class="form-label">:العرض </label>
-              <input
-              name="width"
-                placeholder="cm"
-                type="number"
-                class="form-control"
-                id="widthid"
-                value="<%= arrM.W %>"
-              />
-            </div>
- 
-          </form>
+        <!-- العرض ولاطول  -->
+        <%- include('../components/hAndw.ejs') %> 
 
 
           
@@ -538,31 +512,10 @@
           
                           </div>
             
-          
                           <br>
             
-                          <div>
-                            <div class="col-md-6">
-                              <label for="aluminumSize" class="form-label">:اختر قياس القطاع</label>
-                              <select  name="branch" id="aluminumSize" class="form-select">
-                                <option value="<%=arrM.aluminumSize?arrM.aluminumSize:""%>" selected hidden disabled><%= arrM.aluminumSize?arrM.aluminumSize:""%></option>
-                                <option value="12.1">12.1</option>
-                                <option value="11.1">11.1</option>
-                                <option value="9.1">9.1</option>
-                                <option value="6.5">6.5</option>
+                          <%- include('../components/aluminumSize.ejs') %>
 
-                                <option value="16">16</option>
-                                <option value="4.2">4.2</option>
-                                <option value="5.6">5.6</option>
-                                <option value="10.6">10.6</option>         
-                                <option value="14.7">14.7</option>
-                                <option value="11.3">11.3</option>
-                                <option value="13.5">13.5</option>
-                                <option value="8.2">8.2</option>
-
-                              </select>
-                            </div>
-                            </div>
             
           
           
@@ -579,9 +532,55 @@
                 </form>
           
           
-              
 
-<br><br><hr><br>   
+                <br><br><hr><br>   
+  
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:إضافة شباك استركتشر </label>
+                    <input
+                    name="StructureNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="StructureNumber"
+                      value="<%=  arrM.additions && arrM.additions.Structure && arrM.additions.Structure.number ? arrM.additions.Structure.number : null %>"
+                    />
+                    
+                  </div>
+       
+
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:اضافة شباك مفصلات </label>
+                    <input
+                    name="HingesNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="HingesNumber"
+                      value="<%= arrM.additions && arrM.additions.Hinges && arrM.additions.Hinges.number ? arrM.additions.Hinges.number : null %>"
+                      />
+                  </div>
+
+
+
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:اضافة شباك رول </label>
+                    <input
+                    name="RollWindowNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="RollWindowNumber"
+                      value="<%= arrM.additions && arrM.additions.RollWindow && arrM.additions.RollWindow.number ? arrM.additions.RollWindow.number : null %>"
+                      />
+                  </div>
+
+
+
+          <br><br><hr><br>   
 
 <h4>:ارسم شكل الألمنيوم</h4>
 
@@ -630,141 +629,26 @@
 
 
 
+<!--  لون الالمنيوم  -->
+<%- include('../components/aluminumColorCode.ejs') %>
 
-  <div class="col-md-6">
-    <label for="inputage4" class="form-label">:رمز اللون </label>
-    <input
-    name="aluminumColorCode"
-      placeholder="BM-###"
-      type="text"
-      class="form-control"
-      id="aluminumColorCodeId"
-      value="<%=arrM.aluminumColorCode0?arrM.aluminumColorCode0:arrM.aluminumColorCode%>"
-    />
-  </div>
 
 <br><br><hr>
 
 <h4>:مواصفات الزجاج</h4>
 <br>
-
-<div style="background-color: #5c6057;" class="btn-group" role="group" aria-label="Basic radio toggle button group">
-  <input value="دبوس عاكس /RP" type="radio" class="btn-check" name="q1" id="btnradio17" autocomplete="off" >
-  <label class="btn btn-outline-light" for="btnradio17">دبوس عاكس</label>
-
-  <input value="شفاف عاكس /RT" type="radio" class="btn-check" name="q1" id="btnradio27" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio27">شفاف عاكس</label>
-
-  <input value="عاكس عاكس/RR" type="radio" class="btn-check" name="q1" id="btnradio37" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio37">عاكس عاكس</label>
-
-  
-  <input value="شفاف شفاف/TT" type="radio" class="btn-check" name="q1" id="btnradio47" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio47">شفاف شفاف</label>
-
-</div>
+<%- include('../components/glassColorCode.ejs') %>
 
 
-
-<br><br>
-
-
-
-
-
-
-
-
-
-
-
-
-     <div>
-        <div class="col-md-6">
-          <label for="inputGenderb" class="form-label">: اختر السماكة</label>
-          <select name="inputGenderb" id="glassThickness" class="form-select">
-           <option value="<%= arrM.glassThickness0?arrM.glassThickness0:arrM.glassThickness%>" selected hidden disabled><%= arrM.glassThickness0?arrM.glassThickness0:arrM.glassThickness%></option>
-
-            <option value="5.5">5.5</option>
-          <option value="6">6</option>
-
-          </select>
-     </div>  
-
-
-
-        <div>
-          <div class="col-md-6">
-            <label for="glassColorCode" class="form-label">:جميع الألون</label>
-            <select  type="radio" name="glassColorCode" id="glassColorCode" class="form-select">
-              <option value="<%=arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCode%>" selected hidden disabled><%= arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCode%></option>
-              <option value="شفاف/transparent">شفاف/transparent</option>
-              <option value="C1+">C1+</option>
-              <option value="C1">C1</option>
-              <option value="C2">C2</option>
-              <option value="C3">C3</option>
-              <option value="C4">C4</option>
-              <option value="C5">C5</option>
-              <option value="C6">C6</option>
-              <option value="C7">C7</option>
-              <option value="C8">C8</option>
-              <option value="C9">C9</option>
-              <option value="C10">C10-</option>
-              <option value="C11">C11</option>
-              <option value="C12">C12</option>
-              <option value="C13">C13</option>
-              <option value="C14">C14</option>
-              <option value="C15">C15</option>
-              <option value="C16">C16</option>
-              <option value="C17">C17</option>
-              <option value="C18">C18</option>
-              <option value="C19">C19</option>
-              <option value="C20">C20</option>
-            </select>
-       </div>  
-
-
-
-  </div>
-</form>
-<!-- <label for="inputGender" class="form-label">:اختر نوع التركيب</label>
-
-<div class="checkbox-wrapper-10">
-  <input value="داخلي" checked type="checkbox" id="cb68" class="tgl tgl-flip" name="m1">
-  <label for="cb5" data-tg-on="داخلي" data-tg-off="خارجي" class="tgl-btn"></label>
-</div> -->
-
-
-
-
-<label >:سكريت</label>
-<br><br>
-<div class="checkbox-wrapper-10">
-  <input value="YAS"  type="checkbox" id="cb6" class="tgl tgl-flip">
-  <label for="cb6" data-tg-on="نعم" data-tg-off="لا" class="tgl-btn"></label>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-</form>
+<%- include('../components/temper.ejs') %>
 
 
 
     <br>
 
  
-    <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">:ملاحظة </label>
-      <textarea name="comments" class="form-control" id="exampleFormControlTextarea1" rows="3"><%=arrM.comments%></textarea>
-    </div>
+    <%- include('../components/comments.ejs') %>
+
  
 
 
@@ -1591,23 +1475,37 @@ isSent = true; // تغيير حالة العلم للإشارة إلى أن ال
     const lengthValue = document.getElementById('lengthid').value;
     const widthValue = document.getElementById('widthid').value;
     const aluminumSize = document.getElementById('aluminumSize').value;
-    const glassColorCode = document.getElementById('glassColorCode').value;
+
+    const glassColorCodeInside = document.getElementById('glassColorCodeInside').value;
+
+    const glassColorCodeOutside = document.getElementById('glassColorCodeOutside').value;
+
     const aluminumColorCode = document.getElementById('aluminumColorCodeId').value;
 
     const glassThickness = document.getElementById('glassThickness').value;
     const comments = document.getElementById('exampleFormControlTextarea1').value;
 
-
+    const structureNumber = document.getElementById('StructureNumber').value;
+    const hingesNumber = document.getElementById('HingesNumber').value;
+    const rollWindowNumber = document.getElementById('RollWindowNumber').value;
 
 
      // التحقق من القيم الأساسية وإظهار رسالة تحذيرية في حال كانت أي من القيم مفقودة
-     if (!lengthValue || !widthValue || !aluminumSize || !glassColorCode || !glassThickness || !getSelectedValue2 || !glasstypeValue|| !designCode) {
+     if (!lengthValue || !widthValue || !aluminumSize || !glassColorCodeInside || !glassColorCodeOutside|| !glassThickness || !getSelectedValue2 || !glasstypeValue|| !designCode ) {
         const alertContainer = document.getElementById('alertContainer');
         alertContainer.classList.remove('d-none');
         return;
     }
+
+
+
+// التكد اذا كان العرض موجود مسبقا فهذا يعنل ان تعديل واذا غير موجو فهذا يعني انه قياس جديد 
+const methodType = '<%= arrM.W %>' ? "PUT" : "POST"; 
+    
       const res = await fetch(`/measurement/${id}`, {
-          method: "POST",
+          // method: "POST",
+          method: methodType,
+
           body: JSON.stringify({
               aluminumCode: getSelectedValue2.value,
             //   aluminumCode: "SG50",
@@ -1617,7 +1515,8 @@ isSent = true; // تغيير حالة العلم للإشارة إلى أن ال
               aluminumColorCode: aluminumColorCode,
               glasstype: glasstypeValue.value,
               glassThickness: glassThickness,
-              glassColorCode: glassColorCode,
+              glassColorCodeInside: glassColorCodeInside,
+              glassColorCodeOutside: glassColorCodeOutside,
               id: "<%= arrM._id %>",
               H: lengthValue,
               W: widthValue,
@@ -1628,6 +1527,19 @@ isSent = true; // تغيير حالة العلم للإشارة إلى أن ال
               comments: comments,
               iid: iid.value,
               idUrl: idUrl,
+
+
+              StructureNumber: structureNumber,
+              HingesNumber: hingesNumber ,
+              RollWindowNumber: rollWindowNumber ,
+
+              StructurePrice: '<%= arrM.additions && arrM.additions.Structure && arrM.additions.Structure.price ? arrM.additions.Structure.price : 0 %>',
+              HingesPrice: '<%= arrM.additions && arrM.additions.Hinges && arrM.additions.Hinges.price ? arrM.additions.Hinges.price : 0 %>',
+              RollWindowPrice: '<%= arrM.additions && arrM.additions.RollWindow && arrM.additions.RollWindow.price ? arrM.additions.RollWindow.price : 0 %>',
+
+
+
+
           }),
           headers: { "Content-Type": "application/json" },
       });
@@ -1737,12 +1649,12 @@ if (checkbox1 && checkbox1.value === "<%=arrM.temper%>") {
 // const checkbox2 = document.getElementById('cb7');
 
 // // افحص قيمة العنصر وقم بتعيين checked إذا كانت قيمته "NO"
-// if (checkbox2 && checkbox2.value === "<%=arrM.lip%>") {
-//   document.getElementById('cb7').value = "<%=arrM.lip%>";
+// if (checkbox2 && checkbox2.value === "<%=//arrM.lip%>") {
+//   document.getElementById('cb7').value = "<%=//arrM.lip%>";
 
 //   checkbox2.checked =  true;
 // } else {
-//   document.getElementById('cb7').value = "<%=arrM.lip?arrM.lip:'NO'%>";
+//   document.getElementById('cb7').value = "<%=//arrM.lip?arrM.lip:'NO'%>";
 //   checkbox2.checked = false  ; // لاحظ هذا السطر
 // }
 

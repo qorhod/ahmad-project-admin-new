@@ -102,7 +102,16 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                             aluminumSize: Number, // مقاس الألمنيوم نحتاجه فقط في الأستركتشر وال التيوبات
                             glasstype: String,
                             glassThickness: String,
-                            glassColorCode: String,
+                            glassColorCodeInside: String,
+                            glassColorCodeOutside: String,
+                            // glassColorCodeInside: {
+                            //     type: String,
+                            //     default: '11'  // القيمة الثابتة
+                            // },
+                            // glassColorCodeOutside: {
+                            //     type: String,
+                            //     default: '22'  // القيمة الثابتة
+                            // },
                             glassCode: String,
                             temper: String,
                             lip: String,
@@ -187,12 +196,47 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                                     T4: Number,
                                     U4: Number,
                                 
+                                },
+
+
+
+                                // اضافه الوحدات مثل زيادة الشبابيك في نفس الطاقة
+                                additions:{
+                                    // الاستركتشر 
+                                    Structure:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                       
+                                    },
+
+                                        // مفصلات 
+                                    Hinges:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                    },
+
+                                    // شباك رول
+                                    
+                               RollWindow:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                    }
+                                   
                                 }
 
 
 
+
+
                     }],
-                    
+                    totalAllPrice:Number, // مجموع سعر  جميع القياسات
+
                     // totalMeters:[{
                     //     H1: Number,
                     //     W1: Number,
@@ -213,6 +257,17 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                     totalWithTax: Number,
                     },
                     
+
+                    totalTempers:{ // مجموع امتار  السكريت وسعره 
+
+                        
+                        MetersPrice: Number, // سعر المتر لذا الاوردر يتم تعبديه تلقائي من قامه السعار ويمكن تعديله من الواجهه
+                        totalTempersPrice: Number, // اجمالي السعر لكي الاسعار 
+                        totalTempersMeters: Number, // مجموع امتار السكريت الي في الاوردر 
+                
+                        },
+
+
 
                     motherEquationTotal:[ {
               // تجميع  العداد مع بعض بشرط نفس اسم القطاع

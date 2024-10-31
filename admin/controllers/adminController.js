@@ -188,7 +188,17 @@ exports.initializePrices = async () => {
                 
                     // الابواب 
                     SLICES_DOOR: 850,
-                    DOUBLE_GLASS_DOOR: 850
+                    DOUBLE_GLASS_DOOR: 850,
+
+                    TempersPriceMeters: 100, // سعر متر السكريت 
+
+
+                    // الوحدات الاضافات
+                    Structure: 200, // الاسعر الافتارضي لوحدة الاستركتشر
+                    Hinges: 200 , // السعر الافتاضي لوحدة المفصلات 
+                    RollWindow: 200 // السعر الافتراضي لسعر الشباك الرول الواحد
+
+
                 }
             });
             await defaultPrices.save();

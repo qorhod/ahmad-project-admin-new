@@ -10,12 +10,34 @@ const cookieParser = require('cookie-parser');
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 const flash = require('connect-flash');
-const adminController = require('./admin/controllers/adminController'); // استيراد وحدة تحكم الأدمن
-const multer = require('multer'); // استيراد multer
+const adminController = require('./admin/controllers/adminController');
+const multer = require('multer');
 const fs = require('fs');
+const converter = require("arabic-digits-converter"); // مكتبة تحويل الأرقام
 
 require('dotenv').config();
-require('./admin/config/passport')(passport); // تحميل إعدادات passport للأدمن
+require('./admin/config/passport')(passport);
+
+// إعدادات التحويل للأرقام غير الإنجليزية
+function convertToEnglishNumbers(data) {
+    const isNumericString = /^[٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹]+$/; // تحقق من أن النص يحتوي فقط على أرقام غير إنجليزية
+
+    if (typeof data === "string" && isNumericString.test(data)) {
+        return converter.toEnglishDigits(data); // تحويل الأرقام فقط
+    } else if (typeof data === "object" && data !== null) {
+        for (let key in data) {
+            data[key] = convertToEnglishNumbers(data[key]);
+        }
+    }
+    return data;
+}
+
+// Middleware لتطبيق التحويل على جميع الطلبات
+app.use((req, res, next) => {
+    req.body = convertToEnglishNumbers(req.body);
+    req.query = convertToEnglishNumbers(req.query);
+    next();
+});
 
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,7 +54,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.use(flash()); // استخدام connect-flash
+app.use(flash());
 
 // إعدادات passport
 app.use(passport.initialize());
@@ -52,10 +74,9 @@ liveReloadServer.server.once("connection", () => {
 // الاتصال بقاعدة البيانات
 mongoose.connect(process.env.DATABASE_PASSWORD)
   .then(() => {
-    // تهيئة الأدمن الافتراضي والصلاحيات الافتراضية
     adminController.initializeAdmin();
     adminController.initializeDefaultPermissions();
-    adminController.initializePrices(); // لأنشاء التسعيرات الإفتارضية للقطاعات
+    adminController.initializePrices();
     
     app.listen(port, () => {
       console.log(`http://localhost:${port}/`);
@@ -81,7 +102,7 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // إضافة التاريخ والوقت إلى اسم الملف
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 

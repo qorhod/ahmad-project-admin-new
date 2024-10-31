@@ -203,6 +203,8 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">الصنف</th>
+              <th scope="col">الرسم</th>
+
               <th scope="col">الكمية</th>
               <th scope="col">الوحدة</th>
               <th scope="col">السعر</th>
@@ -226,6 +228,25 @@
                  <tr class="<%= item.delete ? 'strikethrough' : '' %>"> 
                    <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
+
+                   <td>
+                    <img class="custom-image" src="<%= item.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-white">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img id="modalImage" src="<%= item.designCode %>" alt="Design Image" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+
+
                    <td><%=  parseFloat(item.totalMeters.totalMeters.toFixed(2))%>	</td>
                    <td>m2</td>
                    <!-- <td><%= //item.price.price %></td> -->
@@ -427,6 +448,368 @@ arrR.measurement.forEach((item, index) => {
       </table>
 <!-- //هذا جدول جمع الاصناف //-->
 
+
+
+
+
+
+<!--//////////// جدول مجموع السكريت واسعاره وتعديله  -->
+<% if (arrR.totalTempers && arrR.totalTempers.totalTempersMeters > 0) { %>
+  <table id="table2" style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+      <thead>
+          <tr>
+              <th scope="col">الصنف</th>
+              <th scope="col">الكمية </th>
+              <th scope="col">الوحدة</th>
+              <th scope="col">السعر </th>
+              <th scope="col">الإجمالي</th>
+              <th scope="col" class="no-print">Action</th>
+          </tr>
+      </thead>
+      <tbody id="kk">
+          <form style="display: inline;" action="/meter-temper-price/<%= arrR._id %>" method="post">
+              <tr>
+                  <td>سكريت</td>
+                  <td><%= parseFloat(arrR.totalTempers.totalTempersMeters.toFixed(2)) %></td>
+  
+                  <td>m2</td>
+  
+                  <td style="width: 15%;">
+                      <input name="MetersPrice" id="editPricea<%= //index %>" type="text"
+                             style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;"
+                             value="<%= arrR.totalTempers.MetersPrice ? parseFloat(arrR.totalTempers.MetersPrice.toFixed(2)) : 'N/A' %>" disabled>
+                            </td>
+  
+                  <td><%= parseFloat(arrR.totalTempers.totalTempersPrice.toFixed(2)) %></td>
+  
+                  <td style="width: 5%;" class="no-print">
+                      <input id="butff" class="btn btn-primary btn-sm" value="تعديل السعر">
+                      <input style="width: 100%; display: none;" id="ff" type="submit" class="btn btn-success btn-sm"
+                             value="تأكيد">
+                      <!-- تمرير المعرفات بشكل صحيح -->
+                      <input type="hidden" name="id" value="<%= arrR._id %>">
+                      <input type="hidden" name="iid" value="<%= arrR._id %>">
+                      <input type="hidden" name="totalMeters" value="<%= arrR.totalTempers.totalTempersMeters %>">
+                  </td>
+              </tr>
+          </form>
+      </tbody>
+  </table>
+  <% } else { %>
+      <!-- يمكن إضافة رسالة أو عنصر آخر هنا إذا كانت totalTempersMeters غير موجودة أو تساوي صفر -->
+      <!-- <p>لا يوجد بيانات لعرض الجدول.</p> -->
+  <% } %>
+  
+
+<script>
+// هذا لتعديل السعر الجماعي يجعل الواجهه قابله لتعديدل 
+document.getElementById('butff').addEventListener('click', function() {
+  document.getElementById('butff').style.display = "none";
+  document.getElementById('ff').style.display = "block";
+  var input = document.getElementById('editPricea');
+  if (input.disabled) {
+      input.style = "width: 60%; text-align: center;";
+      input.disabled = false; // جعل الإدخال قابل للتعديل
+  } else {
+      input.style = "width: 60%; text-align: center; background-color: transparent; border: none; outline: none;";
+      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+  }
+});
+</script>
+
+
+
+<!-- ///////جدول مجموع السكريت واسعاره وتعديله ////// -->
+
+
+
+
+
+
+<!-- /////جدول فتحات الاستركتشر الضافيه  -->
+
+<h1>النوافذ الإضافية</h1>
+
+
+
+
+
+
+
+    <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+      <tr>
+
+          <tr>
+
+            <td>
+النوافذ الإضافيه 
+            </td>
+
+          </tr>
+
+
+  <td>
+
+
+
+    <% arrR.measurement.forEach((item, index) => { %>  
+      <% if (item.additions.Structure.number > 0 || item.additions.Hinges.number > 0 || item.additions.RollWindow.number > 0) { %>
+
+
+
+
+    <table id="table2" style="width: 99%" class="text-center mx-auto  mt-5 table-striped table-bordered <%= item.delete ? 'strikethrough' : '' %>">
+      <tr>
+
+        <td>
+          <%= item.sequenceNumber %> :رقم القياس </td>
+          <td>
+            <%= item.aluminumCode %> :القطاع            
+                  </td>
+
+
+      </tr>
+
+    </table>
+
+
+
+
+        <table id="table2" style="width: 99%" class="text-center mx-auto table  table-striped table-bordered <%= item.delete ? 'strikethrough' : '' %>" >
+
+          <% //if (arrR.totalTempers && arrR.totalTempers.totalTempersMeters > 0) { %>
+          
+
+
+
+
+
+
+                  <thead>
+
+                      <tr>
+                          <!-- <th scope="col">#</th> -->
+                          <th scope="col">الإضافة</th>
+                          <th scope="col">الكمية</th>
+                          <th scope="col">سعر الوحدة</th>
+                          <th scope="col">الإجمالي</th>
+                          <th scope="col" class="no-print">Action</th>
+                      </tr>
+                  </thead>
+                  
+
+                    
+                  <tbody id="kk">
+                    <% if (item.additions.Structure.number > 0) { %>
+
+                      
+                        <form style="display: inline;" action="/update-structure-price/<%= arrR._id %>" method="post">
+
+                          <tr id="measurement-<%= item._id %>">
+                            <td>استركتشر</td>
+                              <td><%= item.additions.Structure.number %></td>
+
+                              <td style="width: 15%;">
+                                  <input name="newPrice" id="editPrice3<%=  index  %>" type="text"
+                                         style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;"
+                                         value="<%= item.additions.Structure.price%>" disabled>
+                              </td>
+
+                              <td><%= item.additions.Structure.totalPrice %></td>
+
+                              <td style="width: 5%;" class="no-print">
+                                  <input id="butff3<%=  index  %>" class="btn btn-primary btn-sm" value="تعديل السعر">
+                                  <input style="width: 100%; display: none;" id="ff3<%=  index  %>" type="submit" class="btn btn-success btn-sm"
+                                         value="تأكيد">
+                                         <input type="hidden" name="measurementId" value="<%= item._id %>">
+
+                                  <input type="hidden" name="iid" value="<%= arrR._id %>">
+                              </td>
+                          </tr>
+                      </form>
+                      <% } %>
+
+                      <% if (item.additions.Hinges.number > 0) { %>
+
+                        <form style="display: inline;" action="/update-hinges-price/<%= arrR._id %>" method="post">
+                          <tr id="measurement-<%= item._id %>">
+                          <td>مفصلات</td>
+                            <td><%= item.additions.Hinges.number %></td>
+
+                            <td style="width: 15%;">
+                                <input name="newPrice" id="editPrice2<%= index %>" type="text"
+                                       style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;"
+                                       value="<%= item.additions.Hinges.price%>" disabled>
+                            </td>
+
+                            <td><%= item.additions.Hinges.totalPrice %></td>
+
+                            <td style="width: 5%;" class="no-print">
+                                <input id="butff2<%= index %>" class="btn btn-primary btn-sm" value="تعديل السعر">
+                                <input style="width: 100%; display: none;" id="ff2<%= index %>" type="submit" class="btn btn-success btn-sm"
+                                       value="تأكيد">
+                                       <input type="hidden" name="measurementId" value="<%= item._id %>">
+                                       <input type="hidden" name="iid" value="<%= arrR._id %>">
+                            </td>
+                        </tr>
+                    </form>
+                    <% } %>
+
+
+                    <% if (item.additions.RollWindow.number > 0) { %>
+
+                         
+                      <form style="display: inline;" action="/update-rollwindow-price/<%= arrR._id %>" method="post">
+                        <tr id="measurement-<%= item._id %>">
+                        <td>شباك رول</td>
+                          <td><%= item.additions.RollWindow.number %></td>
+
+                          <td style="width: 15%;">
+                              <input name="newPrice" id="editPrice1<%= index %>" type="text"
+                                     style="width: 100%; text-align: center; background-color: transparent; border: none; outline: none;"
+                                     value="<%= item.additions.RollWindow.price%>" disabled>
+                          </td>
+
+                          <td><%= item.additions.RollWindow.totalPrice %></td>
+
+                          <td style="width: 5%;" class="no-print">
+                              <input id="butff1<%= index %>" class="btn btn-primary btn-sm" value="تعديل السعر">
+                              <input style="width: 100%; display: none;" id="ff1<%= index %>" type="submit" class="btn btn-success btn-sm"
+                                     value="تأكيد">
+                              <input type="hidden" name="measurementId" value="<%= item._id %>">
+                              <input type="hidden" name="iid" value="<%= arrR._id %>">
+                          </td>
+                      </tr>
+                  </form>
+
+                  <% } %>
+
+
+
+
+                  </tbody>
+ 
+              </table>
+
+
+              <script>
+                // هذا لتعديل السعر الجماعي يجعل الواجهه قابله لتعديدل 
+              document.getElementById('butff3<%= index %>').addEventListener('click', function() {
+                    document.getElementById('butff3<%= index %>').style.display = "none";
+                    document.getElementById('ff3<%= index %>').style.display = "block";
+              
+                    var input = document.getElementById('editPrice3<%= index %>');
+                    if (input.disabled) {
+                      input.style="width: 60%; text-align: center; "
+                      input.disabled = false; // جعل الإدخال قابل للتعديل
+                    } else {
+                      input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+                
+                      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+                    }});
+
+
+              
+              </script>
+              <script>
+
+
+document.getElementById('butff2<%= index %>').addEventListener('click', function() {
+  document.getElementById('butff2<%= index %>').style.display = "none";
+  document.getElementById('ff2<%= index %>').style.display = "block";
+
+  var input = document.getElementById('editPrice2<%= index %>');
+  if (input.disabled) {
+    input.style="width: 60%; text-align: center; "
+    input.disabled = false; // جعل الإدخال قابل للتعديل
+  } else {
+    input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+
+    input.disabled = true; // جعل الإدخال غير قابل للتعديل
+  }});
+
+
+
+
+
+</script>
+
+
+
+<script>
+
+document.getElementById('butff1<%= index %>').addEventListener('click', function() {
+                    document.getElementById('butff1<%= index %>').style.display = "none";
+                    document.getElementById('ff1<%= index %>').style.display = "block";
+              
+                    var input = document.getElementById('editPrice1<%= index %>');
+                    if (input.disabled) {
+                      input.style="width: 60%; text-align: center; "
+                      input.disabled = false; // جعل الإدخال قابل للتعديل
+                    } else {
+                      input.style="width: 60%; text-align: center; background-color: transparent; border: none; outline: none;"
+                
+                      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+                    }});
+
+</script>
+              <% } %>
+              <%}) %>
+
+
+       </td>
+                      <tr>
+
+                       <td>
+              إجمالي سعر جميع إضافات الشبابيك            
+                          </td>
+                     </tr>
+
+
+
+
+                     <tr>
+
+                      <td>
+                        <%= arrR.totalAllPrice %>
+                      </td>
+                    </tr>
+
+
+      </tr>
+  </table>
+
+
+
+
+
+
+
+
+
+  <%// } else { %>
+      <!-- يمكن إضافة رسالة أو عنصر آخر هنا إذا كانت totalTempersMeters غير موجودة أو تساوي صفر -->
+      <!-- <p>لا يوجد بيانات لعرض الجدول.</p> -->
+  <%// } %>
+  
+
+<script>
+// هذا لتعديل السعر الجماعي يجعل الواجهه قابله لتعديدل 
+document.getElementById('butff0').addEventListener('click', function() {
+  document.getElementById('butff0').style.display = "none";
+  document.getElementById('ff0').style.display = "block";
+  var input = document.getElementById('editPricea0');
+  if (input.disabled) {
+      input.style = "width: 60%; text-align: center;";
+      input.disabled = false; // جعل الإدخال قابل للتعديل
+  } else {
+      input.style = "width: 60%; text-align: center; background-color: transparent; border: none; outline: none;";
+      input.disabled = true; // جعل الإدخال غير قابل للتعديل
+  }
+});
+</script>
+
+<!-- /////جدول فتحات الاستركتشر الضافيه /// -->
 
 
 

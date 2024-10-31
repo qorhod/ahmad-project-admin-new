@@ -189,6 +189,12 @@
                                     <th>Assembly Status</th>
                                     <th>Aluminum Code</th>
                                     <th>Color Code</th>
+
+                                    <th>Fixed</th>
+                                    <th>Aluminum Thickness</th>
+                                    <th>Aluminum Size</th>
+                                    <th>Comments</th>
+
                                     <th>H(A1)*2</th>
                                     <th>W(A2)*2</th>
                                     <th>(B1)*2</th>
@@ -219,6 +225,13 @@
                                             </td>
                                             <td><%= measurement.aluminumCode || '--' %></td>
                                             <td><%= measurement.aluminumColorCode || '--' %></td>
+
+
+                                            <td><%= measurement.fixed || '--'%></td>
+                                            <td><%= measurement.aluminumThickness || '--'%></td>
+                                            <td><%= measurement.aluminumSize || '--' %></td>
+                                            <td><%= measurement.comments || '--' %></td>
+
                                             <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                             <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
                                             <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
@@ -282,6 +295,10 @@
                                 <th>Aluminum Code</th>
                                 <th>Color Code</th>
                                 <th>Technician</th>
+                                <th>Fixed</th>
+                                <th>Aluminum Thickness</th>
+                                <th>Aluminum Size</th>
+                                <th>Comments</th>
                                 <th>H(A1)*2</th>
                                 <th>W(A2)*2</th>
                                 <th>(B1)*2</th>
@@ -300,6 +317,14 @@
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
                                     <td><%= technicians.find(t => t._id.toString() === measurement.cuttingTechnician.toString()).name %></td>
+
+
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
+
+
                                     <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                     <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
@@ -350,6 +375,10 @@
                                 <th>Aluminum Code</th>
                                 <th>Color Code</th>
                                 <th>Technician</th>
+                                <th>Fixed</th>
+                                <th>Aluminum Thickness</th>
+                                <th>Aluminum Size</th>
+                                <th>Comments</th>
                                 <th>H(A1)*2</th>
                                 <th>W(A2)*2</th>
                                 <th>(B1)*2</th>
@@ -368,6 +397,12 @@
                                     <td><%= measurement.aluminumCode || '--' %></td>
                                     <td><%= measurement.aluminumColorCode || '--' %></td>
                                     <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnician.toString()).name %></td>
+
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
+
                                     <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
                                     <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
                                     <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>

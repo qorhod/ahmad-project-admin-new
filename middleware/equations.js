@@ -7,11 +7,13 @@ const AuthUser = require("../models/auth-user") // تسيما الحسابات �
 const User = require("../models/customersSchema")
 
 const commands = require("../models/commands")
+const Prices = require("../models/prices"); // استدعاء نموذج الأسعار الافتراضية
 
 
 // فنكشن التأكد من التكوكن الدرس رقم 8 مستوى 2
 var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
 
+const mongoose = require("mongoose"); // تأكد من إضافة هذا السطر في أعلى الملف
 
 
 
@@ -529,33 +531,66 @@ return { total };
 async function updateTotal(iid) {
     let priceTot = 0;
 
-    const h = await User.findOne({'orders._id': iid});
+    // البحث عن الطلب باستخدام iid
+    const h = await User.findOne({ 'orders._id': iid });
 
-    const foundObject = h.orders.find(item => item._id.equals(iid)); // للعثور على الكائن الصحيح
+    // العثور على الكائن الصحيح بناءً على iid
+    const foundObject = h.orders.find(item => item._id.equals(iid));
 
-    if (foundObject.measurement && foundObject.measurement.length > 0) { // التحقق من وجود قياسات
+    // التحقق من وجود قياسات وإضافتها إلى priceTot
+    if (foundObject.measurement && foundObject.measurement.length > 0) {
         foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
         for (const item of foundObject.measurement) {
-            if (!item.delete) { // الشرط لتجاهل القياسات المحذوفة
+            if (!item.delete) { // تجاهل القياسات المحذوفة
                 priceTot += item.price.total;
             }
         }
     }
-    let discount =foundObject.totalPrice.Discount?foundObject.totalPrice.Discount:0  // يعني اذا كان الخصم موجود وألا اجعله صفر
- let totalAftereDiscount = priceTot-discount
-    const taxOrder=foundObject.TAX // نسبة الضيربة الخاصف في الاوردر
-    let taxx = totalAftereDiscount * taxOrder; // الضريبة
-    let priceTotAndtaxx = totalAftereDiscount + taxx;
-    console.log("الاجمالي", priceTot, taxx, priceTotAndtaxx);
 
+    // إضافة totalTempersPrice إلى priceTot إذا كانت موجودة
+    if (foundObject.totalTempers && foundObject.totalTempers.totalTempersPrice) {
+        priceTot += foundObject.totalTempers.totalTempersPrice;
+        console.log(`Added totalTempersPrice: ${foundObject.totalTempers.totalTempersPrice} to priceTot`);
+    } else {
+        console.log('totalTempersPrice not found, skipping...');
+    }
+
+    // إضافة totalAllPrice إلى priceTot إذا كانت موجودة
+    if (foundObject.totalAllPrice) {
+        priceTot += foundObject.totalAllPrice;
+        console.log(`Added totalAllPrice: ${foundObject.totalAllPrice} to priceTot`);
+    } else {
+        console.log('totalAllPrice not found, skipping...');
+    }
+
+    // حساب الخصم
+    let discount = foundObject.totalPrice.Discount ? foundObject.totalPrice.Discount : 0;  // إذا كان الخصم موجودًا، وإلا صفر
+
+    // حساب الإجمالي بعد الخصم
+    let totalAftereDiscount = priceTot - discount;
+
+    // نسبة الضريبة من الطلب
+    const taxOrder = foundObject.TAX;
+
+    // حساب الضريبة
+    let taxx = totalAftereDiscount * taxOrder;
+
+    // حساب الإجمالي مع الضريبة
+    let priceTotAndtaxx = totalAftereDiscount + taxx;
+
+    // طباعة النتيجة
+    console.log("الإجمالي", priceTot, taxx, priceTotAndtaxx);
+
+    // إعداد البيانات للتحديث
     const totalAndTax = {
         totalBeforeTax: priceTot,
-        Discount:discount,
-        totalAftereDiscount:totalAftereDiscount,
+        Discount: discount,
+        totalAftereDiscount: totalAftereDiscount,
         tax: taxx,
         totalWithTax: priceTotAndtaxx,
     };
 
+    // تحديث حقل totalPrice في الطلب
     const nm = await User.updateOne(
         { "orders._id": iid },
         { $set: { "orders.$[orderElem].totalPrice": totalAndTax } },
@@ -565,13 +600,13 @@ async function updateTotal(iid) {
         }
     );
 
+    // التحقق مما إذا كان التحديث قد تم بنجاح
     if (nm.nModified > 0) {
         return { done: "done" };
     } else {
         return false;
     }
 }
-
 
 
 
@@ -1569,7 +1604,260 @@ function aluminumCuttingReport(M4,B10,C10,) {
 //     });
 //   }
 
-// دالة تحديث الأم والنتائج بعد حذف القياس
+
+    // دالة تحديث الأم والنتائج بعد حذف القياس
+
+////// دالة تحديث مجموع امتار السكريت للاوردر + اجمالي السعر بحيث ////////
+
+
+
+
+
+
+
+
+
+
+
+// دالة لحساب مجموع totalTempersMeters وتحديث السعر الكلي
+// async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
+//     try {
+//         // البحث عن الطلب باستخدام معرف الطلب
+//         const order = await User.findOne({ "orders._id": orderId });
+
+//         if (!order) {
+//             throw new Error('Order not found');
+//         }
+
+//         // العثور على الطلب المحدد بناءً على orderId
+//         const selectedOrder = order.orders.find(o => o._id.equals(orderId));
+
+//         if (!selectedOrder) {
+//             throw new Error('Specified order not found');
+//         }
+
+//         // حساب مجموع reportTemper من جميع القياسات
+//         let totalTempersMeters = 0;
+//         selectedOrder.measurement.forEach(measure => {
+//             // التحقق من حالة delete قبل حساب reportTemper
+//             if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+//                 if (measure.glassCuttingReport) {
+//                     console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                     console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
+
+//                     // التحقق من أن reportTemper ليس null أو undefined وأنه رقم
+//                     if (measure.glassCuttingReport.reportTemper != null && typeof measure.glassCuttingReport.reportTemper === 'number') {
+//                         console.log(`Adding reportTemper: ${measure.glassCuttingReport.reportTemper}`);
+//                         totalTempersMeters += measure.glassCuttingReport.reportTemper;
+//                     } else {
+//                         console.log(`Skipping measurement due to missing or invalid reportTemper`);
+//                     }
+//                 } else {
+//                     console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                 }
+//             } else {
+//                 console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+//             }
+//         });
+
+//         console.log(`Total tempers meters calculated: ${totalTempersMeters}`);
+
+//         // إذا كان MetersPrice موجودًا في الطلب نستخدمه، إذا تم تمرير newMetersPrice نقوم بتحديث السعر
+//         let metersPrice = selectedOrder.totalTempers.MetersPrice;
+
+//         // إذا تم تمرير newMetersPrice حتى لو كان 0، نستخدمه
+//         if (newMetersPrice !== undefined) {
+//             metersPrice = newMetersPrice;
+//         }
+
+//         if (metersPrice === undefined || metersPrice === null) {
+//             // جلب السعر الافتراضي من جدول الأسعار إذا لم يكن موجودًا
+//             const defaultPrice = await Prices.findOne({});
+//             if (!defaultPrice || !defaultPrice.price.TempersPriceMeters) {
+//                 throw new Error('Default tempers meter price not found');
+//             }
+//             metersPrice = defaultPrice.price.TempersPriceMeters;
+//             console.log(`Using default MetersPrice: ${metersPrice}`);
+//         } else {
+//             console.log(`Using existing MetersPrice: ${metersPrice}`);
+//         }
+
+//         // حساب السعر الإجمالي
+//         const totalTempersPrice = totalTempersMeters * metersPrice;
+
+//         // تحديث حقل totalTempersMeters و totalTempersPrice و MetersPrice إذا تم تمرير السعر
+//         await User.updateOne(
+//             { "orders._id": orderId },
+//             {
+//                 $set: {
+//                     "orders.$.totalTempers.totalTempersMeters": totalTempersMeters,
+//                     "orders.$.totalTempers.totalTempersPrice": totalTempersPrice,
+//                     ...(newMetersPrice !== undefined && { "orders.$.totalTempers.MetersPrice": metersPrice }) // تحديث السعر فقط إذا تم تمريره
+//                 }
+//             }
+//         );
+
+//         console.log('Total tempers meters and price updated successfully:', totalTempersMeters, totalTempersPrice);
+//         return { totalTempersMeters, totalTempersPrice }; // نعيد القيم لاستخدامها إذا لزم الأمر
+//     } catch (err) {
+//         console.error("Error:", err.message);
+//     }
+// }
+
+
+
+
+async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
+    try {
+        // البحث عن الطلب باستخدام معرف الطلب
+        const order = await User.findOne({ "orders._id": orderId });
+
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        // العثور على الطلب المحدد بناءً على orderId
+        const selectedOrder = order.orders.find(o => o._id.equals(orderId));
+
+        if (!selectedOrder) {
+            throw new Error('Specified order not found');
+        }
+
+        // حساب مجموع reportTemper من جميع القياسات
+        let totalTempersMeters = 0;
+        selectedOrder.measurement.forEach(measure => {
+            // التحقق من حالة delete قبل حساب reportTemper
+            if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+                if (measure.glassCuttingReport) {
+                    console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
+                    console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
+
+                    // التحقق من أن reportTemper ليس null أو undefined وأنه رقم
+                    if (measure.glassCuttingReport.reportTemper != null && typeof measure.glassCuttingReport.reportTemper === 'number') {
+                        console.log(`Adding reportTemper: ${measure.glassCuttingReport.reportTemper}`);
+                        totalTempersMeters += measure.glassCuttingReport.reportTemper;
+                    } else {
+                        console.log(`Skipping measurement due to missing or invalid reportTemper`);
+                    }
+                } else {
+                    console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
+                }
+            } else {
+                console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+            }
+        });
+
+        console.log(`Total tempers meters calculated: ${totalTempersMeters}`);
+
+        // تعيين MetersPrice باستخدام newMetersPrice إذا كان موجودًا، أو السعر في totalTempers، أو السعر الافتراضي
+        let metersPrice;
+        
+        if (newMetersPrice !== undefined) {
+            // إذا تم تمرير newMetersPrice، نستخدمه مباشرة
+            metersPrice = newMetersPrice;
+            console.log(`Using provided newMetersPrice: ${metersPrice}`);
+        } else if (selectedOrder.totalTempers && selectedOrder.totalTempers.MetersPrice !== undefined && selectedOrder.totalTempers.MetersPrice !== null) {
+            // استخدام MetersPrice الموجود في totalTempers إذا كان يحتوي على قيمة
+            metersPrice = selectedOrder.totalTempers.MetersPrice;
+            console.log(`Using existing MetersPrice from order's totalTempers: ${metersPrice}`);
+        } else {
+            // جلب السعر الافتراضي من جدول Prices إذا لم يكن موجودًا في totalTempers
+            const defaultPrice = await Prices.findOne({});
+            if (!defaultPrice || !defaultPrice.price.TempersPriceMeters) {
+                throw new Error('Default tempers meter price not found');
+            }
+            metersPrice = defaultPrice.price.TempersPriceMeters;
+            console.log(`Using default MetersPrice from Prices table: ${metersPrice}`);
+        }
+
+        // حساب السعر الإجمالي
+        const totalTempersPrice = totalTempersMeters * metersPrice;
+
+        // تحديث الحقول في قاعدة البيانات، بما في ذلك MetersPrice (بغض النظر عن مصدره)
+        await User.updateOne(
+            { "orders._id": orderId },
+            {
+                $set: {
+                    "orders.$.totalTempers.totalTempersMeters": totalTempersMeters,
+                    "orders.$.totalTempers.totalTempersPrice": totalTempersPrice,
+                    "orders.$.totalTempers.MetersPrice": metersPrice // تحديث السعر دائماً سواء كان موجودًا مسبقًا أو تم تحديثه
+                }
+            }
+        );
+
+        console.log('Total tempers meters and price updated successfully:', totalTempersMeters, totalTempersPrice);
+        return { totalTempersMeters, totalTempersPrice }; // نعيد القيم لاستخدامها إذا لزم الأمر
+    } catch (err) {
+        console.error("Error:", err.message);
+    }
+}
+
+
+
+// استدعاء الدالة مع orderId
+// calculateTotalTempersMeters(6712a66b8c077d19258fadd4);
+
+
+
+
+////// دالة تحديث مجموع امتار السكريت للاوردر + اجمالي السعر بحيث ////////
+
+
+
+
+
+// هذا الداله لجمع جميع المجاميع التابعه لاضافات الشبابيك ////////
+
+// الدالة لحساب مجموع الأسعار باستخدام orderId
+
+async function calculateTotalPrice(orderId) {
+    try {
+      console.log("Starting aggregation for orderId:", orderId);
+  
+      const result = await User.aggregate([
+        { $unwind: "$orders" },
+        { $match: { "orders._id": new mongoose.Types.ObjectId(String(orderId)) } },
+        { $unwind: "$orders.measurement" },
+        { $match: { "orders.measurement.delete": { $ne: true } } }, // تجاهل القياسات التي delete فيها true
+        {
+          $addFields: {
+            "orders.measurement.additionsTotal": {
+              $add: [
+                "$orders.measurement.additions.Structure.totalPrice",
+                "$orders.measurement.additions.Hinges.totalPrice",
+                "$orders.measurement.additions.RollWindow.totalPrice"
+              ]
+            }
+          }
+        },
+        {
+          $group: {
+            _id: "$orders._id",
+            totalAllPrice: { $sum: "$orders.measurement.additionsTotal" }
+          }
+        }
+      ]);
+  
+      const totalPrice = result[0]?.totalAllPrice || 0;
+      console.log("Total price for all additions in order:", totalPrice);
+  
+      // تحديث `totalAllPrice` في قاعدة البيانات
+      await User.findOneAndUpdate(
+        { "orders._id": new mongoose.Types.ObjectId(String(orderId)) },
+        { $set: { "orders.$.totalAllPrice": totalPrice } }
+      );
+  
+      console.log("Updated totalAllPrice in the database successfully.");
+      return totalPrice;
+    } catch (error) {
+      console.error("Error calculating total price:", error);
+      throw error;
+    }
+  }
+////// هذا الداله لجمع جميع المجاميع التابعه لاضافات الشبابيك ////////
+
+
+
 
 
 
@@ -1581,7 +1869,7 @@ function aluminumCuttingReport(M4,B10,C10,) {
 
 
 // module.exports = calculateResults;
-module.exports = {calculateResults,functionPrice,updateTotal,refreshDiscount,motherEquation,totalMotherEquation,calculateValues,aluminumCuttingReport,updatetotalMotherEquation,sanitizeValue}
+module.exports = {calculateResults,functionPrice,updateTotal,refreshDiscount,motherEquation,totalMotherEquation,calculateValues,aluminumCuttingReport,updatetotalMotherEquation,sanitizeValue,calculateTotalTempersMeters,calculateTotalPrice}
 
 
 

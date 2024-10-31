@@ -369,36 +369,9 @@
      
 
      <br>  <br> <hr>  <br>
-        
-   
-     <form >
-      <!-- <form class="row g-3"> -->
-          <div class="col-md-6">
-              <label for="inputage4" class="form-label">:الطول </label>
-              <input
-              name="length"
-                placeholder="cm"
-                type="number"
-                class="form-control"
-                id="lengthid"
-                value="<%= arrM.H %>"
-              />
-            </div>
-          </form>
-            <form >
-            <div class="col-md-6">
-              <label for="inputage4" class="form-label">:العرض </label>
-              <input
-              name="width"
-                placeholder="cm"
-                type="number"
-                class="form-control"
-                id="widthid"
-                value="<%= arrM.W %>"
-              />
-            </div>
- 
-          </form>
+        <!-- العرض ولاطول  -->
+     <%- include('../components/hAndw.ejs') %> 
+
 
 
           
@@ -673,31 +646,32 @@
             
           
                           <br>
-            
-                          <div>
-                            <div class="col-md-6">
-                              <label for="thickness" class="form-label">:اختر سماكة الألمنيوم</label>
-                              <select  name="branch" id="thickness" class="form-select">
-                                <option value="<%=arrM.aluminumThickness0?arrM.aluminumThickness0:arrM.aluminumThickness%>" selected hidden disabled><%= arrM.aluminumThickness0?arrM.aluminumThickness0:arrM.aluminumThickness%></option>
-                                <option value="1.7">1.7</option>
-                                <option value="1.6">1.6</option>
-                                <option value="1.3">1.3</option>
-                                <option value="1.2">1.2</option>
-                              </select>
-                            </div>
-                            </div>
+            <!-- اختر سماكة الالمنيوم -->
+                          <%- include('../components/thicknessAluminum.ejs') %>
+
             
           
           
                       </form>
-                      <label for="inputGender" class="form-label">:اختر نوع التركيب</label>
-          
-                      <div class="checkbox-wrapper-10">
-                        <input value="داخلي"  type="checkbox" id="cb5" class="tgl tgl-flip" name="m11">
-                        <label for="cb5" data-tg-on="داخلي" data-tg-off="خارجي" class="tgl-btn"></label>
+                      <br>
+
+                    <!-- اختر نوع التركيب -->
+                    <%- include('../components/installationType.ejs') %>
+
+
+                    <br><br>
+
+                    <div class="col-md-6">
+                      <label for="inputage4" class="form-label">fixed: </label>
+                      <input
+                      name="fixedId"
+                        placeholder="--"
+                        type="text"
+                        class="form-control"
+                        id="fixedId"
+                        value="<%=arrM.fixed?arrM.fixed:null%>"
+                      />
                     </div>
-          
-          
           
                 </form>
           
@@ -743,115 +717,19 @@
 
 <br><hr> <br>
 
-<h4>:اختر لون الألمنيوم</h4><br>
+<!--  لون الالمنيوم  -->
+<%- include('../components/aluminumColorCode.ejs') %>
 
-<!-- اختيار لون الألمنيوم -->
-
-
-<!-- ألون الألمنيوم المختصرة -->
-
-
-
-
-
-
-  <div class="col-md-6">
-    <label for="inputage4" class="form-label">:رمز اللون </label>
-    <input
-    name="glassColorCode"
-      placeholder="BM-###"
-      type="text"
-      class="form-control"
-      id="aluminumColorCodeId"
-      value="<%=arrM.aluminumColorCode0?arrM.aluminumColorCode0:arrM.aluminumColorCode%>"
-    />
-  </div>
 
 <br><br><hr>
 
 <h4>:مواصفات الزجاج</h4>
 <br>
 
-<div style="background-color: #5c6057;" class="btn-group" role="group" aria-label="Basic radio toggle button group">
-  <input value="دبوس عاكس /RP" type="radio" class="btn-check" name="q1" id="btnradio17" autocomplete="off" >
-  <label class="btn btn-outline-light" for="btnradio17">دبوس عاكس</label>
 
-  <input value="شفاف عاكس /RT" type="radio" class="btn-check" name="q1" id="btnradio27" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio27">شفاف عاكس</label>
+<!-- مواصفات الرجاج  -->
+<%- include('../components/glassColorCode.ejs') %>
 
-  <input value="عاكس عاكس/RR" type="radio" class="btn-check" name="q1" id="btnradio37" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio37">عاكس عاكس</label>
-
-  
-  <input value="شفاف شفاف/TT" type="radio" class="btn-check" name="q1" id="btnradio47" autocomplete="off">
-  <label class="btn btn-outline-light" for="btnradio47">شفاف شفاف</label>
-
-</div>
-
-
-
-
-<br><br>
-
-
-
-
-
-
-
-
-
-
-
-
-     <div>
-      <div class="col-md-6">
-        <label for="inputGenderb" class="form-label">: اختر السماكة</label>
-        <select name="inputGenderb" id="glassThickness" class="form-select">
-         <option value="<%= arrM.glassThickness0?arrM.glassThickness0:arrM.glassThickness%>" selected hidden disabled><%= arrM.glassThickness0?arrM.glassThickness0:arrM.glassThickness%></option>
-
-          <option value="5.5">5.5</option>
-        <option value="6">6</option>
-
-        </select>
-   </div>  
-
-
-
-        <div>
-          <div class="col-md-6">
-            <label for="glassColorCode" class="form-label">:جميع الألون</label>
-            <select  type="radio" name="glassColorCode" id="glassColorCode" class="form-select">
-              <option value="<%=arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCode%>" selected hidden disabled><%= arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCode%></option>
-              <option value="شفاف/transparent">شفاف/transparent</option>
-              <option value="C1+">C1+</option>
-              <option value="C1">C1</option>
-              <option value="C2">C2</option>
-              <option value="C3">C3</option>
-              <option value="C4">C4</option>
-              <option value="C5">C5</option>
-              <option value="C6">C6</option>
-              <option value="C7">C7</option>
-              <option value="C8">C8</option>
-              <option value="C9">C9</option>
-              <option value="C10">C10-</option>
-              <option value="C11">C11</option>
-              <option value="C12">C12</option>
-              <option value="C13">C13</option>
-              <option value="C14">C14</option>
-              <option value="C15">C15</option>
-              <option value="C16">C16</option>
-              <option value="C17">C17</option>
-              <option value="C18">C18</option>
-              <option value="C19">C19</option>
-              <option value="C20">C20</option>
-            </select>
-       </div>  
-
-
-
-  </div>
-</form>
 <!-- <label for="inputGender" class="form-label">:اختر نوع التركيب</label>
 
 <div class="checkbox-wrapper-10">
@@ -860,17 +738,10 @@
 </div> -->
 
 
-
-
-<label >:سكريت</label>
-<br><br>
-<div class="checkbox-wrapper-10">
-  <input value="YAS"  type="checkbox" id="cb6" class="tgl tgl-flip">
-  <label for="cb6" data-tg-on="نعم" data-tg-off="لا" class="tgl-btn"></label>
+<br>
 
 
 
-</div>
 
 
 
@@ -882,15 +753,14 @@
 </form>
 
 
+<%- include('../components/temper.ejs') %>
 
     <br>
 
  
-    <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">:ملاحظة </label>
-      <textarea name="comments" class="form-control" id="exampleFormControlTextarea1" rows="3"><%=arrM.comments%></textarea>
-    </div>
+
  
+    <%- include('../components/comments.ejs') %>
 
 
     
@@ -1166,7 +1036,16 @@ document.getElementById('next').addEventListener('click', async function(e) {
 
     const lengthValue = document.getElementById('lengthid').value;
     const widthValue = document.getElementById('widthid').value;
-    const glassColorCode = document.getElementById('glassColorCode').value;
+    // const glassColorCode = document.getElementById('glassColorCode').value;
+
+    const glassColorCodeInside = document.getElementById('glassColorCodeInside').value;
+
+    const glassColorCodeOutside = document.getElementById('glassColorCodeOutside').value;
+
+
+
+    const fixed = document.getElementById('fixedId').value;
+
     const aluminumColorCode = document.getElementById('aluminumColorCodeId').value;
 
     const glassThickness = document.getElementById('glassThickness').value;
@@ -1175,23 +1054,33 @@ document.getElementById('next').addEventListener('click', async function(e) {
     const aluminumThickness = document.getElementById('thickness').value; 
 
     // التحقق من القيم الأساسية وإظهار رسالة تحذيرية في حال كانت أي من القيم مفقودة
-    if (!lengthValue || !widthValue || !glassColorCode || !glassThickness || !getSelectedValue2 || !glasstypeValue || !designCode || !aluminumThickness) {
+    if (!lengthValue || !widthValue || !glassColorCodeInside || !glassColorCodeOutside || !glassThickness || !getSelectedValue2 || !glasstypeValue || !designCode || !aluminumThickness) {
         const alertContainer = document.getElementById('alertContainer');
         alertContainer.classList.remove('d-none');
         isSent = false; // إعادة تعيين العلم إذا فشل التحقق
         return;
     }
+// التكد اذا كان العرض موجود مسبقا فهذا يعنل ان تعديل واذا غير موجو فهذا يعني انه قياس جديد 
+    const methodType = '<%= arrM.W %>' ? "PUT" : "POST"; 
+
 
     try {
         const res = await fetch("measurement", {
-            method: "POST",
+            // method: "POST",
+            method: methodType,
+
             body: JSON.stringify({
                 aluminumCode: getSelectedValue2.value,
                 aluminumThickness: aluminumThickness,
                 aluminumColorCode: aluminumColorCode,
+                fixed: fixed,
                 glasstype: glasstypeValue.value,
                 glassThickness: glassThickness,
-                glassColorCode: glassColorCode,
+                // glassColorCode: glassColorCode,
+                glassColorCodeInside: glassColorCodeInside,
+                glassColorCodeOutside: glassColorCodeOutside,
+
+
                 id: "<%= arrM._id %>",
                 H: lengthValue,
                 W: widthValue,

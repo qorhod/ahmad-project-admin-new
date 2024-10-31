@@ -212,7 +212,12 @@
             <th scope="col">fixed</th>
             <th scope="col">Aluminum code</th>
             <th scope="col">Aluminum color code</th>
-            <th scope="col">Glass color code</th>
+            <th scope="col">Glass Color Inside</th>
+
+            <th scope="col">Glass Color Outside</th>
+
+
+
             <th scope="col">Temper</th>
             <th scope="col">Lip</th>
             <th scope="col">illumination</th>
@@ -228,12 +233,16 @@
           <% arrR.measurement.forEach((item, index) => { %>
             <tr id="measurement-<%= item._id %>" class="<%= item.delete ? 'strikethrough' : '' %>">
               <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>
-              <td><%= item.W %></td>
               <td><%= item.H %></td>
-              <td></td>
+
+              <td><%= item.W %></td>
+              <td><%= item.fixed %></td>
               <td><%= item.aluminumCode %></td>
               <td><%= item.aluminumColorCode %></td>
-              <td><%= item.glassColorCode %></td>
+              <td><%= item.glassColorCodeInside %></td>
+              <td><%= item.glassColorCodeOutside %></td>
+
+
               <td><%= item.temper %></td>
               <td><%= item.lip %></td>
               <td><%= item.illumination %></td>

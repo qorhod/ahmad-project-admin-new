@@ -166,124 +166,138 @@
             
          <!-- حقل TAX منفصل عن باقي الحقول -->
          <form action="/admin/editPrices" method="post">
+            <div class="mb-4">
+                <h3>الضريبة (TAX)</h3>
+                <div class="mb-3">
+                    <label for="TAX" class="form-label">TAX</label>
+                    <input type="number" class="form-control arabic-to-english" id="TAX" name="TAX" value="<%= tax %>">
+                </div>
+            </div>
+            <br><br>
+            
+            <h3>القطاعات</h3>
+            <div class="mb-3">
+                <label for="GOLF10" class="form-label">GOLF10</label>
+                <input type="number" class="form-control arabic-to-english" id="GOLF10" name="price[GOLF10]" value="<%= prices.GOLF10 %>">
+            </div>
+            <div class="mb-3">
+                <label for="GOLF12" class="form-label">GOLF12</label>
+                <input type="number" class="form-control arabic-to-english" id="GOLF12" name="price[GOLF12]" value="<%= prices.GOLF12 %>">
+            </div>
+            <div class="mb-3">
+                <label for="ROYAL2" class="form-label">ROYAL2</label>
+                <input type="number" class="form-control arabic-to-english" id="ROYAL2" name="price[ROYAL2]" value="<%= prices.ROYAL2 %>">
+            </div>
+            <div class="mb-3">
+                <label for="ROYAL3" class="form-label">ROYAL3</label>
+                <input type="number" class="form-control arabic-to-english" id="ROYAL3" name="price[ROYAL3]" value="<%= prices.ROYAL3 %>">
+            </div>
 
-         <div class="mb-4">
-    <h3>الضريبة (TAX)</h3>
-    <div class="mb-3">
-        <label for="TAX" class="form-label">TAX</label>
-        <input type="number" class="form-control arabic-to-english" id="TAX" name="TAX" value="<%= tax %>">
-    </div>
-</div>
-<br>
-<br>
-<h3>القطاعات</h3>
-            <!-- الحقول الأخرى -->
-            <!-- <form action="/admin/editPrices" method="post"> -->
+            <div class="mb-3">
+                <label for="slidingD10" class="form-label">slidingD10</label>
+                <input type="number" class="form-control arabic-to-english" id="slidingD10" name="price[slidingD10]" value="<%= prices.slidingD10 %>">
+            </div>
+            <div class="mb-3">
+                <label for="slidingD10p" class="form-label">slidingD10p</label>
+                <input type="number" class="form-control arabic-to-english" id="slidingD10p" name="price[slidingD10p]" value="<%= prices.slidingD10p %>">
+            </div>
+            <div class="mb-3">
+                <label for="slidingD12" class="form-label">slidingD12</label>
+                <input type="number" class="form-control arabic-to-english" id="slidingD12" name="price[slidingD12]" value="<%= prices.slidingD12 %>">
+            </div>
+            <div class="mb-3">
+                <label for="slidingS" class="form-label">slidingS</label>
+                <input type="number" class="form-control arabic-to-english" id="slidingS" name="price[slidingS]" value="<%= prices.slidingS %>">
+            </div>
+            <div class="mb-3">
+                <label for="interruptT" class="form-label">interruptT</label>
+                <input type="number" class="form-control arabic-to-english" id="interruptT" name="price[interruptT]" value="<%= prices.interruptT %>">
+            </div>
+            <div class="mb-3">
+                <label for="interrupt" class="form-label">interrupt</label>
+                <input type="number" class="form-control arabic-to-english" id="interrupt" name="price[interrupt]" value="<%= prices.interrupt %>">
+            </div>
+            <div class="mb-3">
+                <label for="fixedD10" class="form-label">fixedD10</label>
+                <input type="number" class="form-control arabic-to-english" id="fixedD10" name="price[fixedD10]" value="<%= prices.fixedD10 %>">
+            </div>
+            <div class="mb-3">
+                <label for="fixedD4" class="form-label">fixedD4</label>
+                <input type="number" class="form-control arabic-to-english" id="fixedD4" name="price[fixedD4]" value="<%= prices.fixedD4 %>">
+            </div>
+            <div class="mb-3">
+                <label for="fixedS10" class="form-label">fixedS10</label>
+                <input type="number" class="form-control arabic-to-english" id="fixedS10" name="price[fixedS10]" value="<%= prices.fixedS10 %>">
+            </div>
+            <div class="mb-3">
+                <label for="fixedS4" class="form-label">fixedS4</label>
+                <input type="number" class="form-control arabic-to-english" id="fixedS4" name="price[fixedS4]" value="<%= prices.fixedS4 %>">
+            </div>
+            
+            <div class="mb-3">
+                <label for="SG50" class="form-label">SG50</label>
+                <input type="number" class="form-control arabic-to-english" id="SG50" name="price[SG50]" value="<%= prices.SG50 %>">
+            </div>
+            <div class="mb-3">
+                <label for="SMART" class="form-label">SMART</label>
+                <input type="number" class="form-control arabic-to-english" id="SMART" name="price[SMART]" value="<%= prices.SMART %>">
+            </div>
+            <div class="mb-3">
+                <label for="FORTICKS" class="form-label">FORTICKS</label>
+                <input type="number" class="form-control arabic-to-english" id="FORTICKS" name="price[FORTICKS]" value="<%= prices.FORTICKS %>">
+            </div>
+            
+            <div class="mb-3">
+                <label for="SKYLIGHT" class="form-label">SKYLIGHT</label>
+                <input type="number" class="form-control arabic-to-english" id="SKYLIGHT" name="price[SKYLIGHT]" value="<%= prices.SKYLIGHT %>">
+            </div>
+            <div class="mb-3">
+                <label for="SKYLIGHT_FOR_WALK" class="form-label">SKYLIGHT_FOR_WALK</label>
+                <input type="number" class="form-control arabic-to-english" id="SKYLIGHT_FOR_WALK" name="price[SKYLIGHT_FOR_WALK]" value="<%= prices.SKYLIGHT_FOR_WALK %>">
+            </div>
+            
+            <div class="mb-3">
+                <label for="T8CM" class="form-label">T8CM</label>
+                <input type="number" class="form-control arabic-to-english" id="T8CM" name="price[T8CM]" value="<%= prices.T8CM %>">
+            </div>
+            <div class="mb-3">
+                <label for="T10CM" class="form-label">T10CM</label>
+                <input type="number" class="form-control arabic-to-english" id="T10CM" name="price[T10CM]" value="<%= prices.T10CM %>">
+            </div>
+            <div class="mb-3">
+                <label for="FLAT" class="form-label">FLAT</label>
+                <input type="number" class="form-control arabic-to-english" id="FLAT" name="price[FLAT]" value="<%= prices.FLAT %>">
+            </div>
 
+            <div class="mb-3">
+                <label for="SLICES_DOOR" class="form-label">SLICES_DOOR</label>
+                <input type="number" class="form-control arabic-to-english" id="SLICES_DOOR" name="price[SLICES_DOOR]" value="<%= prices.SLICES_DOOR %>">
+            </div>
+            <div class="mb-3">
+                <label for="DOUBLE_GLASS_DOOR" class="form-label">DOUBLE_GLASS_DOOR</label>
+                <input type="number" class="form-control arabic-to-english" id="DOUBLE_GLASS_DOOR" name="price[DOUBLE_GLASS_DOOR]" value="<%= prices.DOUBLE_GLASS_DOOR %>">
+            </div>
 
+            <div class="mb-3">
+                <label for="TempersPriceMeters" class="form-label">سعر السكريت</label>
+                <input type="number" class="form-control arabic-to-english" id="TempersPriceMeters" name="price[TempersPriceMeters]" value="<%= prices.TempersPriceMeters %>">
+            </div>
 
+            <div class="mb-3">
+                <label for="Structure" class="form-label">Structure</label>
+                <input type="number" class="form-control arabic-to-english" id="Structure" name="price[Structure]" value="<%= prices.Structure %>">
+            </div>
+            <div class="mb-3">
+                <label for="Hinges" class="form-label">Hinges</label>
+                <input type="number" class="form-control arabic-to-english" id="Hinges" name="price[Hinges]" value="<%= prices.Hinges %>">
+            </div>
+            <div class="mb-3">
+                <label for="RollWindow" class="form-label">RollWindow</label>
+                <input type="number" class="form-control arabic-to-english" id="RollWindow" name="price[RollWindow]" value="<%= prices.RollWindow %>">
+            </div>
 
-                <div class="mb-3">
-                    <label for="GOLF10" class="form-label">GOLF10</label>
-                    <input type="number" class="form-control arabic-to-english" id="GOLF10" name="price[GOLF10]" value="<%= prices.GOLF10 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="GOLF12" class="form-label">GOLF12</label>
-                    <input type="number" class="form-control arabic-to-english" id="GOLF12" name="price[GOLF12]" value="<%= prices.GOLF12 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="ROYAL2" class="form-label">ROYAL2</label>
-                    <input type="number" class="form-control arabic-to-english" id="ROYAL2" name="price[ROYAL2]" value="<%= prices.ROYAL2 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="ROYAL3" class="form-label">ROYAL3</label>
-                    <input type="number" class="form-control arabic-to-english" id="ROYAL3" name="price[ROYAL3]" value="<%= prices.ROYAL3 %>">
-                </div>
-
-
-
-                <div class="mb-3">
-                    <label for="slidingD10" class="form-label">slidingD10</label>
-                    <input type="number" class="form-control arabic-to-english" id="slidingD10" name="price[slidingD10]" value="<%= prices.slidingD10 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="slidingD10p" class="form-label">slidingD10p</label>
-                    <input type="number" class="form-control arabic-to-english" id="slidingD10p" name="price[slidingD10p]" value="<%= prices.slidingD10p %>">
-                </div>
-                <div class="mb-3">
-                    <label for="slidingD12" class="form-label">slidingD12</label>
-                    <input type="number" class="form-control arabic-to-english" id="slidingD12" name="price[slidingD12]" value="<%= prices.slidingD12 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="slidingS" class="form-label">slidingS</label>
-                    <input type="number" class="form-control arabic-to-english" id="slidingS" name="price[slidingS]" value="<%= prices.slidingS %>">
-                </div>
-                <div class="mb-3">
-                    <label for="interruptT" class="form-label">interruptT</label>
-                    <input type="number" class="form-control arabic-to-english" id="interruptT" name="price[interruptT]" value="<%= prices.interruptT %>">
-                </div>
-                <div class="mb-3">
-                    <label for="interrupt" class="form-label">interrupt</label>
-                    <input type="number" class="form-control arabic-to-english" id="interrupt" name="price[interrupt]" value="<%= prices.interrupt %>">
-                </div>
-                <div class="mb-3">
-                    <label for="fixedD10" class="form-label">fixedD10</label>
-                    <input type="number" class="form-control arabic-to-english" id="fixedD10" name="price[fixedD10]" value="<%= prices.fixedD10 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="fixedD4" class="form-label">fixedD4</label>
-                    <input type="number" class="form-control arabic-to-english" id="fixedD4" name="price[fixedD4]" value="<%= prices.fixedD4 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="fixedS10" class="form-label">fixedS10</label>
-                    <input type="number" class="form-control arabic-to-english" id="fixedS10" name="price[fixedS10]" value="<%= prices.fixedS10 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="fixedS4" class="form-label">fixedS4</label>
-                    <input type="number" class="form-control arabic-to-english" id="fixedS4" name="price[fixedS4]" value="<%= prices.fixedS4 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="SG50" class="form-label">SG50</label>
-                    <input type="number" class="form-control arabic-to-english" id="SG50" name="price[SG50]" value="<%= prices.SG50 %>">
-                </div>
-                <div class="mb-3">
-                    <label for="SMART" class="form-label">SMART</label>
-                    <input type="number" class="form-control arabic-to-english" id="SMART" name="price[SMART]" value="<%= prices.SMART %>">
-                </div>
-                <div class="mb-3">
-                    <label for="FORTICKS" class="form-label">FORTICKS</label>
-                    <input type="number" class="form-control arabic-to-english" id="FORTICKS" name="price[FORTICKS]" value="<%= prices.FORTICKS %>">
-                </div>
-                <div class="mb-3">
-                    <label for="SKYLIGHT" class="form-label">SKYLIGHT</label>
-                    <input type="number" class="form-control arabic-to-english" id="SKYLIGHT" name="price[SKYLIGHT]" value="<%= prices.SKYLIGHT %>">
-                </div>
-                <div class="mb-3">
-                    <label for="SKYLIGHT_FOR_WALK" class="form-label">SKYLIGHT_FOR_WALK</label>
-                    <input type="number" class="form-control arabic-to-english" id="SKYLIGHT_FOR_WALK" name="price[SKYLIGHT_FOR_WALK]" value="<%= prices.SKYLIGHT_FOR_WALK %>">
-                </div>
-                <div class="mb-3">
-                    <label for="T8CM" class="form-label">T8CM</label>
-                    <input type="number" class="form-control arabic-to-english" id="T8CM" name="price[T8CM]" value="<%= prices.T8CM %>">
-                </div>
-                <div class="mb-3">
-                    <label for="T10CM" class="form-label">T10CM</label>
-                    <input type="number" class="form-control arabic-to-english" id="T10CM" name="price[T10CM]" value="<%= prices.T10CM %>">
-                </div>
-                <div class="mb-3">
-                    <label for="FLAT" class="form-label">FLAT</label>
-                    <input type="number" class="form-control arabic-to-english" id="FLAT" name="price[FLAT]" value="<%= prices.FLAT %>">
-                </div>
-                <div class="mb-3">
-                    <label for="SLICES_DOOR" class="form-label">SLICES_DOOR</label>
-                    <input type="number" class="form-control arabic-to-english" id="SLICES_DOOR" name="price[SLICES_DOOR]" value="<%= prices.SLICES_DOOR %>">
-                </div>
-                <div class="mb-3">
-                    <label for="DOUBLE_GLASS_DOOR" class="form-label">DOUBLE_GLASS_DOOR</label>
-                    <input type="number" class="form-control arabic-to-english" id="DOUBLE_GLASS_DOOR" name="price[DOUBLE_GLASS_DOOR]" value="<%= prices.DOUBLE_GLASS_DOOR %>">
-                </div>
-                <button type="submit" class="btn btn-primary">تحديث الأسعار</button>
-            </form>
+            <button type="submit" class="btn btn-primary">تحديث الأسعار</button>
+        </form>
         </section>
     </main>
     <script src="/admin/public/js/bootstrap.bundle.min.js"></script>

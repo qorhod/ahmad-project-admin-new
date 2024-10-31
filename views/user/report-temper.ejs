@@ -193,8 +193,10 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Glass color</th>
               <th scope="col">Aluminum code</th>
+
+              <th scope="col">Glass Color Inside</th>
+              <th scope="col">Glass Color Outside</th>
               <th scope="col">H</th>
               <th scope="col">W</th>
               <th scope="col">Temper</th>
@@ -213,7 +215,8 @@
                  <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                    <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.glassColorCode %>	</td>
+                   <td><%= item.glassColorCodeInside || '--' %></td>
+                   <td><%= item.glassColorCodeOutside || '--' %></td>                 
                    <td><%=item.glassCuttingReport.H %></td>
                    <td><%= item.glassCuttingReport.W %></td>
                    <td><%= item.glassCuttingReport.reportTemper %></td>
@@ -221,14 +224,28 @@
                  <% } %>
                <% }) %>
              
-      
+
+
+               
           </tbody>
         </table>
 
 
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >      <thead>
+        <tr>
+          <th scope="col">Total Temper</th>
 
+        </tr>
+      </thead>
+      <tbody>
 
+        <td><%= arrR.totalTempers.totalTempersMeters %></td>
 
+      </tbody>
+    </table>
      
 
 

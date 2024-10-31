@@ -182,8 +182,10 @@
                   <th>Cutting Status</th>
                   <th>Double Technician</th>
                   <th>Double Status</th>
-                  <th>Color Code</th>
+                  <th>Color Code Inside</th>
+                  <th>Color Code Outside</th>
                   <th>illumination</th>
+                  <th>Comments</th>
                   <th>H</th>
                   <th>W</th>
                   <th>Design</th>
@@ -207,8 +209,10 @@
                           <%= measurement.assemblyStatusGlass ? 'Completed' : 'In Progress' %>
                         </button>
                       </td>
-                      <td><%= measurement.glassColorCode || '--' %></td>
-                      <td><%= measurement.illumination || '--' %></td>
+                      <td><%= measurement.glassColorCodeInside || '--' %></td>
+                      <td><%= measurement.glassColorCodeOutside || '--' %></td>           
+                     <td><%= measurement.illumination || '--' %></td>
+                      <td><%= measurement.comments || '--' %></td>
                       <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                       <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
                       <td>
@@ -261,9 +265,11 @@
             <thead class="thead-dark">
               <tr>
                 <th>Sequence Number</th>
-                <th>Color Code</th>
+                <th>Color Code Inside</th>
+                <th>Color Code Outside</th>
                 <th>Technician</th>
                 <th>illumination</th>
+                <th>Comments</th>
                 <th>H</th>
                 <th>W</th>
                 <th>Status</th>
@@ -274,9 +280,15 @@
               <% foundOrder.measurement.forEach(measurement => { if (measurement.cuttingTechnicianGlass) { %>
                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                   <td><%= measurement.sequenceNumber || '--' %></td>
-                  <td><%= measurement.glassColorCode || '--' %></td>
+
+
+
+                  <td><%= measurement.glassColorCodeInside || '--' %></td>
+                  <td><%= measurement.glassColorCodeOutside || '--' %></td>
+
                   <td><%= technicians.find(t => t._id.toString() === measurement.cuttingTechnicianGlass.toString()).name %></td>
                   <td><%= measurement.illumination || '--' %></td>
+                  <td><%= measurement.comments || '--' %></td>
                   <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                   <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
                   <td>
@@ -318,9 +330,10 @@
             <thead class="thead-dark">
               <tr>
                 <th>Sequence Number</th>
-                <th>Color Code</th>
-                <th>Technician</th>
+                <th>Color Code Inside</th>
+                <th>Color Code Outside</th>                <th>Technician</th>
                 <th>illumination</th>
+                <th>Comments</th>
                 <th>H</th>
                 <th>W</th>
                 <th>Status</th>
@@ -331,9 +344,11 @@
               <% foundOrder.measurement.forEach(measurement => { if (measurement.assemblyTechnicianGlass) { %>
                 <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
                   <td><%= measurement.sequenceNumber || '--' %></td>
-                  <td><%= measurement.glassColorCode || '--' %></td>
-                  <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnicianGlass.toString()).name %></td>
+                  <td><%= measurement.glassColorCodeInside || '--' %></td>
+                  <td><%= measurement.glassColorCodeOutside || '--' %></td>          
+                 <td><%= technicians.find(t => t._id.toString() === measurement.assemblyTechnicianGlass.toString()).name %></td>
                   <td><%= measurement.illumination || '--' %></td>
+                  <td><%= measurement.comments || '--' %></td>
                   <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
                   <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
                   <td>
