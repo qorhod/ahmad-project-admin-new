@@ -333,10 +333,10 @@ var decoded = jwt.verify(req.cookies.jwt, 'shhhhh');
 
             //GET Level 2
             router.get("/", (req, res) => {
-
-              res.render("welcome");
-
+              const currentYear = new Date().getFullYear(); // استخراج السنة الحالية
+              res.render("welcome", { year: currentYear }); // إرسال السنة إلى القالب
             });
+            
 
 
 
