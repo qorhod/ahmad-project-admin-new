@@ -1,148 +1,242 @@
-<div
-id="sidebarId"
-class="position-relative d-flex flex-column flex-shrink-0 p-3 text-bg-dark sidebar"
->
-<span style="right: 10px; top: 2px" class="position-absolute">
-  <button class="btn" onclick="toggleSidebar()">
-    <i  class="bi bi-x-circle"></i>
-  </button>
-</span>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar Example</title>
+  <link rel="stylesheet" href="path/to/bootstrap.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+  <style>
+    .print-content {
+        display: none;
+    }
 
-<a
-  href="/home"
-  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
->
-  <!-- <i class="bi bi-lightning-charge"></i> -->
-  <img style="height: 75px; width: 50px;" src="/img/white.png" alt="">
-  <span class="fs-4 sidebar-text">
+    @media print {
+        .print-content {
+            display: block !important;
+        }
+        .no-print,
+        .sidebar {
+            display: none !important;
+        }
+    }
+
+    .invoice-header {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .invoice-header h1 {
+        margin-bottom: 0;
+    }
+    .invoice-table th, .invoice-table td {
+        text-align: right;
+    }
+    .total {
+        font-weight: bold;
+    }
+
+    .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100vh;
+        background-color: #343a40;
+        color: white;
+        transition: transform 0.3s ease;
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+
+    .sidebar-visible {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1100;
+        background-color: #007bff9a;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .content {
+        margin-left: 0;
+        transition: margin-left 0.3s ease;
+    }
+
+    .content.sidebar-visible {
+        margin-left: 250px;
+    }
+
+    /* زر الإضاءة */
+    .switch {
+      font-size: 17px;
+      position: relative;
+      display: inline-block;
+      width: 3.5em;
+      height: 2em;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgb(0, 0, 0);
+      transition: .4s;
+      border-radius: 30px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 1.4em;
+      width: 1.4em;
+      border-radius: 20px;
+      left: 0.3em;
+      bottom: 0.3em;
+      background-color: rgb(219, 198, 2);
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #000000;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(1.5em);
+    }
+
+    /* تنسيق الرابط النشط */
+    .nav-link.active {
+        background-color: #007bff;
+        color: #fff !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- زر إظهار/إخفاء الشريط الجانبي -->
+  <button id="sidebarToggle" class="sidebar-toggle">☰ القائمة</button>
+
+  <!-- الشريط الجانبي -->
+  <div id="sidebarId" class="sidebar sidebar-visible">
+       <br>       <br>
+
+
+    <div class="sticky-top">
+
+      <a href="/home" class="d-flex align-items-center mb-3 mb-md-auto text-white text-decoration-none">
+        <img style="height: 75px; width: 50px;" src="/img/white.png" alt="">
+        <span class="fs-4 sidebar-text">
+          <img style="height: 50%; width: 100%;" src="/img/factory.png" alt="">
+        </span>
+      </a>
+      <hr />
+    </div>
     
-    <img style="height: 50%; width: 100% ;" src="/img/factory.png" alt="">
-
-  </span>
-
-</a>
-<hr />
-<ul class="nav nav-pills flex-column mb-auto">
-  <li class="nav-item">
-    <a href="/home" class="nav-link text-white <%= currentPage == "index"? "active":null %> " aria-current="page"> <!-- استديعناه من الصفحات الي هي الاندكس والاد حن كتبنها فيه عشان نعرف هو في اصفحة عشان نبني الفرق وطبقنا نفس الطريقه مع الاد تحت تقدر تشوفها currentPageهذي عشان تضهر اللون الزر اللي على القاءمة الي على اليسار وتخلي عليه اللون الازر اذا ضغطنا عليه طبعا المكتوب هنا اف الشرطية بشكلها المختصر طبعنا فيه متغير  -->
-      <svg class="bi pe-none me-2" width="16" height="16">
-        <use xlink:href="#home" />
-      </svg>
-      <span class="sidebar-text"> Home </span>
-    </a>
-  </li>
-
-  <li>
-    <a href="/user/add.html" class="nav-link text-white <%= currentPage == "add"? "active":null %>">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
-        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
-      </svg>
-      <span class="sidebar-text"> Add Customers </span>
-    </a>
-  </li>
-
-  <li>
-    <a href="/draft" class="nav-link text-white <%= currentPage == "draft"? "active":null %>">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
-        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
-        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
-      </svg>
-      <span class="sidebar-text"> المسودة </span>
-    </a>
-  </li>
-
-
-
-
-  <li>
-    <a href="" class="nav-link text-white <%= currentPage == "c"? "active":null %>">
-
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
-          <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
-        </svg>
-       
-      <span class="sidebar-text">  العملاء </span>
-    </a>
-  </li>
-
-
-
-
-</ul>
-<hr />
-<div class="dropdown">
-  <a
-    href="#"
-    class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-  >
-    <img
-    
-      src="<%= user.profileImage? user.profileImage : "../img/pin.png" %>"
-      alt=""
-      width="32"
-      height="32"
-      class="rounded-circle me-2"
-    />
-    <strong class="sidebar-text"><%= user.userName %></strong>
-  </a>
-  <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-    <li><a class="dropdown-item" href="#">New project...</a></li>
-    <li><a class="dropdown-item" href="#">Settings</a></li>
-    <li><button 
-      data-bs-toggle="modal"
-       data-bs-target="#exampleModal"
-       class="dropdown-item"
-        href="#">Profile Image</button>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="/home" class="nav-link text-white">
+          <i class="bi bi-people-fill"></i> العملاء
+        </a>
       </li>
-    <li><hr class="dropdown-divider" /></li>
-    <li><a class="dropdown-item" href="/signout">Sign out</a></li>
-  </ul>
-</div>
-</div>
+      <li>
+        <a href="/user/add.html" class="nav-link text-white">
+          <i class="bi bi-person-plus"></i> عميل جديد
+        </a>
+      </li>
+      <li>
+        <a href="/in-production" class="nav-link text-white">
+          <i class="bi bi-gear-fill"></i> قيد التصنيع
+        </a>
+      </li>
+      <li>
+        <a href="/in-installation" class="nav-link text-white">
+          <i class="bi bi-tools"></i> قيد التركيب
+        </a>
+      </li>
+      <li>
+        <a href="/delivered" class="nav-link text-white">
+          <i class="bi bi-check-circle"></i> تم التسليم
+        </a>
+      </li>
+      <li>
+        <a href="/canceled" class="nav-link text-white">
+          <i class="bi bi-x-circle"></i> الطلبات الملغاة
+        </a>
+      </li>
+      <li>
+        <a href="/draft" class="nav-link text-white">
+          <i class="bi bi-file-earmark-text"></i> جميع مسودات المناديب
+        </a>
+      </li>
+      <li>
+        <a href="/my-draft" class="nav-link text-white">
+          <i class="bi bi-file-earmark-text"></i> مسودة
+        </a>
+      </li>
+    </ul>
 
+    <div class="text-center">
+      <label class="switch">
+        <input type="checkbox" id="theme">
+        <span class="slider"></span>
+      </label>
+    </div>
 
+    <!-- زر تسجيل الخروج -->
 
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form
-    action="/update-profile" method="post" enctype="multipart/form-data"
-    class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Profile Image</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="px-4 modal-body d-flex justify-content-between align-items-center">
-<label class="btn btn-secondary" for="inputFile">+ Upload Img</label>
-        <input name="avatar" style="display: none;" id="inputFile" type="file">
-        <img
-         id="profileImage" 
-         style="border-radius: 50%;"
-         src="<%= user.profileImage? user.profileImage : "../img/pin.png" %>"
-           alt="" width="150"
-            height="150">
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
-      </div>
-    </form>
+    
+    <div class="mt-auto text-center p-3">
+      <a href="/signout" class="btn btn-danger w-100"> تسجيل خروج <br><%= user.userName %></a>
+    </div>
   </div>
-</div>
-<!--// Modal// -->
-<div class="b-example-divider b-example-vr"></div>
 
+  <!-- سكربت تفعيل الإظهار والإخفاء للشريط الجانبي والثيم -->
+  <script>
+    const sidebar = document.getElementById('sidebarId');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const content = document.getElementById('mainContent');
 
-<script>
-// هذا الكود عشان اذا اخترة صورة الروفايل يضهر علطو في رسالة المودل الدرس رقم 10 المستوى 3
-inputFile.addEventListener("change", (eo) => { // يعني اذا احد ضغظ زر اضافة ملف صورة تساوي تشنج
-  profileImage.src = URL.createObjectURL(eo.target.files[0]) // يعني تغير رابط الصورة 
-})
+    sidebarToggle.addEventListener('click', function () {
+      sidebar.classList.toggle('sidebar-visible'); // عرض الشريط الجانبي
+      content.classList.toggle('sidebar-visible'); // تعديل الحافة اليسرى للمحتوى
+    });
 
-</script>
+    document.getElementById('theme').addEventListener('change', function () {
+      const theme = this.checked ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      localStorage.setItem('theme', theme);
+    });
+
+    window.addEventListener('load', function () {
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      document.getElementById('theme').checked = theme === 'light';
+
+      // تعيين الرابط النشط بناءً على الصفحة الحالية
+      const currentPath = window.location.pathname;
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

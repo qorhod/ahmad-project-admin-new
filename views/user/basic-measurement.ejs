@@ -261,7 +261,8 @@
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
    
-    
+    <link rel="stylesheet" href="../css/overlay.css">
+
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
     <link rel="stylesheet" href="../css/dark-light.css"/>
@@ -274,6 +275,10 @@
     <link rel="stylesheet" href="../css/imgCheckbox.css">
   </head>
   <body>
+
+    <%- include('../components/overlay.ejs') %>
+
+
     <!-- اخزن فيه اليدي عشان نطعة في الجافا سكربت الي في هذي الصفحة -->
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
@@ -300,29 +305,29 @@
         
    
      <div class="col-md-6">
-      <label for="branch" class="form-label">:الفرع</label>
+      <label for="branch" class="form-label"><span style="color: red;">*</span>:الفرع</label>
       <select name="branch" id="branch" class="form-select">
-        <option value="" selected hidden disabled>اختر ...</option>
-        <option value="خميس مشيط">خميس مشيط</option>
-      <option value="جازان">جازان</option>
-
+          <option value="" selected hidden disabled>اختر ...</option>
+          <option value="خميس مشيط">خميس مشيط</option>
+          <option value="جازان">جازان</option>
       </select>
- </div> 
- <br> <hr>  <br>
-
-              <div class="col-md-6">
-                <label for="inputage4" class="form-label">:الموقع <i class="bi bi-geo-fill"></i></label>
-                <input
-                name="location"
-                  placeholder="https://maps.app.goo.gl/XXXXXXXXXX"
-                  type="text"
-                  class="form-control"
-                  id="locationId"
-                  value=""
-                />
-              </div>
-
-
+      <span id="branchError" style="color: red; display: none;">يرجى اختيار الفرع.</span>
+  </div>
+  
+  <br><hr><br>
+  
+  <div class="col-md-6">
+      <label for="inputage4" class="form-label"><span style="color: red;">*</span>:الموقع <i class="bi bi-geo-fill"></i></label>
+      <input
+          name="location"
+          placeholder="https://maps.app.goo.gl/XXXXXXXXXX"
+          type="text"
+          class="form-control"
+          id="locationId"
+          value=""
+      />
+      <span id="locationError" style="color: red; display: none;">يرجى إدخال رابط صالح لخريطة Google.</span>
+  </div>
               <br> 
 
               <!-- <div class="btn-group col-md-6 mt-3" role="group" aria-label="Basic checkbox toggle button group">
@@ -466,7 +471,7 @@
 
 
                     <label class="checkbox-wrapper">
-                        <input value="Sliding D10+" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                        <input value="slidingD10p" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
                         <span class="checkbox-tile">
                             <span class="checkbox-icon">
                                 <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
@@ -656,7 +661,7 @@
 <h4>:مواصفات الزجاج</h4>
 <br>
 
-<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+<div style="background-color: #5c6057;" class="btn-group" role="group" aria-label="Basic radio toggle button group">
   <input value="دبوس عاكس /RP" type="radio" class="btn-check" name="q1" id="btnradio17" autocomplete="off" >
   <label class="btn btn-outline-light" for="btnradio17">دبوس عاكس</label>
 
@@ -665,6 +670,11 @@
 
   <input value="عاكس عاكس/RR" type="radio" class="btn-check" name="q1" id="btnradio37" autocomplete="off">
   <label class="btn btn-outline-light" for="btnradio37">عاكس عاكس</label>
+
+  
+  <input value="شفاف شفاف/TT" type="radio" class="btn-check" name="q1" id="btnradio47" autocomplete="off">
+  <label class="btn btn-outline-light" for="btnradio47">شفاف شفاف</label>
+
 </div>
 
 
@@ -772,6 +782,7 @@
     <script src="../js/main.js"></script>
 
 
+    <script src="../js/overlay.js"></script>
 
 
 
@@ -865,54 +876,6 @@
 
 
 
-
-
-// var n =decument.getElementById("lengthId").value
-
-// console.log(n)
-
-// click
-
-
-
-
-
-
-
-  // signupForm.addEventListener("submit", async (e) => {
-  //   e.preventDefault();
-  //   emailError.textContent = ""
-  //   passwordError.textContent = ""
-
-  //   const res = await fetch("sign-up", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       email: emailId.value,
-  //        password: passwordId.value,
-  //        userName:usernameId.value,
-  //     }),
-  //     headers: { "Content-Type": "application/json" },
-  //   });
-
-  //   const data = await res.json();
-
-
-  //   if (data.arrvalidationError) {
-  //     console.log(data.arrvalidationError)
-
-  //     data.arrvalidationError.forEach(item => {
-
-  //       if (item.path == "email") {
-  //         emailError.textContent = "please provide a valid email"
-  //       }
-
-
-  //       if (item.path == "password") {
-  //         passwordError.textContent = "Password must be at least 8 characters with 1 upper case letter and 1 number"
-  //       }
-        
-  //     });
-  //   }
 
 
 
@@ -1015,60 +978,6 @@
 
 
 
-// var n =decument.getElementById("lengthId").value
-
-// console.log(n)
-
-// click
-//     next.addEventListener("click", async (e) => {
-//          e.preventDefault();
-                   
-
-
-
-
-
-
-
-
-
-
-
-
-//           const res = await fetch("basic-measurement", {
-//                       method: "POST",
-//                       body: JSON.stringify({
-//                         // email: emailId.value,
-//                         // password: passwordId.value,
-//                         // userName:usernameId.value,
-//                         // length:lengthid.value,
-//                         // width: widthid.value,
-//                         length:lengthid.value,
-//                         // width: widthid.value,
-//                         // n: getSelectedValue.value,
-//                         // location:locationId.value,
-//                         // aluminumCode:getSelectedValue2.value,
-//                         // thickness:thickness.value,
-//                         // glassColorCode:glassColorCodeId.value,
-                        
-                        
-//                       }),
-//                       headers: { "Content-Type": "application/json" },
-                      
-//               }); 
-//               const data = await res.json();
-// console.log(data)
-//             //  var jj= document.getElementById("locationId").value
-//             //   console.log("jj")
-//             //   console.log(locationId.value)
-//   });
-
-
-
-
-
-
-
 
 
 
@@ -1078,68 +987,60 @@
 
 next.addEventListener("click", async (e) => {
     e.preventDefault();
-    
 
+    // وظائف إضافية مثل اختيار قيمة محددة
+    var getSelectedValue2 = document.querySelector('input[name="c2"]:checked'); 
+    var glasstypeValue = document.querySelector('input[name="q1"]:checked');    
 
+    // التأكد من صحة كتابة الموقع والفرع ومنع الإرسال إذا هي غير مكتملة
+    const branch = document.getElementById('branch');
+    const branchError = document.getElementById('branchError');
+    const locationInput = document.getElementById('locationId');
+    const locationError = document.getElementById('locationError');
+    const pattern = /^https:\/\/maps\.app\.goo\.gl\/[A-Za-z0-9]+$/;
 
-        // يطبعلك زر واح برمزه في قاعدة البينات
-        var getSelectedValue2 = document.querySelector( 
-                'input[name="c2"]:checked'); 
-              //هي اضافات للي فوق ما نحتاجها الان
-            // if(getSelectedValue2 != null) { 
-            //     // document.getElementById("1").innerHTML 
-            //          getSelectedValue2.value 
-            //         // + " season is selected"; 
-                    
-            // } 
-            // else { 
-            //     // document.getElementById("1").innerHTML 
-            //         // = "*You have not selected any season"; 
-                    
-            // } 
-                  // يطبعلك زر واح برمزه في قاعدة البينات//
+    let isValid = true;
 
+    if (branch.value === "") {
+        branchError.style.display = 'block';
+        branch.classList.add('is-invalid'); // إضافة إطار أحمر
+        isValid = false;
+    } else {
+        branchError.style.display = 'none';
+        branch.classList.remove('is-invalid');
+    }
 
+    if (!pattern.test(locationInput.value)) {
+        locationError.style.display = 'block';
+        locationInput.classList.add('is-invalid'); // إضافة إطار أحمر
+        isValid = false;
+    } else {
+        locationError.style.display = 'none';
+        locationInput.classList.remove('is-invalid');
+    }
 
-                  var glasstypeValue = document.querySelector( 
-                'input[name="q1"]:checked');    
+    if (isValid) {
+        // إذا كانت جميع الحقول صحيحة، أرسل الطلب
+        const res = await fetch("basic-measurement", {
+            method: "POST",
+            body: JSON.stringify({
+                branch: branch.value,
+                location: locationInput.value,
+                aluminumCode0: getSelectedValue2 ? getSelectedValue2.value : "",
+                aluminumThickness0: thickness.value,
+                aluminumColorCode0: glassColorCodeId.value,
+                glasstype0: glasstypeValue ? glasstypeValue.value : "",
+                glassThickness0: glassThickness.value,
+                glassColorCode0: glassColorCode.value,
+                id: "<%= arrM._id %>"
+            }),
+            headers: { "Content-Type": "application/json" },
+        });
 
-
-
-
-
-
-
-
-
-
-    const res = await fetch("basic-measurement", {
-      method: "POST",
-      body: JSON.stringify({
-        branch:branch.value,
-         location:locationId.value,
-         aluminumCode0:getSelectedValue2.value,
-         aluminumThickness0:thickness.value,
-         aluminumColorCode0:glassColorCodeId.value,
-         glasstype0:glasstypeValue.value,
-         glassThickness0:glassThickness.value,
-         glassColorCode0:glassColorCode.value,
-         id:"<%= arrM._id %>"
-      }),
-      headers: { "Content-Type": "application/json" },
-      
-    });
-    
-    const data = await res.json();
-console.log(data.id)
-
-
-
-
-location.assign(`/view/<%= arrM._id %>`)
-
-
-
+        const data = await res.json();
+        console.log(data.id);
+        location.assign(`/view/<%= arrM._id %>`);
+    }
 });
 
 </script>

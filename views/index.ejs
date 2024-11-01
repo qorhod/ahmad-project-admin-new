@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="./css/myStyle.css" />
   
   </head>
-  <body>
+  <body data-skip="<%= arr.length %>">
     <!--ايقونات  -->
     <%- include('./components/dark-light.ejs') %> 
 
@@ -59,78 +59,96 @@
 
 
   
-
           <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Full Name</th>
-              <th scope="col">Gender</th>
-              <th scope="col">branch</th>
-              <th scope="col">Age</th>
+              <th scope="col">Branch</th>
               <th scope="col">Last updated</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
-        <% } %>
-        <!--  -->
-        <tbody id="kk">
-          <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
-            <% arr.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
-              <!--  -->
-                 <tr>
-                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
-                   <td><%= item.firstNamecustomer %>	<%= item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.gender %>	</td>
-                   <td><%= item.branch %></td>
-                   <td><%= item.age %></td>
-                   <td><%= moment(item.updatedAt).fromNow();  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
-                   <td>
-                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-                     <a
-                       data-bs-toggle="tooltip"
-                       data-bs-title="View details"
-                       data-bs-placement="top"
-                       class="btn btn-primary btn-sm"
-                       href="/view/<%= item._id %>" 
-                       ><i class="bi bi-eye"></i
-                     ></a>
-     
-                     <a
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Edit user"
-                       data-bs-placement="top"
-                       class="btn btn-primary btn-sm"
-                       href="./edit/<%= item._id %>"
-                     >
-                       <i class="bi bi-pencil"></i>
-                     </a>
-                     <form style="display: inline;" action="/edit/<%= item._id %>?_method=DELETE" method="post">
-                     <button
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Delete user"
-                       data-bs-placement="top"
-                       class="btn btn-danger btn-sm"
-                     >
-                       <i class="bi bi-trash"></i>
-                     </button>
-                   </form>
-                   </td>
-                 </tr>
-               <% }) %>
-             
-      
+          <%}%>
+          <tbody id="kk" data-skip="<%= arr.length %>">
+            <% arr.reverse().forEach((item, index) => { %> 
+              <tr class="user-item" data-id="<%= item._id %>">
+                <th scope="row"><%= index + 1 %></th> 
+                <td><%= item.firstNamecustomer %> <%= item.lastNamecustomer %></td>  
+                <td><%= item.branch %></td> 
+                <td><%= moment(item.updatedAt).fromNow(); %></td> 
+                <td>
+                  <a class="btn btn-primary btn-sm" href="/view/<%= item._id %>" 
+                    data-bs-toggle="tooltip" data-bs-title="View details" data-bs-placement="top">
+                    <i class="bi bi-arrow-right"></i>
+
+                  </a>
+                  <a class="btn btn-primary btn-sm" href="./edit/<%= item._id %>" 
+                    data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <!-- <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" 
+                      data-bs-title="Delete user" data-bs-placement="top">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form> -->
+                </td>
+              </tr>
+            <% }) %>
           </tbody>
         </table>
-      </section>
-    </main>
-    <script src="./js/bootstrap.bundle.min.js"></script>
+        
+        <button id="load-more-btn" class="btn btn-primary btn-lg d-block mx-auto my-4" data-limit="<%= limit %>" data-skip="<%= skip %>">
+          <i class="bi bi-plus-circle"></i> عرض المزيد
+        </button>
 
-    <script src="./js/sidebars.js"></script>
-
-    <script src="./js/main.js"></script>
-   
-  </body>
-
-
+        <script src="./js/bootstrap.bundle.min.js"></script>
+        <script src="./js/sidebars.js"></script>
+        <script src="./js/main.js"></script>
+      
+        <script>
+          const userTable = document.getElementById('kk');
+          let skip = parseInt(userTable.getAttribute('data-skip')); // يحصل على عدد العناصر الموجودة حاليًا من data-skip على الجدول
+          let limit = 10;
+        
+          const loadMoreBtn = document.getElementById('load-more-btn');
+        
+          function loadMoreUsers() {
+            fetch(`/home?limit=${limit}&skip=${skip}`)
+              .then(response => response.text())
+              .then(html => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+        
+                const newUsers = tempDiv.querySelectorAll('.user-item');
+                const userList = document.getElementById('kk'); // تأكد من أن `kk` هو المعرف الصحيح للجسم الجدول
+        
+                let currentRowCount = userList.rows.length; // عدد الصفوف الحالية في الجدول
+        
+                newUsers.forEach(userItem => {
+                  const userId = userItem.getAttribute('data-id');
+                  if (!userList.querySelector(`[data-id="${userId}"]`)) {
+                    currentRowCount++; // زيادة الترقيم بناءً على عدد الصفوف الحالية
+                    userItem.querySelector('th').textContent = currentRowCount; // تحديث الترقيم
+                    userList.appendChild(userItem);
+                  }
+                });
+        
+                if (newUsers.length < limit) {
+                  loadMoreBtn.style.display = 'none';
+                } else {
+                  skip += limit;
+                  userTable.setAttribute('data-skip', skip); // تحديث قيمة data-skip على الجدول
+                }
+              })
+              .catch(err => console.log(err));
+          }
+        
+          loadMoreBtn.addEventListener('click', () => {
+            loadMoreUsers();
+          });
+        </script>
+      </body>
+    
  
 </html>

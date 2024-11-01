@@ -7,172 +7,323 @@ const AuthUser = require("../models/auth-user") // تسيما الحسابات �
 const User = require("../models/customersSchema")
 
 const commands = require("../models/commands")
+const Prices = require("../models/prices"); // استدعاء نموذج الأسعار الافتراضية
 
 
 // فنكشن التأكد من التكوكن الدرس رقم 8 مستوى 2
 var jwt = require("jsonwebtoken"); // تحضير مكتبة التوكن
 
+const mongoose = require("mongoose"); // تأكد من إضافة هذا السطر في أعلى الملف
 
 
 
 
+
+// دالة لتنظيف القيم
+function sanitizeValue(value) {
+    if (value === undefined || value === null || isNaN(Number(value))) {
+        return 0;
+    }
+    return Number(value).toFixed(2);
+}
+
+// updateMotherEquationTotal function
+async function updatetotalMotherEquation(resultsArrayAfter, id) {
+    console.log("Updating mother equation total for id:", id);
+    await User.updateOne(
+        { "orders._id": id },
+        { $unset: { "orders.$[orderElem].motherEquationTotal": "" } },
+        {
+            arrayFilters: [{ "orderElem._id": id }],
+            new: true
+        }
+    );
+
+    for (const result of resultsArrayAfter) {
+        const k = {
+            aluminumCode: result.aluminumCode,
+            E10T: sanitizeValue(result.E10T),
+            F10T: sanitizeValue(result.F10T),
+            G10T: sanitizeValue(result.G10T),
+            H10T: sanitizeValue(result.H10T),
+            I10T: sanitizeValue(result.I10T),
+            J10T: sanitizeValue(result.J10T),
+            M10T: sanitizeValue(result.M10T),
+            N10T: sanitizeValue(result.N10T),
+            Q10T: sanitizeValue(result.Q10T),
+            K10T: sanitizeValue(result.K10T),
+            L10T: sanitizeValue(result.L10T),
+            O10T: sanitizeValue(result.O10T),
+            P10T: sanitizeValue(result.P10T),
+            E10TF: sanitizeValue(result.E10F),
+            F10TF: sanitizeValue(result.F10F),
+            G10TF: sanitizeValue(result.G10F),
+            H10TF: sanitizeValue(result.H10F),
+            I10TF: sanitizeValue(result.I10F),
+            J10TF: sanitizeValue(result.J10F),
+            M10TF: sanitizeValue(result.M10F),
+            N10TF: sanitizeValue(result.N10F),
+            Q10TF: sanitizeValue(result.Q10F),
+            K10TF: sanitizeValue(result.K10F),
+            L10TF: sanitizeValue(result.L10F),
+            O10TF: sanitizeValue(result.O10F),
+            P10TF: sanitizeValue(result.P10F)
+        };
+
+        await User.updateOne(
+            { "orders._id": id },
+            { $push: { "orders.$[orderElem].motherEquationTotal": k } },
+            {
+                arrayFilters: [{ "orderElem._id": id }],
+                new: true
+            }
+        );
+    }
+}
 
 
 
 
 // في ملف يحتوي على الدالة calculateResults.js
-  function  calculateResults(data) {
+//   function  calculateResults(data) {
 
    
       
 
-// console.log("ggggggggggggggggggggggggggg")
+// // console.log("ggggggggggggggggggggggggggg")
 
+//     var h = data.h;
+//     var w = data.w;
+//     var lip = data.lip;
+//     var aluminumCode = data.aluminumCode;
+
+//     let resultH;
+//     let resultW;
+
+//     // حساب النتيجة للمترين الأول والثاني بناءً على نوع الألمنيوم
+//     if (aluminumCode === "Sliding D10") {
+//         resultH = lip==="YAS"?h + 5:h;
+//         resultW = lip==="YAS"?w + 5:w;
+//     } else if (aluminumCode === "Sliding D12") {
+//         resultH = lip==="YAS"?h + 10:h;
+//         resultW = lip==="YAS"?w + 10:w;
+//     } else if (aluminumCode === "GOLF10") {
+//         resultH = lip==="YAS"?h + 6:h;
+//         resultW =  lip==="YAS"?w + 6:w;
+//     } else if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Fixed S10" || aluminumCode === "Fixed D10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Fixed D4") {
+//         resultH = lip==="YAS"?h + 8:h;
+//         resultW = lip==="YAS"?w + 8:w;
+//     } else if (aluminumCode === "Fixed S4") {
+//         resultH = lip==="YAS"?h + 5.6:h;
+//         resultW = lip==="YAS"?w + 5.6:w;
+//     } 
+
+//     let H1 = resultH;
+//     let W1 = resultW;
+
+//     // قم بتحويل الصيغة إلى الشكل البرمجي
+//     let totalMeters;
+//     if (H1 * W1 / 10000 < 1 && H1 * W1 / 10000 !== 0 && H1 * W1 / 10000 !== "FALSE") {
+//         totalMeters = 1;
+//     } else {
+//         totalMeters = H1 * W1 / 10000;
+//     }
+
+
+
+// // معادلة حساب السعر
+
+//     // function  functionPrice(price) {
+      
+
+//         var fixedD10= 450
+//         var  slidingD10= 530
+//          var slidingD10p= 500
+//          var slidingD12= 550
+//          var slidingS= 300
+        
+      
+//          var fixedD4= 300
+//          var fixedS10= 350
+//          var fixedS4= 300
+     
+//          var GOLF10= 550
+//          var GOLF12= 600
+//          var ROYAL2= 700
+//          var ROYAL3= 1000
+    
+    
+//         //  commands.findById("65f99ec185fc1702281d9695")
+//         //  .then((result)=>{
+//         //      console.log(result.price.DoorD10)
+//         //     })
+//     // معادلة التسعيره
+    
+//     var input = "Sliding D10"
+    
+//     // var price = 450 // السعر
+    
+//     var discound =data.discound ||0 // الخصم
+//     var totalMetersp = 2.85585 // مجموع الامتار
+//     var measurementUnits;
+//     let total;
+//     let price ;
+//     if(aluminumCode==="Fixed D10"){
+//     total = (fixedD10-discound)*totalMeters
+//     price=fixedD10
+    
+//     }else if(aluminumCode==="Sliding D10"){
+//     total = (slidingD10-discound)*totalMeters
+//     price=slidingD10
+    
+//     }else if(aluminumCode==="Sliding D12"){
+//     total = (slidingD12-discound)*totalMeters
+//     price=slidingD12
+    
+//     }else if(aluminumCode==="GOLF10"){
+//     total = (GOLF10-discound)*totalMeters
+//     price=GOLF10
+    
+//     }else if(aluminumCode==="ROYAL 2"){
+//     total = (ROYAL2-discound)*totalMeters
+//     price=ROYAL2
+    
+//     }else if(aluminumCode==="ROYAL 3"){
+//     total = (ROYAL3-discound)*totalMeters
+//     price=ROYAL3
+
+//     }else if(aluminumCode==="Fixed S10"){
+//     total = (fixedS10-discound)*totalMeters
+//     price=fixedS10
+    
+//     }else if(aluminumCode==="Sliding S"){
+//     total = (slidingS-discound)*totalMeters
+//     price=slidingS
+    
+//     }else if(aluminumCode==="GOLF12"){
+//     total = (GOLF12-discound)*totalMeters
+//     price=GOLF12
+    
+//     }else if(aluminumCode==="Sliding D10p"){
+//     total = (slidingD10p-discound)*totalMeters
+//     price=slidingD10p
+    
+//     }else if(aluminumCode==="Fixed D4"){
+//     total = (fixedD4-discound)*totalMeters
+//     price=fixedD4
+    
+//     }else if(aluminumCode==="Fixed S4"){
+//     total = (fixedS4-discound)*totalMeters
+//     price=fixedS4
+    
+//     }
+    
+//     // return { total };
+    
+//     // console.log(total)
+    
+    
+//     // معادلة حساب السعر//
+    
+   
+
+
+//     // console.log(totalMeters); // النتيجة
+// if({ resultH, resultW ,totalMeters,total,price }){
+//     return { resultH, resultW ,totalMeters,total,price };
+// }else{
+
+//     return false
+//     //  json({ err:"نوع الألمنيوم غير صحيح" })
+// }
+
+// }
+
+
+function calculateResults(data) {
     var h = data.h;
     var w = data.w;
     var lip = data.lip;
     var aluminumCode = data.aluminumCode;
+    var prices= data.prices
 
     let resultH;
     let resultW;
 
-    // حساب النتيجة للمترين الأول والثاني بناءً على نوع الألمنيوم
     if (aluminumCode === "Sliding D10") {
-        resultH = lip==="YAS"?h + 5:h;
-        resultW = lip==="YAS"?w + 5:w;
+        resultH = lip === "YAS" ? h + 5 : h;
+        resultW = lip === "YAS" ? w + 5 : w;
     } else if (aluminumCode === "Sliding D12") {
-        resultH = lip==="YAS"?h + 10:h;
-        resultW = lip==="YAS"?w + 10:w;
+        resultH = lip === "YAS" ? h + 10 : h;
+        resultW = lip === "YAS" ? w + 10 : w;
     } else if (aluminumCode === "GOLF10") {
-        resultH = lip==="YAS"?h + 6:h;
-        resultW =  lip==="YAS"?w + 6:w;
-    } else if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Fixed S10" || aluminumCode === "Fixed D10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Fixed D4") {
-        resultH = lip==="YAS"?h + 8:h;
-        resultW = lip==="YAS"?w + 8:w;
+        resultH = lip === "YAS" ? h + 6 : h;
+        resultW = lip === "YAS" ? w + 6 : w;
+    } else if (["ROYAL 2", "ROYAL 3", "Fixed S10", "Fixed D10", "Sliding S", "GOLF12", "slidingD10p", "Fixed D4"].includes(aluminumCode)) {
+        resultH = lip === "YAS" ? h + 8 : h;
+        resultW = lip === "YAS" ? w + 8 : w;
     } else if (aluminumCode === "Fixed S4") {
-        resultH = lip==="YAS"?h + 5.6:h;
-        resultW = lip==="YAS"?w + 5.6:w;
-    } 
+        resultH = lip === "YAS" ? h + 5.6 : h;
+        resultW = lip === "YAS" ? w + 5.6 : w;
+            }else if (["SG50","SMART","FORTICKS"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["T8CM","T10CM","FLAT"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["SKYLIGHT","SKYLIGHT FOR WALK"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }else if (["SLICES DOOR","DOUBLE GLASS DOOR"].includes(aluminumCode)) {
+                resultH = h;
+                resultW = w;
+            }
 
     let H1 = resultH;
     let W1 = resultW;
 
-    // قم بتحويل الصيغة إلى الشكل البرمجي
-    let totalMeters;
-    if (H1 * W1 / 10000 < 1 && H1 * W1 / 10000 !== 0 && H1 * W1 / 10000 !== "FALSE") {
-        totalMeters = 1;
-    } else {
-        totalMeters = H1 * W1 / 10000;
-    }
+    let totalMeters = (H1 * W1 / 10000) < 1 && (H1 * W1 / 10000) !== 0 ? 1 : H1 * W1 / 10000;
+
+    let priceMap = {
+        "Fixed D10": prices.fixedD10,
+        "Sliding D10": prices.slidingD10,
+        "Sliding D12": prices.slidingD12,
+        "GOLF10": prices.GOLF10,
+        "ROYAL 2": prices.ROYAL2,
+        "ROYAL 3": prices.ROYAL3,
+        "Fixed S10": prices.fixedS10,
+        "Sliding S": prices.slidingS,
+        "GOLF12": prices.GOLF12,
+        "slidingD10p": prices.slidingD10p,
+        "Fixed D4": prices.fixedD4,
+        "Fixed S4": prices.fixedS4,
+
+        // اسعار الستركتشر
+        "SG50": prices.SG50,
+        "SMART": prices.SMART,
+        "FORTICKS": prices.FORTICKS,
+        // سكاي لايت
+        "SKYLIGHT":prices.SKYLIGHT,
+        "SKYLIGHT FOR WALK":prices.SKYLIGHT_FOR_WALK,
+
+        // سعر التيوبات
+        "T8CM":prices.T10CM,
+        "T10CM":prices.T10CM,
+        "FLAT":prices.FLAT,
+
+        // الابواب 
+        "SLICES DOOR":prices.SLICES_DOOR,
+        "DOUBLE GLASS DOOR":prices.DOUBLE_GLASS_DOOR,
 
 
 
-// معادلة حساب السعر
+    };
 
-    // function  functionPrice(price) {
-      
+    let price = priceMap[aluminumCode] || 0;
+    // let discound = data.discound || 0;
+    let total = price * totalMeters;
 
-        var fixedD10= 450
-        var  slidingD10= 530
-         var slidingD10b= 500
-         var slidingD12= 550
-         var slidingS= 300
-        
-      
-         var fixedD4= 300
-         var fixedS10= 350
-         var fixedS4= 300
-     
-         var GOLF10= 550
-         var GOLF12= 600
-         var ROYAL2= 700
-         var ROYAL3= 1000
-    
-    
-        //  commands.findById("65f99ec185fc1702281d9695")
-        //  .then((result)=>{
-        //      console.log(result.price.DoorD10)
-        //     })
-    // معادلة التسعيره
-    
-    var input = "Sliding D10"
-    
-    // var price = 450 // السعر
-    
-    var discound =data.discound ||0 // الخصم
-    var totalMetersp = 2.85585 // مجموع الامتار
-    var measurementUnits;
-    let total;
-    let price ;
-    if(aluminumCode==="Fixed D10"){
-    total = (fixedD10-discound)*totalMeters
-    price=fixedD10
-    
-    }else if(aluminumCode==="Sliding D10"){
-    total = (slidingD10-discound)*totalMeters
-    price=slidingD10
-    
-    }else if(aluminumCode==="Sliding D12"){
-    total = (slidingD12-discound)*totalMeters
-    price=slidingD12
-    
-    }else if(aluminumCode==="GOLF10"){
-    total = (GOLF10-discound)*totalMeters
-    price=GOLF10
-    
-    }else if(aluminumCode==="ROYAL 2"){
-    total = (ROYAL2-discound)*totalMeters
-    price=ROYAL2
-    
-    }else if(aluminumCode==="ROYAL 3"){
-    total = (ROYAL3-discound)*totalMeters
-    price=ROYAL3
-
-    }else if(aluminumCode==="Fixed S10"){
-    total = (fixedS10-discound)*totalMeters
-    price=fixedS10
-    
-    }else if(aluminumCode==="Sliding S"){
-    total = (slidingS-discound)*totalMeters
-    price=slidingS
-    
-    }else if(aluminumCode==="GOLF12"){
-    total = (GOLF12-discound)*totalMeters
-    price=GOLF12
-    
-    }else if(aluminumCode==="Sliding D10+"){
-    total = (slidingD10b-discound)*totalMeters
-    price=slidingD10b
-    
-    }else if(aluminumCode==="Fixed D4"){
-    total = (fixedD4-discound)*totalMeters
-    price=fixedD4
-    
-    }else if(aluminumCode==="Fixed S4"){
-    total = (fixedS4-discound)*totalMeters
-    price=fixedS4
-    
-    }
-    
-    // return { total };
-    
-    // console.log(total)
-    
-    
-    // معادلة حساب السعر//
-    
-   
-
-
-    // console.log(totalMeters); // النتيجة
-if({ resultH, resultW ,totalMeters,total,price }){
-    return { resultH, resultW ,totalMeters,total,price };
-}else{
-
-    return false
-    //  json({ err:"نوع الألمنيوم غير صحيح" })
-}
-
+    return { resultH, resultW, totalMeters, total, price };
 }
 
 
@@ -183,13 +334,13 @@ if({ resultH, resultW ,totalMeters,total,price }){
 
 
 
-
+// غير مستخدمة في allRoutes
 function  functionPrice(price) {
 
 
     var fixedD10= 450
     var  slidingD10= 530
-     var slidingD10b= 500
+     var slidingD10p= 500
      var slidingD12= 550
      var slidingS= 300
     
@@ -252,8 +403,8 @@ total = (slidingS-discound)*totalMetersp
 total = (GOLF12-discound)*totalMetersp
 
 
-}else if(input==="Sliding D10+"){
-total = (slidingD10b-discound)*totalMetersp
+}else if(input==="slidingD10p"){
+total = (slidingD10p-discound)*totalMetersp
 
 
 }else if(input==="Fixed D4"){
@@ -331,39 +482,125 @@ return { total };
 
 //// معادلة تحديث الجمالي والضريبة////
 
+// تعلدل الخصم هذه المعادلة القديمة بحدثها في المعادلة الي تحت
+// async function updateTotal(iid) {
+//     let priceTot = 0;
+
+//     const h = await User.findOne({'orders._id': iid});
+
+//     const foundObject = h.orders.find(item => item._id.equals(iid)); // للعثور على الكائن الصحيح
+
+//     if (foundObject.measurement && foundObject.measurement.length > 0) { // التحقق من وجود قياسات
+//         foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
+//         for (const item of foundObject.measurement) {
+//             if (!item.delete) { // الشرط لتجاهل القياسات المحذوفة
+//                 priceTot += item.price.totalWithDiscount;
+//             }
+//         }
+//     }
+//     const taxOrder=foundObject.TAX // نسبة الضيربة الخاصف في الاوردر
+//     let taxx = priceTot * taxOrder;
+//     let priceTotAndtaxx = priceTot + taxx;
+//     console.log("الاجمالي", priceTot, taxx, priceTotAndtaxx);
+
+//     const totalAndTax = {
+//         totalBeforeTax: priceTot,
+//         tax: taxx,
+//         totalWithTax: priceTotAndtaxx,
+//     };
+
+//     const nm = await User.updateOne(
+//         { "orders._id": iid },
+//         { $set: { "orders.$[orderElem].totalPrice": totalAndTax } },
+//         {
+//             arrayFilters: [{ "orderElem._id": iid }],
+//             new: true
+//         }
+//     );
+
+//     if (nm.nModified > 0) {
+//         return { done: "done" };
+//     } else {
+//         return false;
+//     }
+// }
+
+
+
 
 async function updateTotal(iid) {
     let priceTot = 0;
-    
-    const h = await User.findOne({'orders._id': iid});
-    
-    const foundObject = h.orders.find(item => item.id === iid); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-    if(foundObject.measurement[0]  ){ // هذا الشرط عشان اذا اخر قياس ماهو موجود ما يطلع خطا وتصير النتأج اصفار
-    foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
-    for (const item of foundObject.measurement) {
-        priceTot += item.price.totalWithDiscount ;
+
+    // البحث عن الطلب باستخدام iid
+    const h = await User.findOne({ 'orders._id': iid });
+
+    // العثور على الكائن الصحيح بناءً على iid
+    const foundObject = h.orders.find(item => item._id.equals(iid));
+
+    // التحقق من وجود قياسات وإضافتها إلى priceTot
+    if (foundObject.measurement && foundObject.measurement.length > 0) {
+        foundObject.measurement.reverse(); // قلب الترتيب للبدء من القيم الأحدث
+        for (const item of foundObject.measurement) {
+            if (!item.delete) { // تجاهل القياسات المحذوفة
+                priceTot += item.price.total;
+            }
+        }
     }
-}
-    let taxx  = priceTot * 0.15;
-    let priceTotAndtaxx = priceTot + taxx;
-    console.log("الاجمالي", priceTot, taxx, priceTotAndtaxx);
+
+    // إضافة totalTempersPrice إلى priceTot إذا كانت موجودة
+    if (foundObject.totalTempers && foundObject.totalTempers.totalTempersPrice) {
+        priceTot += foundObject.totalTempers.totalTempersPrice;
+        console.log(`Added totalTempersPrice: ${foundObject.totalTempers.totalTempersPrice} to priceTot`);
+    } else {
+        console.log('totalTempersPrice not found, skipping...');
+    }
+
+    // إضافة totalAllPrice إلى priceTot إذا كانت موجودة
+    if (foundObject.totalAllPrice) {
+        priceTot += foundObject.totalAllPrice;
+        console.log(`Added totalAllPrice: ${foundObject.totalAllPrice} to priceTot`);
+    } else {
+        console.log('totalAllPrice not found, skipping...');
+    }
+
+    // حساب الخصم
+    let discount = foundObject.totalPrice.Discount ? foundObject.totalPrice.Discount : 0;  // إذا كان الخصم موجودًا، وإلا صفر
+
+    // حساب الإجمالي بعد الخصم
+    let totalAftereDiscount = priceTot - discount;
+
+    // نسبة الضريبة من الطلب
+    const taxOrder = foundObject.TAX;
+
+    // حساب الضريبة
+    let taxx = totalAftereDiscount * taxOrder;
+
+    // حساب الإجمالي مع الضريبة
+    let priceTotAndtaxx = totalAftereDiscount + taxx;
+
+    // طباعة النتيجة
+    console.log("الإجمالي", priceTot, taxx, priceTotAndtaxx);
+
+    // إعداد البيانات للتحديث
     const totalAndTax = {
-        totalBeforeTax: priceTot ,
-        tax:taxx ,
-        totalWithTax:  priceTotAndtaxx ,
+        totalBeforeTax: priceTot,
+        Discount: discount,
+        totalAftereDiscount: totalAftereDiscount,
+        tax: taxx,
+        totalWithTax: priceTotAndtaxx,
     };
 
-  
-
+    // تحديث حقل totalPrice في الطلب
     const nm = await User.updateOne(
-        { "orders._id": iid }, 
-        { $set: { "orders.$[orderElem].totalPrice": totalAndTax } }, 
-        { 
-            arrayFilters: [ { "orderElem._id": iid } ],
-            new: true 
+        { "orders._id": iid },
+        { $set: { "orders.$[orderElem].totalPrice": totalAndTax } },
+        {
+            arrayFilters: [{ "orderElem._id": iid }],
+            new: true
         }
     );
 
+    // التحقق مما إذا كان التحديث قد تم بنجاح
     if (nm.nModified > 0) {
         return { done: "done" };
     } else {
@@ -394,202 +631,220 @@ async function updateTotal(iid) {
 // معادلة تحديث الخصم لما تضيف اول تعدل اوردر تجمع الخصم ثم تقسمه على عدد الوردرات التي بنفس القطاع
 
 async function refreshDiscount(dataId) {
-// المدخلات
-let iid = dataId.iid // id for order
-let id=   ""  //dataId.id // id for mesurement
-let aluminumCodeFront = ""
-let  mm =NaN
+    // المدخلات
+    let iid = dataId.iid; // id for order
+    let id = ""; // dataId.id // id for measurement
+    let aluminumCodeFront = "";
+    let mm = NaN;
 
-const findDate = await  User.findOne({'orders._id': iid})
+    const findDate = await User.findOne({'orders._id': iid});
+    const h = findDate;
+    const foundObject = await h.orders.find(item => item.id === iid); // العثور على الكائن الذي يحتوي على هذا الـ id
 
-    const h =  findDate
+    if (foundObject.measurement.length > 0 && typeof foundObject.measurement[0] === 'object') {
+        if (dataId.id) {
+            id = dataId.id;
+            mm = foundObject.measurement.find(item => item.id === id); // العثور على الكائن الذي يحتوي على هذا الـ id
+        } else {
+            aluminumCodeFront = dataId.aluminumCodeFront;
+        }
 
-  const foundObject = await h.orders.find(item => item.id === iid); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
+        var pp = 0;
+        var price = 0;
+        var total = 0;
+        var discount = 0;
+        var aluminumCode = '';
+        let wordCount = 0;
+        const resultMap = new Map(); // إنشاء Map خارج اللوب الخارجي
 
-if (foundObject.measurement[0]  === 'object'){   // كتبة هذا الشرط عاش اذا جينا نحذف اخر قياس يصير مشكلة لانه القياس غير موجود 
+        foundObject.measurement.forEach((item, index) => {
+            if (!item.delete) { // الشرط لتجاهل القياسات المحذوفة
+                const itemm = {
+                    value1: item.price.price,
+                    value2: item.price.total,
+                    value3: item.price.discount,
+                    word: item.aluminumCode
+                };
 
-  if(dataId.id){
-    id=dataId.id
-     mm = foundObject.measurement.find(item => item.id === id); //  عشان يعطيني البجكت حامل هذا الادي من الداتا
-    
-    }else{
-        aluminumCodeFront=dataId.aluminumCodeFront
+                const key = `${itemm.word}`; // تكوين مفتاح يحتوي على الكلمة ورقم العمود
+
+                if (resultMap.has(key)) {
+                    resultMap.set(key, {
+                        value1: resultMap.get(key).value1 = itemm.value1,
+                        value2: resultMap.get(key).value2 + itemm.value2,
+                        value3: resultMap.get(key).value3 + itemm.value3,
+                        word: resultMap.get(key).word = itemm.word,
+                    });
+                } else {
+                    resultMap.set(key, itemm);
+                }
+            }
+        });
+
+        let index = 0;
+        resultMap.forEach((value, key) => {
+            index++;
+            if ((aluminumCodeFront ? aluminumCodeFront : mm.aluminumCode) === key) {
+                aluminumCode = key;
+                price = value.value1;
+                total = value.value2;
+                discount = value.value3;
+            }
+        });
+
+        console.log(aluminumCode, price, total, discount);
+
+        foundObject.measurement.forEach((item, index) => {
+            if (!item.delete && (aluminumCodeFront ? aluminumCodeFront : mm.aluminumCode) === item.aluminumCode) {
+                pp++;
+            }
+        });
+
+        console.log(pp);
+
+        // التحقق من عدد القياسات المشابهة قبل القسمة
+        if (pp === 0) {
+            console.error('Error: No matching measurements found.');
+            return false;
+        }
+
+        let to = discount / pp; // الخصم تقسيم عدد القياسات المتشابهة في اسم القطاع
+        let tot = total / pp; // إجمالي السعر لكل القطاعات المتشابهة تقسيم عددها
+        let y = tot - to;
+
+        // التحقق من عدم وجود NaN قبل التحديث
+        if (isNaN(to) || isNaN(y)) {
+            console.error('Error: Computed values resulted in NaN.');
+            return false;
+        }
+
+        const filter = {
+            "orders._id": iid,
+            "orders.measurement.aluminumCode": aluminumCode
+        };
+
+        const update = { 
+            $set: { 
+                "orders.$[orderElem].measurement.$[elem].price.discount": to,
+                "orders.$[orderElem].measurement.$[elem].price.totalWithDiscount": y,
+            } 
+        };
+
+        const options = {
+            arrayFilters: [{ "elem.aluminumCode": aluminumCode }, { "orderElem._id": iid }],
+            multi: true
+        };
+
+        const result = await User.updateMany(filter, update, options);
+        console.log('تم تحديث الوثائق بنجاح:', result);
+
+        if (result.modifiedCount > 0) {
+            return { done: "done" };
+        } else {
+            return false;
+        }
+    } else {
+        console.error('No measurements found or invalid measurement structure.');
+        return { error: "No measurements found or invalid measurement structure." };
     }
-
-
-
-var pp =0
-var price = 0
-var total = 0
-var discount = 0
-var aluminumCode =''
- let wordCount = 0;
- const resultMap = new Map(); // إنشاء Map خارج اللوب الخارجي
- 
- foundObject.measurement.forEach((item, index) => {
-     const itemm = { 
-         // value1: item.totalMeters.totalMeters , 
-         value1: item.price.price, 
-         value2: item.price.total,
-         value3: item.price.discount,
-         // value5: item.price.totalWithDiscount,  
-         
-         word: item.aluminumCode 
-     };
- 
- 
-     const key = `${itemm.word}`; // تكوين مفتاح يحتوي على الكلمة ورقم العمود
- 
-     if (resultMap.has(key)) {
-         resultMap.set(key, {
-             // value1: resultMap.get(key).value1 += itemm.value1,
-             value1: resultMap.get(key).value1 = itemm.value1,
-             value2: resultMap.get(key).value2 + itemm.value2,
-             value3: resultMap.get(key).value3 + itemm.value3,
-             // value5: resultMap.get(key).value5 + itemm.value5,
-             word: resultMap.get(key).word = itemm.word, 
-           
-         });
-         
-         // resultMap.set(key, resultMap.get(key) ); //
-     } else {
-         resultMap.set(key, itemm);
-         // resultMap.set(key.length, 1);//
-     } 
-   
- });
- 
-  let index = 0; 
-  // عرض النتيجة -->
- 
-  resultMap.forEach((value, key   ) => {
- 
-   // console.log(`${key} تكرر ${value} مرات`); 
-   index++; 
- 
-  //  console.log(key,value.value1,value.value2,value.value3)
-  if((aluminumCodeFront?aluminumCodeFront:mm.aluminumCode)===key){
-    aluminumCode=key
-    price = value.value1
-   total = value.value2
-    discount = value.value3
-   
-  
-  
-  }
-
-
-  })
-      console.log(aluminumCode,price,total,discount)
-
-
-
-
-
-
-
-  foundObject.measurement.forEach(async (item,index) => {
-    if((aluminumCodeFront?aluminumCodeFront:mm.aluminumCode)===item.aluminumCode){
-      pp++
-     
-    
-    
-    }
-
-  })
-  console.log(pp)
-  let to=discount/pp //الخصم تقسيم عدد القياسات المتشابهه في اسم القطاع
- let tot = total/pp // اجمالي السعر لكل القطاعات المتشابها تقسيم عدلدها
- let y = tot-to
-// console.log(to)
-
-
-// ////////////////
-const filter = {
-    "orders.measurement.aluminumCode": aluminumCode
-};
-
-const update = { $set: { 
-  "orders.$[orderElem].measurement.$[elem].price.discount": to,
-  "orders.$[orderElem].measurement.$[elem].price.totalWithDiscount": y,
-
-
-} };
-
-const options = {
-    arrayFilters: [{ "elem.aluminumCode": aluminumCode },
-    { "orderElem._id": iid }
-  ],
-    multi: true
-};
-
-
-const result = await User.updateMany(filter, update, options);
-console.log('تم تحديث الوثائق بنجاح:', result);
-// // /////////////
-
-
-
-if (result) {
-    return { done: "done" };
-} else {
-    return false;
 }
 
-}
 
-}
 
 
 
 // دالة المعادلات الام
-function motherEquation(data){
+// function motherEquation(data){
         
-    const aluminumCode = data.aluminumCode;
-    const B10 =data.h ; //W
-    const C10 =data.w ;//H
-    const D10 = 0; // الثابت باقي نضيفه
-    if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Sliding D10") {
-    const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);  // الحلق
-    const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2; // الكعب
-    const G10 = (B10 - 6.5 - D10) / 100 * 2; // الشنكل
-    const H10 = (B10 - 6.5 - D10) / 100 * 2; // الجنب
-    const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100); // درفة الشبك
-    const J10 = ((F10) + (H10 - 0.24)) * 2; //ربل درفة
-    const M10 =(((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2);// زجاج
-    const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000; // شبك حديد 2م
-    const Q10 = (B10 * C10) / 10000; // زجاج الثابت
-    const K10 = Math.ceil(C10 / 100) * 2; // كفرات درفه 
-    const L10 = Math.ceil(C10 / 100) * 2; // كفرات شبك 
-    const O10 = Math.ceil(C10 / 100) * 2; //مسكة
-    const P10 = Math.ceil(C10 / 350) * 1; // سيلكون المنيوم
+//     const aluminumCode = data.aluminumCode;
+//     const B10 =data.h ; //W
+//     const C10 =data.w ;//H
+//     const D10 = 0; // الثابت باقي نضيفه
+//     if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Sliding D10") {
+//     const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);  // الحلق
+//     const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2; // الكعب
+//     const G10 = (B10 - 6.5 - D10) / 100 * 2; // الشنكل
+//     const H10 = (B10 - 6.5 - D10) / 100 * 2; // الجنب
+//     const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100); // درفة الشبك
+//     const J10 = ((F10) + (H10 - 0.24)) * 2; //ربل درفة
+//     const M10 =(((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2);// زجاج
+//     const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000; // شبك حديد 2م
+//     const Q10 = (B10 * C10) / 10000; // زجاج الثابت
+//     const K10 = Math.ceil(C10 / 100) * 2; // كفرات درفه 
+//     const L10 = Math.ceil(C10 / 100) * 2; // كفرات شبك 
+//     const O10 = Math.ceil(C10 / 100) * 2; //مسكة
+//     const P10 = Math.ceil(C10 / 350) * 1; // سيلكون المنيوم
     
     
     
-        return { E10, F10 ,G10,H10,I10,J10,M10,N10,Q10,K10,L10,O10,P10 };
+//         return { E10, F10 ,G10,H10,I10,J10,M10,N10,Q10,K10,L10,O10,P10 };
     
-    }else if(aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4" || aluminumCode === "Fixed S4" || aluminumCode === "Fixed S10" ){
+//     }else if(aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4" || aluminumCode === "Fixed S4" || aluminumCode === "Fixed S10" ){
     
-        const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);  // الحلق
-    const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2; // الكعب
-    const G10 = (B10 - 6.5 - D10) / 100 * 2; // الشنكل
-    const H10 = (B10 - 6.5 - D10) / 100 * 2; // الجنب
-    const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100); // درفة الشبك
-    const J10 = ((F10) + (H10 - 0.24)) * 2; //ربل درفة
-    const M10 =(((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2);// زجاج
-    const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000; // شبك حديد 2م
-    const Q10 = (B10 * C10) / 10000; // زجاج الثابت
-    // const K10 = Math.ceil(C10 / 100) * 2; // كفرات درفه 
-    // const L10 = Math.ceil(C10 / 100) * 2; // كفرات شبك 
-    // const O10 = Math.ceil(C10 / 100) * 2; //مسكة
-    const P10 = Math.ceil((C10+B10) / 350) * 2; // سيلكون المنيوم
-    Q10==((B10 * C10) / 10000)*2
-    // P10=P10/2
+//         const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);  // الحلق
+//     const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2; // الكعب
+//     const G10 = (B10 - 6.5 - D10) / 100 * 2; // الشنكل
+//     const H10 = (B10 - 6.5 - D10) / 100 * 2; // الجنب
+//     const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100); // درفة الشبك
+//     const J10 = ((F10) + (H10 - 0.24)) * 2; //ربل درفة
+//     const M10 =(((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2);// زجاج
+//     const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000; // شبك حديد 2م
+//     const Q10 = (B10 * C10) / 10000; // زجاج الثابت
+//     // const K10 = Math.ceil(C10 / 100) * 2; // كفرات درفه 
+//     // const L10 = Math.ceil(C10 / 100) * 2; // كفرات شبك 
+//     // const O10 = Math.ceil(C10 / 100) * 2; //مسكة
+//     const P10 = Math.ceil((C10+B10) / 350) * 2; // سيلكون المنيوم
+//     Q10==((B10 * C10) / 10000)*2
+//     // P10=P10/2
 
-        return { Q10, E10 ,P10 };
+//         return { Q10, E10 ,P10 };
     
+//     }
+//     }
+
+function motherEquation(data) {
+    const aluminumCode = data.aluminumCode;
+    const B10 = data.h;
+    const C10 = data.w;
+    const D10 = 0;
+
+    if (["ROYAL 2", "ROYAL 3", "Sliding D12", "GOLF10", "Sliding S", "GOLF12", "slidingD10p", "Sliding D10"].includes(aluminumCode)) {
+        const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);
+        const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2;
+        const G10 = (B10 - 6.5 - D10) / 100 * 2;
+        const H10 = (B10 - 6.5 - D10) / 100 * 2;
+        const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100);
+        const J10 = ((F10) + (H10 - 0.24)) * 2;
+        const M10 = ((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2;
+        const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000;
+        const Q10 = (B10 * C10) / 10000;
+        const K10 = Math.ceil(C10 / 100) * 2;
+        const L10 = Math.ceil(C10 / 100) * 2;
+        const O10 = Math.ceil(C10 / 100) * 2;
+        const P10 = Math.ceil(C10 / 350) * 1;
+
+        return { E10, F10, G10, H10, I10, J10, M10, N10, Q10, K10, L10, O10, P10 };
+    } else if (["Fixed D10", "Fixed D4", "Fixed S4", "Fixed S10"].includes(aluminumCode)) {
+        const E10 = ((B10 / 100) * 2) + ((C10 / 100) * 2);
+        const F10 = (((((C10 - 7) / 2) + 3.5) - 11) / 100 * 2) * 2;
+        const G10 = (B10 - 6.5 - D10) / 100 * 2;
+        const H10 = (B10 - 6.5 - D10) / 100 * 2;
+        const I10 = (((B10 - 6.5 - D10) * 2) / 100) + (((((C10 - 7) / 2) + 3) * 2) / 100);
+        const J10 = ((F10) + (H10 - 0.24)) * 2;
+        const M10 = ((((((C10 - 5) / 2) - 4.5) / 100) * ((B10 - 14) / 100)) * 2) * 2;
+        const N10 = ((B10 - 10) * ((C10 / 2) - 10)) / 10000;
+        const Q10 = (B10 * C10) / 10000;
+        const P10 = Math.ceil((C10 + B10) / 350) * 2;
+
+        return { Q10, E10, P10 };
+    }else{   // هذه الإلس انا اضفتها عشان القطاعة غير المسجلة
+        const E10 = 0
+        const Q10 = 0
+        const P10 = 0
+        return { Q10, E10, P10 };
     }
-    }
+}
+
 // دالة المعادلات الام//
 
 
@@ -597,207 +852,470 @@ function motherEquation(data){
 // دالة تابعه لدالة الام ولاكنها تحسب النواتج الي تحت
 
 
-function totalMotherEquation(measurement) {
+// function totalMotherEquation(measurement) {
 
-    // هذا القسم جمع مجموع كل قطاع على حده ومن ثم يخرجها في اري إلى القسم التالي
-      var combinedResults = {};
-    measurement.measurement.forEach(function(item) {
-      var code = item.aluminumCode;
-      if (combinedResults[code]) {
-        Object.keys(item.motherEquation).forEach(function(key) {
-          combinedResults[code][key] = (combinedResults[code][key] || 0) + item.motherEquation[key];
-        });
-      } else {
-        combinedResults[code] = { ...item.motherEquation };
+//     // هذا القسم جمع مجموع كل قطاع على حده ومن ثم يخرجها في اري إلى القسم التالي
+//       var combinedResults = {};
+//     measurement.measurement.forEach(function(item) {
+//       var code = item.aluminumCode;
+//       if (combinedResults[code]) {
+//         Object.keys(item.motherEquation).forEach(function(key) {
+//           combinedResults[code][key] = (combinedResults[code][key] || 0) + item.motherEquation[key];
+//         });
+//       } else {
+//         combinedResults[code] = { ...item.motherEquation };
+//       }
+//     });
+    
+//     // var resultElement = document.getElementById("ww");
+//     // var htmlString = "";
+//     var resultsArray = [];
+    
+//     Object.keys(combinedResults).forEach(function(key) {
+//       var item = combinedResults[key];
+//       resultsArray.push({ aluminumCode: key });
+//     //   htmlString += "<h3>" + key + "</h3>";
+//       Object.keys(item).forEach(function(subKey) {
+//         resultsArray[resultsArray.length - 1][subKey] = item[subKey];
+//         // htmlString += "<p>" + subKey + ": " + item[subKey] + "</p>";
+//       });
+//       // htmlString += "<hr>";
+//     });
+    
+//     // console.log(resultsArray);
+//     // resultElement.innerHTML = htmlString;
+        
+//     // هذا القسم جمع مجموع كل قطاع على حده ومن ثم يخرجها في اري إلى القسم التالي//
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//       var resultsArray1 = [];
+//       resultsArray.forEach(function(item) {
+//             var aluminumCode = item.aluminumCode;
+    
+//             var sumE10 = 0,
+//                 sumF10 = 0,
+//                 sumG10 = 0,
+//                 sumH10 = 0,
+//                 sumI10 = 0,
+//                 sumJ10 = 0,
+//                 sumM10 = 0,
+//                 sumN10 = 0,
+//                 sumQ10 = 0,
+//                 sumK10 = 0,
+//                 sumL10 = 0,
+//                 sumO10 = 0,
+//                 sumP10 = 0;
+    
+//             if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10p" || aluminumCode === "Sliding D10") {
+//                 sumE10 += item.E10;
+//                 sumF10 += item.F10;
+//                 sumG10 += item.G10;
+//                 sumH10 += item.H10;
+//                 sumI10 += item.I10;
+//                 sumJ10 += item.J10;
+//                 sumM10 += item.M10;
+//                 sumN10 += item.N10;
+//                 sumQ10 += item.Q10;
+//                 sumK10 += item.K10;
+//                 sumL10 += item.L10;
+//                 sumO10 += item.O10;
+//                 sumP10 += item.P10;
+    
+//                 if (aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10") {
+//                     let pasE10 = sumE10 / 5.8,
+//                         pasH10 = sumH10 / 5.8,
+//                         pasF10 = sumF10 / 5.8,
+//                         pasI10 = sumI10 / 6;
+    
+//                     resultsArray1.push({
+//                         aluminumCode: item.aluminumCode,
+//                         E10F: Math.ceil(pasE10),
+//                         H10F: Math.ceil(pasH10),
+//                         F10F: Math.ceil(pasF10),
+//                         I10F: Math.ceil(pasI10),
+
+//                         E10T :Math.ceil(item.E10),  // الحلق
+//                         F10T :Math.ceil(item.F10), // الكعب
+//                         G10T :Math.ceil(item.G10), // الشنكل
+//                         H10T :Math.ceil(item.H10), // الجنب
+//                         I10T :Math.ceil(item.I10),// درفة الشبك
+//                         J10T :Math.ceil(item.J10), //ربل درفة
+//                         M10T :Math.ceil(item.M10),// زجاج
+//                         N10T :Math.ceil(item.N10),// شبك حديد 2م
+//                         Q10T :Math.ceil(item.Q10), // زجاج الثابت
+//                         K10T :Math.ceil(item.K10), // كفرات درفه 
+//                         L10T :Math.ceil(item.L10), // كفرات شبك 
+//                         O10T :Math.ceil(item.O10), //مسكة
+//                         P10T :Math.ceil(item.P10), // سيلكون المنيوم
+//                     });
+//                 } else if (aluminumCode === "ROYAL 2") {
+//                     let pasE10 = sumE10 / 6,
+//                         pasH10 = sumH10 / 6,
+//                         pasF10 = sumF10 / 6,
+//                         pasI10 = sumI10 / 6;
+    
+//                     resultsArray1.push({
+//                         aluminumCode: item.aluminumCode,
+//                         E10F: Math.ceil(pasE10),
+//                         H10F: Math.ceil(pasH10),
+//                         F10F: Math.ceil(pasF10),
+//                         I10F: Math.ceil(pasI10),
+                        
+//                         E10T :Math.ceil(item.E10),  // الحلق
+//                         F10T :Math.ceil(item.F10), // الكعب
+//                         G10T :Math.ceil(item.G10), // الشنكل
+//                         H10T :Math.ceil(item.H10), // الجنب
+//                         I10T :Math.ceil(item.I10),// درفة الشبك
+//                         J10T :Math.ceil(item.J10), //ربل درفة
+//                         M10T :Math.ceil(item.M10),// زجاج
+//                         N10T :Math.ceil(item.N10),// شبك حديد 2م
+//                         Q10T :Math.ceil(item.Q10), // زجاج الثابت
+//                         K10T :Math.ceil(item.K10), // كفرات درفه 
+//                         L10T :Math.ceil(item.L10), // كفرات شبك 
+//                         O10T :Math.ceil(item.O10), //مسكة
+//                         P10T :Math.ceil(item.P10), // سيلكون المنيوم
+//                     });
+//                 }
+//             } else if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4" || aluminumCode === "Fixed S4" || aluminumCode === "Fixed S10") {
+//                 sumE10 += item.E10;
+//                 sumF10 += item.F10;
+//                 sumG10 += item.G10;
+//                 sumH10 += item.H10;
+//                 sumI10 += item.I10;
+//                 sumJ10 += item.J10;
+//                 sumM10 += item.M10;
+//                 sumN10 += item.N10;
+//                 sumQ10 += item.Q10;
+//                 sumK10 += item.K10;
+//                 sumL10 += item.L10;
+//                 sumO10 += item.O10;
+//                 sumP10 += item.P10;
+    
+//                 if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4") {
+//                     let pasE10 = sumE10 / 5.8;
+    
+//                     resultsArray1.push({
+//                         aluminumCode: item.aluminumCode,
+//                         E10F: Math.ceil(pasE10),
+//                         Q10F: Math.ceil(sumQ10*2),
+//                         P10F: Math.ceil(sumP10),
+//                         E10T :Math.ceil(item.E10),  // الحلق
+//                         F10T :Math.ceil(item.F10), // الكعب
+//                         G10T :Math.ceil(item.G10), // الشنكل
+//                         H10T :Math.ceil(item.H10), // الجنب
+//                         I10T :Math.ceil(item.I10),// درفة الشبك
+//                         J10T :Math.ceil(item.J10), //ربل درفة
+//                         M10T :Math.ceil(item.M10),// زجاج
+//                         N10T :Math.ceil(item.N10),// شبك حديد 2م
+//                         Q10T :Math.ceil(item.Q10), // زجاج الثابت
+//                         K10T :Math.ceil(item.K10), // كفرات درفه 
+//                         L10T :Math.ceil(item.L10), // كفرات شبك 
+//                         O10T :Math.ceil(item.O10), //مسكة
+//                         P10T :Math.ceil(item.P10), // سيلكون المنيوم
+//                     });
+//                 } else {
+//                     let pasE10 = sumE10 / 5.8;
+    
+//                     resultsArray1.push({
+//                         aluminumCode: item.aluminumCode,
+//                         E10F: Math.ceil(pasE10),
+//                         Q10F: Math.ceil(sumQ10),
+//                         P10F: Math.ceil(sumP10),
+//                         E10T :Math.ceil(item.E10),  // الحلق
+//                         F10T :Math.ceil(item.F10), // الكعب
+//                         G10T :Math.ceil(item.G10), // الشنكل
+//                         H10T :Math.ceil(item.H10), // الجنب
+//                         I10T :Math.ceil(item.I10),// درفة الشبك
+//                         J10T :Math.ceil(item.J10), //ربل درفة
+//                         M10T :Math.ceil(item.M10),// زجاج
+//                         N10T :Math.ceil(item.N10),// شبك حديد 2م
+//                         Q10T :Math.ceil(item.Q10), // زجاج الثابت
+//                         K10T :Math.ceil(item.K10), // كفرات درفه 
+//                         L10T :Math.ceil(item.L10), // كفرات شبك 
+//                         O10T :Math.ceil(item.O10), //مسكة
+//                         P10T :Math.ceil(item.P10), // سيلكون المنيوم
+//                     });
+//                 }
+//             }
+//         });
+//         // console.log("u",resultsArray1);
+      
+//     var resultsArrayBefore = resultsArray // نتأج المعادلة الأولى حقت جمع القطاعات المتشابها 
+//     var resultsArrayAfter = resultsArray1  // نتأج المعادلة الثانيه
+//         return {resultsArrayBefore,resultsArrayAfter};
+//     }
+
+
+
+// function totalMotherEquation(order) {
+//     var combinedResults = {};
+  
+//     order.measurement.forEach(function(item) {
+//       if (!item.delete) { // التأكد من تجاهل القياسات المحذوفة
+//         var code = item.aluminumCode;
+//         if (combinedResults[code]) {
+//           Object.keys(item.motherEquation).forEach(function(key) {
+//             combinedResults[code][key] = (combinedResults[code][key] || 0) + item.motherEquation[key];
+//           });
+//         } else {
+//           combinedResults[code] = { ...item.motherEquation };
+//         }
+//       }
+//     });
+  
+//     var resultsArray = [];
+  
+//     Object.keys(combinedResults).forEach(function(key) {
+//       var item = combinedResults[key];
+//       var result = { aluminumCode: key };
+//       Object.keys(item).forEach(function(subKey) {
+//         result[subKey] = item[subKey];
+//       });
+//       resultsArray.push(result);
+//     });
+  
+//     var resultsArray1 = resultsArray.map(function(item) {
+//       var aluminumCode = item.aluminumCode;
+  
+//       var E10T = Math.ceil(item.E10 || 0),
+//           F10T = Math.ceil(item.F10 || 0),
+//           G10T = Math.ceil(item.G10 || 0),
+//           H10T = Math.ceil(item.H10 || 0),
+//           I10T = Math.ceil(item.I10 || 0),
+//           J10T = Math.ceil(item.J10 || 0),
+//           M10T = Math.ceil(item.M10 || 0),
+//           N10T = Math.ceil(item.N10 || 0),
+//           Q10T = Math.ceil(item.Q10 || 0),
+//           K10T = Math.ceil(item.K10 || 0),
+//           L10T = Math.ceil(item.L10 || 0),
+//           O10T = Math.ceil(item.O10 || 0),
+//           P10T = Math.ceil(item.P10 || 0);
+  
+//       var E10F = Math.ceil(E10T / 6),
+//           F10F = Math.ceil(F10T / 6),
+//           G10F = Math.ceil(G10T / 6),
+//           H10F = Math.ceil(H10T / 6),
+//           I10F = Math.ceil(I10T / 6),
+//           J10F = Math.ceil(J10T / 6),
+//           M10F = Math.ceil(M10T / 6),
+//           N10F = Math.ceil(N10T / 6),
+//           Q10F = Math.ceil(Q10T / 6),
+//           K10F = Math.ceil(K10T / 6),
+//           L10F = Math.ceil(L10T / 6),
+//           O10F = Math.ceil(O10T / 6),
+//           P10F = Math.ceil(P10T / 6);
+  
+//       return {
+//         aluminumCode,
+//         E10T, F10T, G10T, H10T, I10T, J10T, M10T, N10T, Q10T, K10T, L10T, O10T, P10T,
+//         E10F, F10F, G10F, H10F, I10F, J10F, M10F, N10F, Q10F, K10F, L10F, O10F, P10F
+//       };
+//     });
+  
+//     return { resultsArrayBefore: resultsArray, resultsArrayAfter: resultsArray1 };
+//   }
+  
+  
+function totalMotherEquation(order) {
+    var combinedResults = {};
+  
+    order.measurement.forEach(function(item) {
+      if (!item.delete) {
+        var code = item.aluminumCode;
+        if (combinedResults[code]) {
+          Object.keys(item.motherEquation).forEach(function(key) {
+            combinedResults[code][key] = (combinedResults[code][key] || 0) + item.motherEquation[key];
+          });
+        } else {
+          combinedResults[code] = { ...item.motherEquation };
+        }
       }
     });
-    
-    // var resultElement = document.getElementById("ww");
-    // var htmlString = "";
+  
     var resultsArray = [];
-    
     Object.keys(combinedResults).forEach(function(key) {
       var item = combinedResults[key];
       resultsArray.push({ aluminumCode: key });
-    //   htmlString += "<h3>" + key + "</h3>";
       Object.keys(item).forEach(function(subKey) {
         resultsArray[resultsArray.length - 1][subKey] = item[subKey];
-        // htmlString += "<p>" + subKey + ": " + item[subKey] + "</p>";
       });
-      // htmlString += "<hr>";
     });
-    
-    // console.log(resultsArray);
-    // resultElement.innerHTML = htmlString;
-        
-    // هذا القسم جمع مجموع كل قطاع على حده ومن ثم يخرجها في اري إلى القسم التالي//
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-      var resultsArray1 = [];
-      resultsArray.forEach(function(item) {
-            var aluminumCode = item.aluminumCode;
-    
-            var sumE10 = 0,
-                sumF10 = 0,
-                sumG10 = 0,
-                sumH10 = 0,
-                sumI10 = 0,
-                sumJ10 = 0,
-                sumM10 = 0,
-                sumN10 = 0,
-                sumQ10 = 0,
-                sumK10 = 0,
-                sumL10 = 0,
-                sumO10 = 0,
-                sumP10 = 0;
-    
-            if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10+" || aluminumCode === "Sliding D10") {
-                sumE10 += item.E10;
-                sumF10 += item.F10;
-                sumG10 += item.G10;
-                sumH10 += item.H10;
-                sumI10 += item.I10;
-                sumJ10 += item.J10;
-                sumM10 += item.M10;
-                sumN10 += item.N10;
-                sumQ10 += item.Q10;
-                sumK10 += item.K10;
-                sumL10 += item.L10;
-                sumO10 += item.O10;
-                sumP10 += item.P10;
-    
-                if (aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10") {
-                    let pasE10 = sumE10 / 5.8,
-                        pasH10 = sumH10 / 5.8,
-                        pasF10 = sumF10 / 5.8,
-                        pasI10 = sumI10 / 6;
-    
-                    resultsArray1.push({
-                        aluminumCode: item.aluminumCode,
-                        E10F: Math.ceil(pasE10),
-                        H10F: Math.ceil(pasH10),
-                        F10F: Math.ceil(pasF10),
-                        I10F: Math.ceil(pasI10),
+  
+    var resultsArray1 = [];
+    resultsArray.forEach(function(item) {
+      var aluminumCode = item.aluminumCode;
+  
+      var sumE10 = 0,
+          sumF10 = 0,
+          sumG10 = 0,
+          sumH10 = 0,
+          sumI10 = 0,
+          sumJ10 = 0,
+          sumM10 = 0,
+          sumN10 = 0,
+          sumQ10 = 0,
+          sumK10 = 0,
+          sumL10 = 0,
+          sumO10 = 0,
+          sumP10 = 0;
+  
+      if (aluminumCode === "ROYAL 2" || aluminumCode === "ROYAL 3" || aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "slidingD10p" || aluminumCode === "Sliding D10") {
+        sumE10 += item.E10;
+        sumF10 += item.F10;
+        sumG10 += item.G10;
+        sumH10 += item.H10;
+        sumI10 += item.I10;
+        sumJ10 += item.J10;
+        sumM10 += item.M10;
+        sumN10 += item.N10;
+        sumQ10 += item.Q10;
+        sumK10 += item.K10;
+        sumL10 += item.L10;
+        sumO10 += item.O10;
+        sumP10 += item.P10;
+  
+        if (aluminumCode === "Sliding D12" || aluminumCode === "GOLF10" || aluminumCode === "Sliding S" || aluminumCode === "GOLF12" || aluminumCode === "Sliding D10" || aluminumCode === "slidingD10p") {
+          let pasE10 = sumE10 / 5.8,
+              pasH10 = sumH10 / 5.8,
+              pasF10 = sumF10 / 5.8,
+              pasI10 = sumI10 / 6;
+  
+          resultsArray1.push({
+            aluminumCode: item.aluminumCode,
+            E10F: Math.ceil(pasE10),
+            H10F: Math.ceil(pasH10),
+            F10F: Math.ceil(pasF10),
+            I10F: Math.ceil(pasI10),
+  
+            E10T: Math.ceil(item.E10),
+            F10T: Math.ceil(item.F10),
+            G10T: Math.ceil(item.G10),
+            H10T: Math.ceil(item.H10),
+            I10T: Math.ceil(item.I10),
+            J10T: Math.ceil(item.J10),
+            M10T: Math.ceil(item.M10),
+            N10T: Math.ceil(item.N10),
+            Q10T: Math.ceil(item.Q10),
+            K10T: Math.ceil(item.K10),
+            L10T: Math.ceil(item.L10),
+            O10T: Math.ceil(item.O10),
+            P10T: Math.ceil(item.P10),
+          });
+        } else if (aluminumCode === "ROYAL 2") {
+          let pasE10 = sumE10 / 6,
+              pasH10 = sumH10 / 6,
+              pasF10 = sumF10 / 6,
+              pasI10 = sumI10 / 6;
+  
+          resultsArray1.push({
+            aluminumCode: item.aluminumCode,
+            E10F: Math.ceil(pasE10),
+            H10F: Math.ceil(pasH10),
+            F10F: Math.ceil(pasF10),
+            I10F: Math.ceil(pasI10),
+  
+            E10T: Math.ceil(item.E10),
+            F10T: Math.ceil(item.F10),
+            G10T: Math.ceil(item.G10),
+            H10T: Math.ceil(item.H10),
+            I10T: Math.ceil(item.I10),
+            J10T: Math.ceil(item.J10),
+            M10T: Math.ceil(item.M10),
+            N10T: Math.ceil(item.N10),
+            Q10T: Math.ceil(item.Q10),
+            K10T: Math.ceil(item.K10),
+            L10T: Math.ceil(item.L10),
+            O10T: Math.ceil(item.O10),
+            P10T: Math.ceil(item.P10),
+          });
+        }
+      } else if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4" || aluminumCode === "Fixed S4" || aluminumCode === "Fixed S10") {
+        sumE10 += item.E10;
+        sumF10 += item.F10;
+        sumG10 += item.G10;
+        sumH10 += item.H10;
+        sumI10 += item.I10;
+        sumJ10 += item.J10;
+        sumM10 += item.M10;
+        sumN10 += item.N10;
+        sumQ10 += item.Q10;
+        sumK10 += item.K10;
+        sumL10 += item.L10;
+        sumO10 += item.O10;
+        sumP10 += item.P10;
+  
+        if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4") {
+          let pasE10 = sumE10 / 5.8;
+  
+          resultsArray1.push({
+            aluminumCode: item.aluminumCode,
+            E10F: Math.ceil(pasE10),
+            Q10F: Math.ceil(sumQ10 * 2),
+            P10F: Math.ceil(sumP10),
+  
+            E10T: Math.ceil(item.E10),
+            F10T: Math.ceil(item.F10),
+            G10T: Math.ceil(item.G10),
+            H10T: Math.ceil(item.H10),
+            I10T: Math.ceil(item.I10),
+            J10T: Math.ceil(item.J10),
+            M10T: Math.ceil(item.M10),
+            N10T: Math.ceil(item.N10),
+            Q10T: Math.ceil(item.Q10),
+            K10T: Math.ceil(item.K10),
+            L10T: Math.ceil(item.L10),
+            O10T: Math.ceil(item.O10),
+            P10T: Math.ceil(item.P10),
+          });
+        } else {
+          let pasE10 = sumE10 / 5.8;
+  
+          resultsArray1.push({
+            aluminumCode: item.aluminumCode,
+            E10F: Math.ceil(pasE10),
+            Q10F: Math.ceil(sumQ10),
+            P10F: Math.ceil(sumP10),
+  
+            E10T: Math.ceil(item.E10),
+            F10T: Math.ceil(item.F10),
+            G10T: Math.ceil(item.G10),
+            H10T: Math.ceil(item.H10),
+            I10T: Math.ceil(item.I10),
+            J10T: Math.ceil(item.J10),
+            M10T: Math.ceil(item.M10),
+            N10T: Math.ceil(item.N10),
+            Q10T: Math.ceil(item.Q10),
+            K10T: Math.ceil(item.K10),
+            L10T: Math.ceil(item.L10),
+            O10T: Math.ceil(item.O10),
+            P10T: Math.ceil(item.P10),
+          });
+        }
+      }
+    });
+  
+    var resultsArrayBefore = resultsArray; // نتأج المعادلة الأولى حقت جمع القطاعات المتشابها
+    var resultsArrayAfter = resultsArray1;  // نتأج المعادلة الثانية
+    return { resultsArrayBefore, resultsArrayAfter };
+  }
+  
 
-                        E10T :Math.ceil(item.E10),  // الحلق
-                        F10T :Math.ceil(item.F10), // الكعب
-                        G10T :Math.ceil(item.G10), // الشنكل
-                        H10T :Math.ceil(item.H10), // الجنب
-                        I10T :Math.ceil(item.I10),// درفة الشبك
-                        J10T :Math.ceil(item.J10), //ربل درفة
-                        M10T :Math.ceil(item.M10),// زجاج
-                        N10T :Math.ceil(item.N10),// شبك حديد 2م
-                        Q10T :Math.ceil(item.Q10), // زجاج الثابت
-                        K10T :Math.ceil(item.K10), // كفرات درفه 
-                        L10T :Math.ceil(item.L10), // كفرات شبك 
-                        O10T :Math.ceil(item.O10), //مسكة
-                        P10T :Math.ceil(item.P10), // سيلكون المنيوم
-                    });
-                } else if (aluminumCode === "ROYAL 2") {
-                    let pasE10 = sumE10 / 6,
-                        pasH10 = sumH10 / 6,
-                        pasF10 = sumF10 / 6,
-                        pasI10 = sumI10 / 6;
-    
-                    resultsArray1.push({
-                        aluminumCode: item.aluminumCode,
-                        E10F: Math.ceil(pasE10),
-                        H10F: Math.ceil(pasH10),
-                        F10F: Math.ceil(pasF10),
-                        I10F: Math.ceil(pasI10),
-                        
-                        E10T :Math.ceil(item.E10),  // الحلق
-                        F10T :Math.ceil(item.F10), // الكعب
-                        G10T :Math.ceil(item.G10), // الشنكل
-                        H10T :Math.ceil(item.H10), // الجنب
-                        I10T :Math.ceil(item.I10),// درفة الشبك
-                        J10T :Math.ceil(item.J10), //ربل درفة
-                        M10T :Math.ceil(item.M10),// زجاج
-                        N10T :Math.ceil(item.N10),// شبك حديد 2م
-                        Q10T :Math.ceil(item.Q10), // زجاج الثابت
-                        K10T :Math.ceil(item.K10), // كفرات درفه 
-                        L10T :Math.ceil(item.L10), // كفرات شبك 
-                        O10T :Math.ceil(item.O10), //مسكة
-                        P10T :Math.ceil(item.P10), // سيلكون المنيوم
-                    });
-                }
-            } else if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4" || aluminumCode === "Fixed S4" || aluminumCode === "Fixed S10") {
-                sumE10 += item.E10;
-                sumF10 += item.F10;
-                sumG10 += item.G10;
-                sumH10 += item.H10;
-                sumI10 += item.I10;
-                sumJ10 += item.J10;
-                sumM10 += item.M10;
-                sumN10 += item.N10;
-                sumQ10 += item.Q10;
-                sumK10 += item.K10;
-                sumL10 += item.L10;
-                sumO10 += item.O10;
-                sumP10 += item.P10;
-    
-                if (aluminumCode === "Fixed D10" || aluminumCode === "Fixed D4") {
-                    let pasE10 = sumE10 / 5.8;
-    
-                    resultsArray1.push({
-                        aluminumCode: item.aluminumCode,
-                        E10F: Math.ceil(pasE10),
-                        Q10F: Math.ceil(sumQ10*2),
-                        P10F: Math.ceil(sumP10),
-                        E10T :Math.ceil(item.E10),  // الحلق
-                        F10T :Math.ceil(item.F10), // الكعب
-                        G10T :Math.ceil(item.G10), // الشنكل
-                        H10T :Math.ceil(item.H10), // الجنب
-                        I10T :Math.ceil(item.I10),// درفة الشبك
-                        J10T :Math.ceil(item.J10), //ربل درفة
-                        M10T :Math.ceil(item.M10),// زجاج
-                        N10T :Math.ceil(item.N10),// شبك حديد 2م
-                        Q10T :Math.ceil(item.Q10), // زجاج الثابت
-                        K10T :Math.ceil(item.K10), // كفرات درفه 
-                        L10T :Math.ceil(item.L10), // كفرات شبك 
-                        O10T :Math.ceil(item.O10), //مسكة
-                        P10T :Math.ceil(item.P10), // سيلكون المنيوم
-                    });
-                } else {
-                    let pasE10 = sumE10 / 5.8;
-    
-                    resultsArray1.push({
-                        aluminumCode: item.aluminumCode,
-                        E10F: Math.ceil(pasE10),
-                        Q10F: Math.ceil(sumQ10),
-                        P10F: Math.ceil(sumP10),
-                        E10T :Math.ceil(item.E10),  // الحلق
-                        F10T :Math.ceil(item.F10), // الكعب
-                        G10T :Math.ceil(item.G10), // الشنكل
-                        H10T :Math.ceil(item.H10), // الجنب
-                        I10T :Math.ceil(item.I10),// درفة الشبك
-                        J10T :Math.ceil(item.J10), //ربل درفة
-                        M10T :Math.ceil(item.M10),// زجاج
-                        N10T :Math.ceil(item.N10),// شبك حديد 2م
-                        Q10T :Math.ceil(item.Q10), // زجاج الثابت
-                        K10T :Math.ceil(item.K10), // كفرات درفه 
-                        L10T :Math.ceil(item.L10), // كفرات شبك 
-                        O10T :Math.ceil(item.O10), //مسكة
-                        P10T :Math.ceil(item.P10), // سيلكون المنيوم
-                    });
-                }
-            }
-        });
-        // console.log("u",resultsArray1);
-      
-    var resultsArrayBefore = resultsArray // نتأج المعادلة الأولى حقت جمع القطاعات المتشابها 
-    var resultsArrayAfter = resultsArray1  // نتأج المعادلة الثانيه
-        return {resultsArrayBefore,resultsArrayAfter};
-    }
+  
+
+
+
+
+
+
     // دالة تابعه لدالة الام ولاكنها تحسب النواتج الي تحت//
 
     // قم بتعريف measurement كمتغير مزيف هنا
@@ -839,7 +1357,7 @@ function totalMotherEquation(measurement) {
             //     } else if (C4 === "ROYAL 2") {
             //         valueA = (C10 / 2) - 6;
             //         valueB = B10 - 19.6;
-            //     } else if (C4 === "Sliding D10+") {
+            //     } else if (C4 === "Sliding D10p") {
             //         valueA = (C10 / 2) - 8.8;
             //         valueB = B10 - 16;
             //     } else if (C4 === "Sliding S") {
@@ -893,7 +1411,7 @@ function totalMotherEquation(measurement) {
                     valueA = (C10 / 2) - 6;
                     valueB = B10 - 19.6;
                     valueC = ((valueA * valueB) * 2)/10000
-                } else if (C4 === "Sliding D10+") {
+                } else if (C4 === "slidingD10p") {
                     valueA = (C10 / 2) - 8.8;
                     valueB = B10 - 16;
                     valueC = ((valueA * valueB) * 2)/10000
@@ -972,7 +1490,7 @@ function aluminumCuttingReport(M4,B10,C10,) {
         S4 = G4 - 1 + 1.3;
         T4 = H4 - 1 + 0.7 + 8.9;
         U4 = I4 - 1 + 1.4 - 0.1;
-    } else if (M4 === "Sliding D10" || M4 === "Sliding D10+" || M4 === "Sliding S") {
+    } else if (M4 === "Sliding D10" || M4 === "slidingD10p" || M4 === "Sliding S") {
         Q4 = E4;
         R4 = F4;
         S4 = G4;
@@ -995,6 +1513,14 @@ function aluminumCuttingReport(M4,B10,C10,) {
         S4 = 0;
         T4 = 0;
         U4 = 0;
+    }else{ 
+        // هذا الإليلص عشان القطاعات الي مسجلتها مثل الاستكتشر والأبواب والقواطع 
+      
+        Q4 = 0;
+        R4 = 0;
+        S4 = 0;
+        T4 = 0;
+        U4 = 0;
     }
 
     return { Q4, R4, S4, T4, U4 };
@@ -1011,8 +1537,339 @@ function aluminumCuttingReport(M4,B10,C10,) {
 // معادلة تقرير قص الألمنيوم//
 
 
+
+
+// دالة تحديث القياسات في عملها الذاكاء الصناعي استفييد منها عند حذف قياس
+
+// async function updatetotalMotherEquation(resultsArrayAfter, id) {
+//     const dgd = await User.updateOne(
+//       { "orders._id": id },
+//       { $unset: { "orders.$[orderElem].motherEquationTotal": "" } },
+//       {
+//         arrayFilters: [{ "orderElem._id": id }],
+//         new: true
+//       }
+//     );
+  
+//     resultsArrayAfter.forEach(async function (result) {
+//       function sanitizeValue(value) {
+//         if (value === undefined || value === null || isNaN(Number(value))) {
+//           return 0;
+//         }
+//         if (typeof value === 'number' || !isNaN(Number(value))) {
+//           return Number(value).toFixed(2);
+//         }
+//         return value;
+//       }
+  
+//       var k = {
+//         aluminumCode: result.aluminumCode,
+//         E10T: sanitizeValue(result.E10T),
+//         F10T: sanitizeValue(result.F10T),
+//         G10T: sanitizeValue(result.G10T),
+//         H10T: sanitizeValue(result.H10T),
+//         I10T: sanitizeValue(result.I10T),
+//         J10T: sanitizeValue(result.J10T),
+//         M10T: sanitizeValue(result.M10T),
+//         N10T: sanitizeValue(result.N10T),
+//         Q10T: sanitizeValue(result.Q10T),
+//         K10T: sanitizeValue(result.K10T),
+//         L10T: sanitizeValue(result.L10T),
+//         O10T: sanitizeValue(result.O10T),
+//         P10T: sanitizeValue(result.P10T),
+  
+//         E10TF: sanitizeValue(result.E10F),
+//         F10TF: sanitizeValue(result.F10F),
+//         G10TF: sanitizeValue(result.G10F),
+//         H10TF: sanitizeValue(result.H10F),
+//         I10TF: sanitizeValue(result.I10F),
+//         J10TF: sanitizeValue(result.J10F),
+//         M10TF: sanitizeValue(result.M10F),
+//         N10TF: sanitizeValue(result.N10F),
+//         Q10TF: sanitizeValue(result.Q10F),
+//         K10TF: sanitizeValue(result.K10F),
+//         L10TF: sanitizeValue(result.L10F),
+//         O10TF: sanitizeValue(result.O10F),
+//         P10TF: sanitizeValue(result.P10F)
+//       };
+  
+//       const vgfg = await User.updateOne(
+//         { "orders._id": id },
+//         { $push: { "orders.$[orderElem].motherEquationTotal": k } },
+//         {
+//           arrayFilters: [{ "orderElem._id": id }],
+//           new: true
+//         }
+//       );
+//     });
+//   }
+
+
+    // دالة تحديث الأم والنتائج بعد حذف القياس
+
+////// دالة تحديث مجموع امتار السكريت للاوردر + اجمالي السعر بحيث ////////
+
+
+
+
+
+
+
+
+
+
+
+// دالة لحساب مجموع totalTempersMeters وتحديث السعر الكلي
+// async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
+//     try {
+//         // البحث عن الطلب باستخدام معرف الطلب
+//         const order = await User.findOne({ "orders._id": orderId });
+
+//         if (!order) {
+//             throw new Error('Order not found');
+//         }
+
+//         // العثور على الطلب المحدد بناءً على orderId
+//         const selectedOrder = order.orders.find(o => o._id.equals(orderId));
+
+//         if (!selectedOrder) {
+//             throw new Error('Specified order not found');
+//         }
+
+//         // حساب مجموع reportTemper من جميع القياسات
+//         let totalTempersMeters = 0;
+//         selectedOrder.measurement.forEach(measure => {
+//             // التحقق من حالة delete قبل حساب reportTemper
+//             if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+//                 if (measure.glassCuttingReport) {
+//                     console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                     console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
+
+//                     // التحقق من أن reportTemper ليس null أو undefined وأنه رقم
+//                     if (measure.glassCuttingReport.reportTemper != null && typeof measure.glassCuttingReport.reportTemper === 'number') {
+//                         console.log(`Adding reportTemper: ${measure.glassCuttingReport.reportTemper}`);
+//                         totalTempersMeters += measure.glassCuttingReport.reportTemper;
+//                     } else {
+//                         console.log(`Skipping measurement due to missing or invalid reportTemper`);
+//                     }
+//                 } else {
+//                     console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                 }
+//             } else {
+//                 console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+//             }
+//         });
+
+//         console.log(`Total tempers meters calculated: ${totalTempersMeters}`);
+
+//         // إذا كان MetersPrice موجودًا في الطلب نستخدمه، إذا تم تمرير newMetersPrice نقوم بتحديث السعر
+//         let metersPrice = selectedOrder.totalTempers.MetersPrice;
+
+//         // إذا تم تمرير newMetersPrice حتى لو كان 0، نستخدمه
+//         if (newMetersPrice !== undefined) {
+//             metersPrice = newMetersPrice;
+//         }
+
+//         if (metersPrice === undefined || metersPrice === null) {
+//             // جلب السعر الافتراضي من جدول الأسعار إذا لم يكن موجودًا
+//             const defaultPrice = await Prices.findOne({});
+//             if (!defaultPrice || !defaultPrice.price.TempersPriceMeters) {
+//                 throw new Error('Default tempers meter price not found');
+//             }
+//             metersPrice = defaultPrice.price.TempersPriceMeters;
+//             console.log(`Using default MetersPrice: ${metersPrice}`);
+//         } else {
+//             console.log(`Using existing MetersPrice: ${metersPrice}`);
+//         }
+
+//         // حساب السعر الإجمالي
+//         const totalTempersPrice = totalTempersMeters * metersPrice;
+
+//         // تحديث حقل totalTempersMeters و totalTempersPrice و MetersPrice إذا تم تمرير السعر
+//         await User.updateOne(
+//             { "orders._id": orderId },
+//             {
+//                 $set: {
+//                     "orders.$.totalTempers.totalTempersMeters": totalTempersMeters,
+//                     "orders.$.totalTempers.totalTempersPrice": totalTempersPrice,
+//                     ...(newMetersPrice !== undefined && { "orders.$.totalTempers.MetersPrice": metersPrice }) // تحديث السعر فقط إذا تم تمريره
+//                 }
+//             }
+//         );
+
+//         console.log('Total tempers meters and price updated successfully:', totalTempersMeters, totalTempersPrice);
+//         return { totalTempersMeters, totalTempersPrice }; // نعيد القيم لاستخدامها إذا لزم الأمر
+//     } catch (err) {
+//         console.error("Error:", err.message);
+//     }
+// }
+
+
+
+
+async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
+    try {
+        // البحث عن الطلب باستخدام معرف الطلب
+        const order = await User.findOne({ "orders._id": orderId });
+
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        // العثور على الطلب المحدد بناءً على orderId
+        const selectedOrder = order.orders.find(o => o._id.equals(orderId));
+
+        if (!selectedOrder) {
+            throw new Error('Specified order not found');
+        }
+
+        // حساب مجموع reportTemper من جميع القياسات
+        let totalTempersMeters = 0;
+        selectedOrder.measurement.forEach(measure => {
+            // التحقق من حالة delete قبل حساب reportTemper
+            if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+                if (measure.glassCuttingReport) {
+                    console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
+                    console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
+
+                    // التحقق من أن reportTemper ليس null أو undefined وأنه رقم
+                    if (measure.glassCuttingReport.reportTemper != null && typeof measure.glassCuttingReport.reportTemper === 'number') {
+                        console.log(`Adding reportTemper: ${measure.glassCuttingReport.reportTemper}`);
+                        totalTempersMeters += measure.glassCuttingReport.reportTemper;
+                    } else {
+                        console.log(`Skipping measurement due to missing or invalid reportTemper`);
+                    }
+                } else {
+                    console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
+                }
+            } else {
+                console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+            }
+        });
+
+        console.log(`Total tempers meters calculated: ${totalTempersMeters}`);
+
+        // تعيين MetersPrice باستخدام newMetersPrice إذا كان موجودًا، أو السعر في totalTempers، أو السعر الافتراضي
+        let metersPrice;
+        
+        if (newMetersPrice !== undefined) {
+            // إذا تم تمرير newMetersPrice، نستخدمه مباشرة
+            metersPrice = newMetersPrice;
+            console.log(`Using provided newMetersPrice: ${metersPrice}`);
+        } else if (selectedOrder.totalTempers && selectedOrder.totalTempers.MetersPrice !== undefined && selectedOrder.totalTempers.MetersPrice !== null) {
+            // استخدام MetersPrice الموجود في totalTempers إذا كان يحتوي على قيمة
+            metersPrice = selectedOrder.totalTempers.MetersPrice;
+            console.log(`Using existing MetersPrice from order's totalTempers: ${metersPrice}`);
+        } else {
+            // جلب السعر الافتراضي من جدول Prices إذا لم يكن موجودًا في totalTempers
+            const defaultPrice = await Prices.findOne({});
+            if (!defaultPrice || !defaultPrice.price.TempersPriceMeters) {
+                throw new Error('Default tempers meter price not found');
+            }
+            metersPrice = defaultPrice.price.TempersPriceMeters;
+            console.log(`Using default MetersPrice from Prices table: ${metersPrice}`);
+        }
+
+        // حساب السعر الإجمالي
+        const totalTempersPrice = totalTempersMeters * metersPrice;
+
+        // تحديث الحقول في قاعدة البيانات، بما في ذلك MetersPrice (بغض النظر عن مصدره)
+        await User.updateOne(
+            { "orders._id": orderId },
+            {
+                $set: {
+                    "orders.$.totalTempers.totalTempersMeters": totalTempersMeters,
+                    "orders.$.totalTempers.totalTempersPrice": totalTempersPrice,
+                    "orders.$.totalTempers.MetersPrice": metersPrice // تحديث السعر دائماً سواء كان موجودًا مسبقًا أو تم تحديثه
+                }
+            }
+        );
+
+        console.log('Total tempers meters and price updated successfully:', totalTempersMeters, totalTempersPrice);
+        return { totalTempersMeters, totalTempersPrice }; // نعيد القيم لاستخدامها إذا لزم الأمر
+    } catch (err) {
+        console.error("Error:", err.message);
+    }
+}
+
+
+
+// استدعاء الدالة مع orderId
+// calculateTotalTempersMeters(6712a66b8c077d19258fadd4);
+
+
+
+
+////// دالة تحديث مجموع امتار السكريت للاوردر + اجمالي السعر بحيث ////////
+
+
+
+
+
+// هذا الداله لجمع جميع المجاميع التابعه لاضافات الشبابيك ////////
+
+// الدالة لحساب مجموع الأسعار باستخدام orderId
+
+async function calculateTotalPrice(orderId) {
+    try {
+      console.log("Starting aggregation for orderId:", orderId);
+  
+      const result = await User.aggregate([
+        { $unwind: "$orders" },
+        { $match: { "orders._id": new mongoose.Types.ObjectId(String(orderId)) } },
+        { $unwind: "$orders.measurement" },
+        { $match: { "orders.measurement.delete": { $ne: true } } }, // تجاهل القياسات التي delete فيها true
+        {
+          $addFields: {
+            "orders.measurement.additionsTotal": {
+              $add: [
+                "$orders.measurement.additions.Structure.totalPrice",
+                "$orders.measurement.additions.Hinges.totalPrice",
+                "$orders.measurement.additions.RollWindow.totalPrice"
+              ]
+            }
+          }
+        },
+        {
+          $group: {
+            _id: "$orders._id",
+            totalAllPrice: { $sum: "$orders.measurement.additionsTotal" }
+          }
+        }
+      ]);
+  
+      const totalPrice = result[0]?.totalAllPrice || 0;
+      console.log("Total price for all additions in order:", totalPrice);
+  
+      // تحديث `totalAllPrice` في قاعدة البيانات
+      await User.findOneAndUpdate(
+        { "orders._id": new mongoose.Types.ObjectId(String(orderId)) },
+        { $set: { "orders.$.totalAllPrice": totalPrice } }
+      );
+  
+      console.log("Updated totalAllPrice in the database successfully.");
+      return totalPrice;
+    } catch (error) {
+      console.error("Error calculating total price:", error);
+      throw error;
+    }
+  }
+////// هذا الداله لجمع جميع المجاميع التابعه لاضافات الشبابيك ////////
+
+
+
+
+
+
+
+
+
+
+
+
+
 // module.exports = calculateResults;
-module.exports = {calculateResults,functionPrice,updateTotal,refreshDiscount,motherEquation,totalMotherEquation,calculateValues,aluminumCuttingReport}
+module.exports = {calculateResults,functionPrice,updateTotal,refreshDiscount,motherEquation,totalMotherEquation,calculateValues,aluminumCuttingReport,updatetotalMotherEquation,sanitizeValue,calculateTotalTempersMeters,calculateTotalPrice}
 
 
 

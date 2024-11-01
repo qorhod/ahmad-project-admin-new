@@ -17,7 +17,8 @@
       content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
     />
     <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
+    <title>Temper</title>
+    <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -71,6 +72,9 @@
 
 </style>
 <body>
+
+  <%- include('../components/overlay.ejs') %>
+
     <!-- عشان ماظهر في الفاتورة -->
      <span class=" web-content"> 
      <!--ايقونات  -->
@@ -81,10 +85,10 @@
        <!-- الواجهه الي على اليمين -->
  
        <!-- عشان ماتظهر في الطباعة -->
-       <span class=" web-content">
+       <!-- <span class=" web-content"> -->
        <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
     
-     </span>
+     <!-- </span> -->
 
       <section class="w-100">
         <span class=" web-content">
@@ -99,9 +103,12 @@
         <li class="nav-item">
           <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
         </li>
+        <% } %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
         </li>
@@ -122,21 +129,21 @@
 
 
      <!-- form-control -->
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
+     <!-- <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
       <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
 
       <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
       <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
 
-  </div>
+  </div> -->
 
 
-  <a
+  <!-- <a
            
   class="btn btn-primary "
   href="../measurement/<%= arrR._id %>"
    type="button"
-    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
+    class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> -->
 
 
 
@@ -186,8 +193,10 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Glass color</th>
               <th scope="col">Aluminum code</th>
+
+              <th scope="col">Glass Color Inside</th>
+              <th scope="col">Glass Color Outside</th>
               <th scope="col">H</th>
               <th scope="col">W</th>
               <th scope="col">Temper</th>
@@ -197,16 +206,17 @@
         <!--  -->
         <tbody id="kk">
           <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
-            <% arrR.measurement.reverse().forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
+            <% arrR.measurement.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
              
               <!-- شرط عشان ما يطلع إلى التمبر -->
               <% if (item.temper==="YAS") { %> 
                
-              
-                 <tr>
-                   <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
+              <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+                 <tr class="<%= item.delete ? 'strikethrough' : '' %>">
+                   <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-                   <td><%= item.glassColorCode %>	</td>
+                   <td><%= item.glassColorCodeInside || '--' %></td>
+                   <td><%= item.glassColorCodeOutside || '--' %></td>                 
                    <td><%=item.glassCuttingReport.H %></td>
                    <td><%= item.glassCuttingReport.W %></td>
                    <td><%= item.glassCuttingReport.reportTemper %></td>
@@ -214,14 +224,28 @@
                  <% } %>
                <% }) %>
              
-      
+
+
+               
           </tbody>
         </table>
 
 
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >      <thead>
+        <tr>
+          <th scope="col">Total Temper</th>
 
+        </tr>
+      </thead>
+      <tbody>
 
+        <td><%= arrR.totalTempers.totalTempersMeters %></td>
 
+      </tbody>
+    </table>
      
 
 
@@ -232,7 +256,8 @@
     <script src="../js/sidebars.js"></script>
 
     <script src="../js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
   </body>
 
 

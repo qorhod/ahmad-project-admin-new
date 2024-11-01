@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+<!-- مكتبة الرسمة  -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+
+<style>
+/* زر التركيب الخارجي */
+.checkbox-wrapper-10 .tgl {
+  display: none;
+}
+
+.checkbox-wrapper-10 .tgl,
+  .checkbox-wrapper-10 .tgl:after,
+  .checkbox-wrapper-10 .tgl:before,
+  .checkbox-wrapper-10 .tgl *,
+  .checkbox-wrapper-10 .tgl *:after,
+  .checkbox-wrapper-10 .tgl *:before,
+  .checkbox-wrapper-10 .tgl + .tgl-btn {
+  box-sizing: border-box;
+}
+
+.checkbox-wrapper-10 .tgl::-moz-selection,
+  .checkbox-wrapper-10 .tgl:after::-moz-selection,
+  .checkbox-wrapper-10 .tgl:before::-moz-selection,
+  .checkbox-wrapper-10 .tgl *::-moz-selection,
+  .checkbox-wrapper-10 .tgl *:after::-moz-selection,
+  .checkbox-wrapper-10 .tgl *:before::-moz-selection,
+  .checkbox-wrapper-10 .tgl + .tgl-btn::-moz-selection,
+  .checkbox-wrapper-10 .tgl::selection,
+  .checkbox-wrapper-10 .tgl:after::selection,
+  .checkbox-wrapper-10 .tgl:before::selection,
+  .checkbox-wrapper-10 .tgl *::selection,
+  .checkbox-wrapper-10 .tgl *:after::selection,
+  .checkbox-wrapper-10 .tgl *:before::selection,
+  .checkbox-wrapper-10 .tgl + .tgl-btn::selection {
+  background: none;
+}
+
+.checkbox-wrapper-10 .tgl + .tgl-btn {
+  outline: 0;
+  display: block;
+  width: 4em;
+  height: 2em;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-wrapper-10 .tgl + .tgl-btn:after,
+  .checkbox-wrapper-10 .tgl + .tgl-btn:before {
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%;
+}
+
+.checkbox-wrapper-10 .tgl + .tgl-btn:after {
+  left: 0;
+}
+
+.checkbox-wrapper-10 .tgl + .tgl-btn:before {
+  display: none;
+}
+
+.checkbox-wrapper-10 .tgl:checked + .tgl-btn:after {
+  left: 50%;
+}
+
+.checkbox-wrapper-10 .tgl-flip + .tgl-btn {
+  padding: 2px;
+  transition: all 0.2s ease;
+  font-family: sans-serif;
+  perspective: 100px;
+}
+
+.checkbox-wrapper-10 .tgl-flip + .tgl-btn:after,
+  .checkbox-wrapper-10 .tgl-flip + .tgl-btn:before {
+  display: inline-block;
+  transition: all 0.4s ease;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 2em;
+  font-weight: bold;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 4px;
+}
+
+.checkbox-wrapper-10 .tgl-flip + .tgl-btn:after {
+  content: attr(data-tg-on);
+  background: #7FC6A6;
+  transform: rotateY(-180deg);
+}
+
+.checkbox-wrapper-10 .tgl-flip + .tgl-btn:before {
+  background: #FF3A19;
+  content: attr(data-tg-off);
+}
+
+.checkbox-wrapper-10 .tgl-flip + .tgl-btn:active:before {
+  transform: rotateY(-20deg);
+}
+
+.checkbox-wrapper-10 .tgl-flip:checked + .tgl-btn:before {
+  transform: rotateY(180deg);
+}
+
+.checkbox-wrapper-10 .tgl-flip:checked + .tgl-btn:after {
+  transform: rotateY(0);
+  left: 0;
+  background: #43750d;
+}
+
+.checkbox-wrapper-10 .tgl-flip:checked + .tgl-btn:active:after {
+  transform: rotateY(20deg);
+}
+
+
+
+
+
+
+
+/* تشك بوكس كلر */
+
+
+.checkbox-wrapper-16 *,
+  .checkbox-wrapper-16 *:after,
+  .checkbox-wrapper-16 *:before {
+  box-sizing: border-box;
+}
+
+.checkbox-wrapper-16 .checkbox-input {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(100%);
+  clip-path: inset(100%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile {
+  border-color: #2260ff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  color: #2260ff;
+}
+
+.checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile:before {
+  transform: scale(1);
+  opacity: 1;
+  background-color: #2260ff;
+  border-color: #2260ff;
+  color: #fff;
+  content: "✓";
+}
+
+.checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-icon,
+  .checkbox-wrapper-16 .checkbox-input:checked + .checkbox-tile .checkbox-label {
+  color: #2260ff;
+}
+
+.checkbox-wrapper-16 .checkbox-input:focus + .checkbox-tile {
+  border-color: #2260ff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 0 0 4px #b5c9fc;
+}
+
+.checkbox-wrapper-16 .checkbox-input:focus + .checkbox-tile:before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.checkbox-wrapper-16 .checkbox-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 7rem;
+  min-height: 7rem;
+  border-radius: 0.5rem;
+  border: 2px solid #b5bfd9;
+  /* background-color: #fff; */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  transition: 0.15s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-wrapper-16 .checkbox-tile:before {
+  content: "";
+  font-size: 12px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #b5bfd9;
+  border-radius: 50%;
+  top: 0.25rem;
+  left: 0.25rem;
+  opacity: 0;
+  transform: scale(0);
+  transition: 0.25s ease;
+}
+
+.checkbox-wrapper-16 .checkbox-tile:hover {
+  border-color: #2260ff;
+}
+
+.checkbox-wrapper-16 .checkbox-tile:hover:before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.checkbox-wrapper-16 .checkbox-icon {
+  transition: 0.375s ease;
+  color: #494949;
+}
+
+.checkbox-wrapper-16 .checkbox-icon svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.checkbox-wrapper-16 .checkbox-label {
+  color: #707070;
+  transition: 0.375s ease;
+  text-align: center;
+}
+
+
+
+</style>
+
+
+
+    <script src="../js/color-modes.js"></script>
+   
+    <link
+      rel="stylesheet"
+      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
+    />
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>Home page</title>
+    <link rel="stylesheet" href="../css/overlay.css">
+
+    
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <!-- استايل الي يغمق ويفتح الشاشة -->
+    <link rel="stylesheet" href="../css/dark-light.css"/>
+   
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/myStyle.css" />
+    <!-- styles img Checkbox -->
+    <link rel="stylesheet" href="../css/imgCheckbox.css">
+
+<style>
+/* تصميم النافذة المنبثقة */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 9999; /* تأكد من أن هذه القيمة عالية بما يكفي لتكون فوق كل شيء */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  padding-top: 60px; 
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* تصميم savedImageContainer */
+#savedImageContainer {
+  display: none;
+  margin-top: 20px;
+  background-color: #fff; /* خلفية بيضاء */
+  border-radius: 15px; /* زوايا مستديرة */
+  border: 1px solid #ccc; /* إطار رمادي */
+  padding: 10px; /* مسافة داخلية */
+  width: 200px; /* عرض محدد */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* إضافة ظل */
+}
+
+#savedImageContainer img {
+  width: 100%; /* جعل الصورة تتناسب مع الحاوية */
+  border-radius: 10px; /* زوايا مستديرة للصورة */
+}
+
+
+
+</style>
+
+  </head>
+  <body>
+
+
+    <%- include('../components/overlay.ejs') %>
+
+    <!-- اخزن فيه اليدي عشان نطعة في الجافا سكربت الي في هذي الصفحة -->
+    <!--ايقونات  -->
+    <%- include('../components/dark-light.ejs') %> 
+
+
+    <main class="d-flex flex-nowrap ">
+      <!-- الواجهه الي على اليمين -->
+      <%- include('../components/sidebar.ejs', {currentPage:null}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+        <table
+          style="width: 99%"
+          class="text-center mx-auto table mt-5 table-striped table-bordered"
+        >
+        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
+       
+
+        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
+     <h2>: رفع قياس الإستركتشر و التيوبات  </h2>
+     
+
+     <br>  <br> <hr>  <br>
+        
+   
+        <!-- العرض ولاطول  -->
+        <%- include('../components/hAndw.ejs') %> 
+
+
+          
+             
+        
+          <br><br><hr><br> 
+
+          <h4>:أختر نوع قطاع الألمنيوم</h4>
+          <!-- ازرار اظهار قوائم انواع قطاعات الألمنيوم -->
+          <!-- <div hidden class="btn-group col-md-6 mt-3" role="group" aria-label="Basic radio toggle button group"> -->
+            <!-- <input type="radio" class="btn-check" name="btnradio5" id="btnradio11" autocomplete="off" checked>
+            <label class="btn btn-outline-light" for="btnradio11"> 1</label>
+          
+            <input type="radio" class="btn-check" name="btnradio5" id="btnradio22" autocomplete="off">
+            <label class="btn btn-outline-light" for="btnradio22"> 2</label>
+          
+            <input type="radio" class="btn-check" name="btnradio5" id="btnradio33" autocomplete="off">
+            <label class="btn btn-outline-light" for="btnradio33"> 3</label> -->
+          <!-- </div> -->
+          
+          <!--// ازرار اظهار قوائم انواع قطاعات الألمنيوم //-->
+          
+          
+          
+          
+                        <!-- القائمة 1 انواع الألمنيوم  -->
+          
+                        <form class="row g-3">
+                  
+                          <div id="div11" class="checkbox mt-5 "  role="group" aria-label="Basic radio toggle button group">
+
+
+                            <label class="checkbox-wrapper">
+                                <input value="SG50" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                <span class="checkbox-tile">
+                                    <span class="checkbox-icon">
+                                        <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                            <rect width="256" height="256" fill="none"></rect>
+                                            <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                        </svg>
+                                    </span>
+                                    <span class="checkbox-label">SG50</span>
+                                </span>
+                            </label>
+                            
+          
+          
+          
+                              <label class="checkbox-wrapper">
+                                  <input value="SMART" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                  <span class="checkbox-tile">
+                                      <span class="checkbox-icon">
+                                          <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                          <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                              <rect width="256" height="256" fill="none"></rect>
+                                              <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                          </svg>
+                                      </span>
+                                      <span class="checkbox-label">SMART</span>
+                                  </span>
+                              </label>
+                             
+          
+          
+          
+          
+          
+          
+                                <label class="checkbox-wrapper">
+                                    <input value="FORTICKS" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                    <span class="checkbox-tile">
+                                        <span class="checkbox-icon">
+                                            <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                                <rect width="256" height="256" fill="none"></rect>
+                                                <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                            </svg>
+                                        </span>
+                                        <span class="checkbox-label">FORTICKS</span>
+                                    </span>
+                                </label>
+                          
+          <br>
+          <br>
+           <label class="checkbox-wrapper">
+                                <input value="T8CM" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                <span class="checkbox-tile">
+                                    <span class="checkbox-icon">
+                                        <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                            <rect width="256" height="256" fill="none"></rect>
+                                            <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                        </svg>
+                                    </span>
+                                    <span class="checkbox-label">T8CM</span>
+                                </span>
+                            </label>
+                            
+          
+          
+          
+                              <label class="checkbox-wrapper">
+                                  <input value="T10CM" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                  <span class="checkbox-tile">
+                                      <span class="checkbox-icon">
+                                          <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                          <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                              <rect width="256" height="256" fill="none"></rect>
+                                              <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                          </svg>
+                                      </span>
+                                      <span class="checkbox-label">T10CM</span>
+                                  </span>
+                              </label>
+                             
+          
+          
+          
+          
+          
+          
+                                <label class="checkbox-wrapper">
+                                    <input value="FLAT" type="radio" class="checkbox-input" name="c2"  autocomplete="off" />
+                                    <span class="checkbox-tile">
+                                        <span class="checkbox-icon">
+                                            <!-- <img class="ii" src="/img/windows/case7-white.png" alt="" > -->
+                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
+                                                <rect width="256" height="256" fill="none"></rect>
+                                                <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
+                                            </svg>
+                                        </span>
+                                        <span class="checkbox-label">FLAT</span>
+                                    </span>
+                                </label>
+                          
+          
+          
+          
+                          </div>
+            
+                          <br>
+            
+                          <%- include('../components/aluminumSize.ejs') %>
+
+            
+          
+          
+                      </form>
+                      <!-- <label h for="inputGender" class="form-label">:اختر نوع التركيب</label>
+          
+                      <div class="checkbox-wrapper-10">
+                        <input value="داخلي"  type="checkbox" id="cb5" class="tgl tgl-flip" name="m11">
+                        <label for="cb5" data-tg-on="داخلي" data-tg-off="خارجي" class="tgl-btn"></label>
+                    </div> -->
+          
+          
+          
+                </form>
+          
+          
+
+                <br><br><hr><br>   
+  
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:إضافة شباك استركتشر </label>
+                    <input
+                    name="StructureNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="StructureNumber"
+                      value="<%=  arrM.additions && arrM.additions.Structure && arrM.additions.Structure.number ? arrM.additions.Structure.number : null %>"
+                    />
+                    
+                  </div>
+       
+
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:اضافة شباك مفصلات </label>
+                    <input
+                    name="HingesNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="HingesNumber"
+                      value="<%= arrM.additions && arrM.additions.Hinges && arrM.additions.Hinges.number ? arrM.additions.Hinges.number : null %>"
+                      />
+                  </div>
+
+
+
+
+                  <div class="col-md-6">
+                    <label for="inputage4" class="form-label">:اضافة شباك رول </label>
+                    <input
+                    name="RollWindowNumber"
+                      placeholder="0"
+                      type="number"
+                      class="form-control"
+                      id="RollWindowNumber"
+                      value="<%= arrM.additions && arrM.additions.RollWindow && arrM.additions.RollWindow.number ? arrM.additions.RollWindow.number : null %>"
+                      />
+                  </div>
+
+
+
+          <br><br><hr><br>   
+
+<h4>:ارسم شكل الألمنيوم</h4>
+
+<%- include('../components/Fabric.ejs') %>
+<!-- مساحة لعرض الصورة المحفوظة -->
+<div id="savedImageContainer" style="display: none; margin-top: 20px;">
+  <img id="savedImage" />
+</div>
+
+
+
+ <!--  ازرار القوائم لأشكال الشبابيك-->
+
+
+ <!--// ازرار اظهار قوائم شكل قطاعات الألمنيوم //-->
+ 
+
+ 
+               <!-- القائمة 1 شكل الألمنيوم  -->
+ 
+               <form class="row g-3">
+         
+
+              
+ <br>
+ <!-- <label >:إضافة شفة</label>
+ <br>
+ <div class="checkbox-wrapper-10">
+   <input value="YAS"  type="checkbox" id="cb7" class="tgl tgl-flip" name="m11">
+   <label for="cb7" data-tg-on="نعم" data-tg-off="لا" class="tgl-btn"></label>
+  -->
+
+
+
+
+<br><hr> <br>
+
+
+<!-- اختيار لون الألمنيوم -->
+
+
+<!-- ألون الألمنيوم المختصرة -->
+
+
+
+
+
+<!--  لون الالمنيوم  -->
+<%- include('../components/aluminumColorCode.ejs') %>
+
+
+<br><br><hr>
+
+<h4>:مواصفات الزجاج</h4>
+<br>
+<%- include('../components/glassColorCode.ejs') %>
+
+
+<%- include('../components/temper.ejs') %>
+
+
+
+    <br>
+
+ 
+    <%- include('../components/comments.ejs') %>
+
+ 
+
+
+    
+    
+
+
+
+   
+          
+<!-- mx-auto -->
+
+<div id="alertContainer" class="alert alert-danger d-none" role="alert">
+  القياسات غير مكتملة
+</div>
+                  <div class="d-grid gap-2 col-6  mt-5">
+
+                    <!-- href="/measurement/<%=// arrM._id %>" -->
+                    <a
+
+                    data-bs-toggle="tooltip"
+                    data-bs-title="next"
+                    data-bs-placement="top"
+                    class="btn btn-primary "
+                    
+                    id="next"
+                    >التالي<i class="bi bi-arrow-right"></i></a>
+
+                  </div>
+
+<h1 id="1"></h1>
+      </section>
+      
+    </main>
+
+
+   
+
+
+
+    <script src="../js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/sidebars.js"></script>
+
+    <script src="../js/main.js"></script>
+
+    <script src="../js/overlay.js"></script>
+
+
+
+
+    
+    
+
+    <!-- <textarea id="myTextarea" rows="4" cols="50"></textarea>
+<button id="sendButton">إرسال</button>
+
+<script>
+    const sendButton = document.getElementById('sendButton');
+    const myTextarea = document.getElementById('myTextarea');
+
+    sendButton.addEventListener('click', async () => {
+        const textareaValue = myTextarea.value;
+
+        try {
+            const response = await fetch('/measurementxxx', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ comments: textareaValue })
+            });
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('حدث خطأ:', error);
+        }
+    });
+</script>
+ -->
+<!-- انبوت مخفي يحمل id -->
+<input id="iid" type="hidden" value="<%= arrM.iid?arrM.iid:arrM._id %>"> 
+  </body>
+<script>
+
+
+
+
+
+
+
+  // الاقائمة
+            // const div1 = document.getElementById("div1")
+            // const div2 = document.getElementById("div2")
+            // const div3 = document.getElementById("div3")
+
+            // div2.style.setProperty("display", "none", "important")
+            // div3.style.setProperty("display", "none", "important")
+
+            // // كنترول الزر الأول
+            // document.getElementById("btnradio1").addEventListener("change",function(){
+                
+            //     if (this.checked) {
+            //     console.log("Checkbox is checked1111..");
+                
+            //     div2.style.setProperty("display", "none", "important")
+            //     div3.style.setProperty("display", "none", "important")
+            //     div1.style.setProperty("display", "block", "important")
+
+
+              
+            //   } else  {
+            //     console.log("Checkbox is not checked..");
+
+            //   }
+
+
+            // })
+
+
+
+            // // كنترول الزر الثاني
+
+
+            // document.getElementById("btnradio2").addEventListener("change",function(){
+              
+            //     if (this.checked) {
+            //     console.log("Checkbox is checked22222..");
+              
+            //   div1.style.setProperty("display", "none", "important")
+            //     div3.style.setProperty("display", "none", "important")
+            //     div2.style.setProperty("display", "block", "important")
+            //     // document.getElementById("ok1").value="ok1"
+            
+            //   } else  {
+            //     console.log("Checkbox is not checked..");
+               
+                
+            //   }
+
+
+            // })
+
+
+
+
+            // // كنترول الزر الثالث
+
+
+            // document.getElementById("btnradio3").addEventListener("change",function(){
+              
+            //   if (this.checked) {
+            //   console.log("Checkbox is checked33333..");
+
+            //   div1.style.setProperty("display", "none", "important")
+            //   div2.style.setProperty("display", "none", "important")
+            //   div3.style.setProperty("display", "block", "important")
+  
+
+              
+            // } else  {
+            //   console.log("Checkbox is not checked..");
+
+              
+            // }
+
+
+            // })
+
+
+
+
+
+// var n =decument.getElementById("lengthId").value
+
+// console.log(n)
+
+// click
+
+
+
+
+
+
+
+  // signupForm.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+  //   emailError.textContent = ""
+  //   passwordError.textContent = ""
+
+  //   const res = await fetch("sign-up", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       email: emailId.value,
+  //        password: passwordId.value,
+  //        userName:usernameId.value,
+  //     }),
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+
+  //   const data = await res.json();
+
+
+  //   if (data.arrvalidationError) {
+  //     console.log(data.arrvalidationError)
+
+  //     data.arrvalidationError.forEach(item => {
+
+  //       if (item.path == "email") {
+  //         emailError.textContent = "please provide a valid email"
+  //       }
+
+
+  //       if (item.path == "password") {
+  //         passwordError.textContent = "Password must be at least 8 characters with 1 upper case letter and 1 number"
+  //       }
+        
+  //     });
+  //   }
+
+
+
+
+
+
+
+</script>
+ 
+
+
+
+<!-- <script>
+
+
+  
+
+
+//////////////////////////////////////////////////////////////
+
+// قائمة اشكال القطاعات زر اخفاء واضهار القوائم
+
+
+
+
+
+
+
+
+
+  // الاقائمة
+  // const div110 = document.getElementById("div110")
+  //           const div220 = document.getElementById("div220")
+  //           const div330 = document.getElementById("div330")
+
+  //           div220.style.setProperty("display", "none", "important")
+  //           div330.style.setProperty("display", "none", "important")
+
+  //           // كنترول الزر الأول
+  //           document.getElementById("btnradio110").addEventListener("change",function(){
+                
+  //               if (this.checked) {
+  //               console.log("Checkbox is checked1111..");
+                
+  //               div220.style.setProperty("display", "none", "important")
+  //               div330.style.setProperty("display", "none", "important")
+  //               div110.style.setProperty("display", "block", "important")
+
+
+              
+  //             } else  {
+  //               console.log("Checkbox is not checked..");
+
+  //             }
+
+
+  //           })
+
+
+
+  //           // كنترول الزر الثاني
+
+
+  //           document.getElementById("btnradio220").addEventListener("change",function(){
+              
+  //               if (this.checked) {
+  //               console.log("Checkbox is checked22222..");
+              
+  //             div110.style.setProperty("display", "none", "important")
+  //               div330.style.setProperty("display", "none", "important")
+  //               div220.style.setProperty("display", "block", "important")
+  //               // document.getElementById("ok1").value="ok1"
+            
+  //             } else  {
+  //               console.log("Checkbox is not checked..");
+               
+                
+  //             }
+
+
+  //           })
+
+
+
+
+
+
+  //           // كنترول الزر الثالث
+
+
+  //           document.getElementById("btnradio330").addEventListener("change",function(){
+              
+  //             if (this.checked) {
+  //             console.log("Checkbox is checked33333..");
+
+  //             div110.style.setProperty("display", "none", "important")
+  //             div220.style.setProperty("display", "none", "important")
+  //             div330.style.setProperty("display", "block", "important")
+
+
+              
+  //           } else  {
+  //             console.log("Checkbox is not checked..");
+
+              
+  //           }
+
+
+  //           })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+// next.addEventListener("click", async (e) => {
+//     e.preventDefault();
+    
+
+
+
+//         // يطبعلك زر واح برمزه في قاعدة البينات
+//         var getSelectedValue2 = document.querySelector( 
+//                 'input[name="c2"]:checked'); 
+      
+
+//                   var glasstypeValue = document.querySelector( 
+//                 'input[name="q1"]:checked');    
+
+// // /// قائمة اشكال القطاعات زر اخفاء واضهار القوائم//////
+/////////////////////////////////////////////
+
+
+
+// //  قائمة نوع الألمنيوم زر اخفاء واضهار القوائم
+
+  // الاقائمة
+            const div11 = document.getElementById("div11")
+            const div22 = document.getElementById("div22")
+            const div33 = document.getElementById("div33")
+
+            div22.style.setProperty("display", "none", "important")
+            div33.style.setProperty("display", "none", "important")
+
+            // كنترول الزر الأول
+            document.getElementById("btnradio11").addEventListener("change",function(){
+                
+                if (this.checked) {
+                console.log("Checkbox is checked1111..");
+                
+                div22.style.setProperty("display", "none", "important")
+                div33.style.setProperty("display", "none", "important")
+                div11.style.setProperty("display", "block", "important")
+
+
+              
+              } else  {
+                console.log("Checkbox is not checked..");
+
+              }
+
+
+            })
+
+
+
+            // كنترول الزر الثاني
+
+
+            document.getElementById("btnradio22").addEventListener("change",function(){
+              
+                if (this.checked) {
+                console.log("Checkbox is checked22222..");
+              
+              div11.style.setProperty("display", "none", "important")
+                div33.style.setProperty("display", "none", "important")
+                div22.style.setProperty("display", "block", "important")
+                // document.getElementById("ok1").value="ok1"
+            
+              } else  {
+                console.log("Checkbox is not checked..");
+               
+                
+              }
+
+
+            })
+
+
+
+
+            // كنترول الزر الثالث
+
+
+            document.getElementById("btnradio33").addEventListener("change",function(){
+              
+              if (this.checked) {
+              console.log("Checkbox is checked33333..");
+
+              div11.style.setProperty("display", "none", "important")
+              div22.style.setProperty("display", "none", "important")
+              div33.style.setProperty("display", "block", "important")
+
+
+              
+            } else  {
+              console.log("Checkbox is not checked..");
+
+              
+            }
+
+
+            })
+
+
+
+// // /// قائمة نوع الألمنيوم زر اخفاء واضهار القوائم////
+
+
+
+// var n =decument.getElementById("lengthId").value
+
+// console.log(n)
+
+// click
+//     next.addEventListener("click", async (e) => {
+//          e.preventDefault();
+                   
+
+
+
+
+
+
+
+
+
+
+
+
+//           const res = await fetch("basic-measurement", {
+//                       method: "POST",
+//                       body: JSON.stringify({
+//                         // email: emailId.value,
+//                         // password: passwordId.value,
+//                         // userName:usernameId.value,
+//                         // length:lengthid.value,
+//                         // width: widthid.value,
+//                         length:lengthid.value,
+//                         // width: widthid.value,
+//                         // n: getSelectedValue.value,
+//                         // location:locationId.value,
+//                         // aluminumCode:getSelectedValue2.value,
+//                         // thickness:thickness.value,
+//                         // glassColorCode:glassColorCodeId.value,
+                        
+                        
+//                       }),
+//                       headers: { "Content-Type": "application/json" },
+                      
+//               }); 
+//               const data = await res.json();
+// console.log(data)
+//             //  var jj= document.getElementById("locationId").value
+//             //   console.log("jj")
+//             //   console.log(locationId.value)
+//   });
+
+
+
+
+
+// استهداف العنصر
+const checkbox = document.getElementById('cb5');
+
+// إضافة مستمع لحدث التغيير
+checkbox.addEventListener('change', function() {
+    // التحقق من حالة الاختيار
+    if (this.checked) {
+        // إذا كان محددًا، ضع "داخلي" في القيمة
+        this.value = "داخلي";
+    } else {
+        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
+        this.value = "خارجي";
+    }
+    
+    // طباعة القيمة في الفاليو
+    console.log(this.value);
+});
+
+
+
+
+
+
+const checkbox6 = document.getElementById("cb6");
+
+// إضافة مستمع لحدث التغيير
+checkbox6.addEventListener('change', function() {
+    // التحقق من حالة الاختيار
+    if (this.checked) {
+        // إذا كان محددًا، ضع "داخلي" في القيمة
+        this.value = "YAS";
+
+    } else {
+        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
+        this.value = "NO";
+
+    }
+    
+    // طباعة القيمة في الفاليو
+    console.log(this.value);
+});
+
+
+//
+const checkbox7 = document.getElementById("cb7");
+
+// إضافة مستمع لحدث التغيير
+checkbox7.addEventListener('change', function() {
+    // التحقق من حالة الاختيار
+    if (this.checked) {
+        // إذا كان محددًا، ضع "داخلي" في القيمة
+        this.value = "YAS";
+        // this.value = "NO";
+    } else {
+        // إذا لم يكن محددًا، ضع "خارجي" في القيمة
+        this.value = "NO";
+        // this.value = "YAS";
+    }
+    
+    // طباعة القيمة في الفاليو
+    console.log(this.value);
+});
+
+//
+
+
+
+
+
+
+
+
+
+
+        // هذا عشان يستخرج اليد من الرابط 
+
+// الحصول على عنوان الصفحة الحالي
+const url = window.location.href;
+
+// تقسيم العنوان بواسطة الشرطة (-) أو الشرطة السفلية (_) أو أي حرف آخر تستخدمه لفصل الأجزاء
+const parts = url.split("/");
+
+// الأيدي عادة تكون في الجزء الأخير من الرابط
+const idUrl = parts[parts.length - 1];
+
+console.log("الأيدي:", idUrl);
+
+        //// هذا عشان يستخرج اليد من الرابط ////
+
+
+
+
+next.addEventListener("click", async (e) => {
+    e.preventDefault();
+    
+// لاستخراج الزر المضغوط ونضيفة الركورست تحت
+    var t1 = document.querySelector( 
+                'input[name="t1"]:checked'); 
+
+
+            //     var m1 = document.querySelector( 
+            //     'input[id="cb5"]:checked'); 
+                
+            //        if(m1 != null) { 
+            //     document.getElementById("1").value="no" 
+            //         //  m1.value =="no"
+            //         // + " season is selected"; 
+                    
+            // } 
+
+
+
+
+// لاستخراج الزر المضغوط ونضيفة الركورست تحت
+        // يطبعلك زر واح برمزه في قاعدة البينات
+        var getSelectedValue2 = document.querySelector( 
+                'input[name="c2"]:checked'); 
+              //هي اضافات للي فوق ما نحتاجها الان
+            // if(getSelectedValue2 != null) { 
+            //     // document.getElementById("1").innerHTML 
+            //          getSelectedValue2.value 
+            //         // + " season is selected"; 
+                    
+            // } 
+            // else { 
+            //     // document.getElementById("1").innerHTML 
+            //         // = "*You have not selected any season"; 
+                    
+            // } 
+                  // يطبعلك زر واح برمزه في قاعدة البينات//
+
+              
+
+                  var glasstypeValue = document.querySelector( 
+                'input[name="q1"]:checked');    
+
+
+
+//                 var x = document.getElementById("exampleFormControlTextarea1").value;
+// console.log(x)
+
+
+
+// تحت ادوات لعرض المساحة الحرة وطريقة حم الركوست
+
+
+    const res = await fetch("measurement", {
+      method: "POST",
+      body: JSON.stringify({
+        // branch:branch.value,
+        //  location:locationId.value,
+         aluminumCode:getSelectedValue2.value,
+         aluminumThickness:thickness.value,
+         aluminumColorCode:glassColorCodeId.value,
+         glasstype:glasstypeValue.value,
+         glassThickness:glassThickness.value,
+         glassColorCode:glassColorCode.value,
+         id:"<%= //arrM._id %>",
+         
+
+         H:lengthid.value,
+          W: widthid.value,
+          designCode:t1.value,
+          insideOrOutside:checkbox.value,
+          temper:checkbox6.value,
+          lip:checkbox7.value,
+          comments:exampleFormControlTextarea1.value,
+          iid:iid.value,
+          idUrl:idUrl, // هذا الأيدي من الرابط
+         
+          
+          
+      }),
+      headers: { "Content-Type": "application/json" },
+      
+    });
+    
+    const data = await res.json();
+console.log(data.id)
+
+
+
+
+location.assign(`/review/<%=// arrM.iid?arrM.iid:arrM._id %>`)
+
+
+
+});
+
+
+
+</script> -->
+
+
+<script>
+//   // إعداد التحكم في القوائم
+//   const div11 = document.getElementById("div11");
+//   const div22 = document.getElementById("div22");
+//   const div33 = document.getElementById("div33");
+
+//   div22.style.setProperty("display", "none", "important");
+//   div33.style.setProperty("display", "none", "important");
+
+//   document.getElementById("btnradio11").addEventListener("change", function() {
+//       if (this.checked) {
+//           div22.style.setProperty("display", "none", "important");
+//           div33.style.setProperty("display", "none", "important");
+//           div11.style.setProperty("display", "block", "important");
+//       }
+//   });
+
+//   document.getElementById("btnradio22").addEventListener("change", function() {
+//       if (this.checked) {
+//           div11.style.setProperty("display", "none", "important");
+//           div33.style.setProperty("display", "none", "important");
+//           div22.style.setProperty("display", "block", "important");
+//       }
+//   });
+
+//   document.getElementById("btnradio33").addEventListener("change", function() {
+//       if (this.checked) {
+//           div11.style.setProperty("display", "none", "important");
+//           div22.style.setProperty("display", "none", "important");
+//           div33.style.setProperty("display", "block", "important");
+//       }
+//   });
+
+  // استهداف العنصر
+//   const checkbox = document.getElementById('cb5');
+
+//   // إضافة مستمع لحدث التغيير
+//   checkbox.addEventListener('change', function() {
+//       if (this.checked) {
+//           this.value = "داخلي";
+//       } else {
+//           this.value = "خارجي";
+//       }
+//       console.log(this.value);
+//   });
+
+  const checkbox6 = document.getElementById("cb6");
+  checkbox6.addEventListener('change', function() {
+      if (this.checked) {
+          this.value = "YAS";
+      } else {
+          this.value = "NO";
+      }
+      console.log(this.value);
+  });
+
+//   const checkbox7 = document.getElementById("cb7");
+//   checkbox7.addEventListener('change', function() {
+//       if (this.checked) {
+//           this.value = "YAS";
+//       } else {
+//           this.value = "NO";
+//       }
+//       console.log(this.value);
+//   });
+
+  // الحصول على عنوان الصفحة الحالي
+  const url = window.location.href;
+  const parts = url.split("/");
+  const idUrl = parts[parts.length - 1];
+  console.log("الأيدي:", idUrl);
+
+  // فتح النافذة المنبثقة
+  document.getElementById('showCanvasButton').addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'block';
+  });
+
+  // إغلاق النافذة المنبثقة
+  document.getElementsByClassName('close')[0].addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  window.addEventListener('click', function(event) {
+      if (event.target == document.getElementById('drawingModal')) {
+          document.getElementById('drawingModal').style.display = 'none';
+      }
+  });
+
+  
+  // عرض الصورة إذا كانت موجودة في وضع التعديل
+  const savedImagePath = '<%= arrM.designCode %>';
+  if (savedImagePath) {
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = savedImagePath;
+      document.getElementById('savedImageContainer').style.display = 'block';
+  }
+
+  let isSent = false; // متغير لتتبع حالة الإرسال
+
+  document.getElementById('next').addEventListener('click', async function(e) {
+      e.preventDefault();
+
+ // تحقق من أن البيانات لم تُرسل بعد
+ if (isSent) return;
+
+isSent = true; // تغيير حالة العلم للإشارة إلى أن البيانات قد أُرسلت
+
+      const dataURL = canvas.toDataURL('image/png');
+      const blankCanvas = document.createElement('canvas'); 
+      blankCanvas.width = canvas.width;
+      blankCanvas.height = canvas.height;
+      const blankDataURL = blankCanvas.toDataURL('image/png');
+
+      const getSelectedValue2 = document.querySelector('input[name="c2"]:checked');
+      const glasstypeValue = document.querySelector('input[name="q1"]:checked');
+
+      const designCode = (dataURL === blankDataURL) ? savedImagePath : dataURL;
+
+      const id = "<%= arrM._id %>"; // تأكد من أن arrM يحتوي على المعرف المطلوب
+
+    // التحقق من القيم الأساسية
+    const lengthValue = document.getElementById('lengthid').value;
+    const widthValue = document.getElementById('widthid').value;
+    const aluminumSize = document.getElementById('aluminumSize').value;
+
+    const glassColorCodeInside = document.getElementById('glassColorCodeInside').value;
+
+    const glassColorCodeOutside = document.getElementById('glassColorCodeOutside').value;
+
+    const aluminumColorCode = document.getElementById('aluminumColorCodeId').value;
+
+    const glassThickness = document.getElementById('glassThickness').value;
+    const comments = document.getElementById('exampleFormControlTextarea1').value;
+
+    const structureNumber = document.getElementById('StructureNumber').value;
+    const hingesNumber = document.getElementById('HingesNumber').value;
+    const rollWindowNumber = document.getElementById('RollWindowNumber').value;
+
+
+     // التحقق من القيم الأساسية وإظهار رسالة تحذيرية في حال كانت أي من القيم مفقودة
+     if (!lengthValue || !widthValue || !aluminumSize || !glassColorCodeInside || !glassColorCodeOutside|| !glassThickness || !getSelectedValue2 || !glasstypeValue|| !designCode ) {
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.classList.remove('d-none');
+        return;
+    }
+
+
+
+// التكد اذا كان العرض موجود مسبقا فهذا يعنل ان تعديل واذا غير موجو فهذا يعني انه قياس جديد 
+const methodType = '<%= arrM.W %>' ? "PUT" : "POST"; 
+    
+      const res = await fetch(`/measurement/${id}`, {
+          // method: "POST",
+          method: methodType,
+
+          body: JSON.stringify({
+              aluminumCode: getSelectedValue2.value,
+            //   aluminumCode: "SG50",
+            aluminumSize: aluminumSize,
+
+            //   aluminumThickness: thickness.value,
+              aluminumColorCode: aluminumColorCode,
+              glasstype: glasstypeValue.value,
+              glassThickness: glassThickness,
+              glassColorCodeInside: glassColorCodeInside,
+              glassColorCodeOutside: glassColorCodeOutside,
+              id: "<%= arrM._id %>",
+              H: lengthValue,
+              W: widthValue,
+              designCode: designCode,  // استخدم الصورة الجديدة إذا تم تغييرها، وإلا استخدم القديمة
+            //   insideOrOutside: checkbox.value,
+              temper: checkbox6.value,
+            //   lip: checkbox7.value,
+              comments: comments,
+              iid: iid.value,
+              idUrl: idUrl,
+
+
+              StructureNumber: structureNumber,
+              HingesNumber: hingesNumber ,
+              RollWindowNumber: rollWindowNumber ,
+
+              StructurePrice: '<%= arrM.additions && arrM.additions.Structure && arrM.additions.Structure.price ? arrM.additions.Structure.price : 0 %>',
+              HingesPrice: '<%= arrM.additions && arrM.additions.Hinges && arrM.additions.Hinges.price ? arrM.additions.Hinges.price : 0 %>',
+              RollWindowPrice: '<%= arrM.additions && arrM.additions.RollWindow && arrM.additions.RollWindow.price ? arrM.additions.RollWindow.price : 0 %>',
+
+
+
+
+          }),
+          headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+      console.log(data.imagePath);
+      
+      // عرض الصورة المحفوظة
+      document.getElementById('savedImage').src = '/' + data.imagePath;
+      document.getElementById('savedImageContainer').style.display = 'block';
+
+      // الانتقال إلى الصفحة التالية
+      location.assign(`/review/<%= arrM.iid ? arrM.iid : arrM._id %>`);
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+  // هذي عشان تخلي تشكت على الزر المختار ومطابقته مع الداتا هذي خاصة لشكل الالمنيوم
+const elements = document.querySelectorAll('input[name="t1"][value="<%=arrM.designCode%>"]');
+
+// قم بتحديد العنصر المناسب بناءً على الشرط المطلوب (على سبيل المثال، اذا كانت القيمة تساوي القيمة المحددة)
+elements.forEach(element => {
+  element.checked = true; // قم بجعل العنصر محددًا
+
+  
+});
+
+
+
+
+// وهذي خاصة لنوع الالمنيوم
+const elements1 = document.querySelectorAll('input[name="c2"][value="<%=arrM.aluminumCode?arrM.aluminumCode:arrM.aluminumCode0%>"]');
+
+// قم بتحديد العنصر المناسب بناءً على الشرط المطلوب (على سبيل المثال، اذا كانت القيمة تساوي القيمة المحددة)
+elements1.forEach(element => {
+  element.checked = true; // قم بجعل العنصر محددًا
+});
+
+
+
+// وهذي خاصة لمواصفات الزجاج
+const elements3 = document.querySelectorAll('input[name="q1"][value="<%=arrM.glasstype?arrM.glasstype:arrM.glasstype0%>"]');
+
+// قم بتحديد العنصر المناسب بناءً على الشرط المطلوب (على سبيل المثال، اذا كانت القيمة تساوي القيمة المحددة)
+elements3.forEach(element => {
+  element.checked = true; // قم بجعل العنصر محددًا
+});
+
+
+
+
+
+
+// const checkbox0 = document.getElementById('cb5');
+
+// // افحص قيمة العنصر وقم بتعيين checked إذا كانت قيمته "NO"
+// if (checkbox0 && checkbox0.value === "<%=//arrM.insideOrOutside%>") {
+//   document.getElementById('cb5').value = "<%=//arrM.insideOrOutside%>";
+//   checkbox0.checked =true;
+  
+// } else {
+//   document.getElementById('cb5').value = "<%=//arrM.insideOrOutside?arrM.insideOrOutside:'خارجي'%>";
+
+//   checkbox0.checked =false  ; // لاحظ هذا السطر
+// }
+
+
+
+
+
+// هذا لجل زر السكريت اذا كان نعم يجعله نعم في التعديل والعكس صحيح
+// احصل على العنصر باستخدام معرفه
+const checkbox1 = document.getElementById('cb6');
+
+// افحص قيمة العنصر وقم بتعيين checked إذا كانت قيمته "NO"
+if (checkbox1 && checkbox1.value === "<%=arrM.temper%>") {
+  document.getElementById('cb6').value = "<%=arrM.temper%>";
+
+  checkbox1.checked = true ;
+} else {
+  document.getElementById('cb6').value = "<%=arrM.temper?arrM.temper:'NO'%>";
+  checkbox1.checked =  false ; // لاحظ هذا السطر
+}
+
+
+
+
+
+
+
+
+// هذا لجل زر السكريت اذا كان نعم يجعله نعم في التعديل والعكس صحيح
+// احصل على العنصر باستخدام معرفه
+// const checkbox2 = document.getElementById('cb7');
+
+// // افحص قيمة العنصر وقم بتعيين checked إذا كانت قيمته "NO"
+// if (checkbox2 && checkbox2.value === "<%=//arrM.lip%>") {
+//   document.getElementById('cb7').value = "<%=//arrM.lip%>";
+
+//   checkbox2.checked =  true;
+// } else {
+//   document.getElementById('cb7').value = "<%=//arrM.lip?arrM.lip:'NO'%>";
+//   checkbox2.checked = false  ; // لاحظ هذا السطر
+// }
+
+
+
+
+
+
+</script>
+<!-- <script>
+  // فتح النافذة المنبثقة
+  document.getElementById('showCanvasButton').addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'block';
+  });
+
+  // إغلاق النافذة المنبثقة
+  document.getElementsByClassName('close')[0].addEventListener('click', function() {
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  // إغلاق النافذة المنبثقة عند النقر خارجها
+  window.addEventListener('click', function(event) {
+      if (event.target == document.getElementById('drawingModal')) {
+          document.getElementById('drawingModal').style.display = 'none';
+      }
+  });
+
+  // إعداد مساحة الرسم باستخدام Fabric.js
+  const canvas = new fabric.Canvas('drawingCanvas');
+  let isDrawing = false;
+
+  // سجلات للتراجع والإعادة
+  let undoStack = [];
+  let redoStack = [];
+
+  function saveState() {
+      undoStack.push(canvas.toJSON());
+      redoStack = []; // إعادة تعيين سجل الإعادة
+  }
+
+  canvas.on('mouse:down', function(options) {
+      isDrawing = true;
+      const pointer = canvas.getPointer(options.e);
+      const points = [pointer.x, pointer.y, pointer.x, pointer.y];
+      const line = new fabric.Line(points, {
+          strokeWidth: 2,
+          selectable: false,
+          stroke: 'black'
+      });
+      canvas.add(line);
+      saveState();
+  });
+
+  canvas.on('mouse:move', function(options) {
+      if (!isDrawing) return;
+      const pointer = canvas.getPointer(options.e);
+      const line = canvas.getObjects().slice(-1)[0];
+      line.set({ x2: pointer.x, y2: pointer.y });
+      canvas.renderAll();
+  });
+
+  canvas.on('mouse:up', function() {
+      isDrawing = false;
+  });
+
+  // حفظ الرسمة وعرضها كصورة
+  document.getElementById('saveDrawingButton').addEventListener('click', function() {
+      const dataURL = canvas.toDataURL('image/png');
+      const imgElement = document.getElementById('savedImage');
+      imgElement.src = dataURL;
+      document.getElementById('savedImageContainer').style.display = 'block';
+      document.getElementById('drawingModal').style.display = 'none';
+  });
+
+  // زر الرجوع للوراء
+  document.getElementById('undoButton').addEventListener('click', function() {
+      if (undoStack.length > 0) {
+          redoStack.push(undoStack.pop());
+          const state = undoStack[undoStack.length - 1];
+          if (state) {
+              canvas.loadFromJSON(state);
+          } else {
+              canvas.clear();
+          }
+      }
+  });
+
+  // زر العودة إلى الأمام
+  document.getElementById('redoButton').addEventListener('click', function() {
+      if (redoStack.length > 0) {
+          const state = redoStack.pop();
+          if (state) {
+              undoStack.push(state);
+              canvas.loadFromJSON(state);
+          }
+      }
+  });
+
+  // زر مسح المساحة
+  document.getElementById('clearButton').addEventListener('click', function() {
+      canvas.clear();
+      saveState();
+  });
+
+  // حفظ الحالة الابتدائية
+  saveState();
+</script> -->
+
+
+
+
+
+</html>

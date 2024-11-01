@@ -7,8 +7,6 @@ html {
   height: -webkit-fill-available;
 }
 
- 
-
 .dropdown-toggle { outline: 0; }
 
 .btn-toggle {
@@ -54,4 +52,12 @@ html {
 
 .scrollarea {
   overflow-y: auto;
+}
+
+.sidebar .sticky-top {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: inherit;
 }

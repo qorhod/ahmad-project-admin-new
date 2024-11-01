@@ -14,7 +14,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                     price:{ // سعر كل قطاع
 
                         slidingD10: Number,
-                        slidingD10b: Number,
+                        slidingD10p: Number,
                         slidingD12: Number,
                         slidingS: Number,
                         interruptT: Number,
@@ -33,7 +33,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                         SlicedDoor: Number,
                         SketchureFortex: Number,
                         Skylight: Number,
-                        ROYAL2: Number,
+                        
 
                     },
                     

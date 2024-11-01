@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <script src="./js/color-modes.js"></script>
+    <link rel="stylesheet" href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+    <meta name="generator" content="Hugo 0.112.5" />
+    <title>My Draft</title>
+    <link rel="stylesheet" href="../css/overlay.css">
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dark-light.css"/>
+    <link href="./css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/myStyle.css" />
+  </head>
+  <body>
+    <%- include('../components/overlay.ejs') %>
+    <%- include('../components/dark-light.ejs') %> 
+
+    <main class="d-flex flex-nowrap">
+      <%- include('../components/sidebar.ejs', {currentPage:"myDraft"}) %> 
+
+      <section class="w-100">
+      <%- include('../components/navbar.ejs') %>
+
+      <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+        <% if (arr.length == 0) { %> 
+          <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+        <% } %>
+
+        <% if (arr.length > 0) { %>
+          <thead>
+            <tr>
+          
+             
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Phone Number</th>
+              <th>Branch</th>
+              <th>Sales Employee Name</th>
+              <th>Sales Employee Username</th>
+              <th>To Customer</th>
+              <th>To Order</th>
+              <th>Go to Location</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+        <% } %>
+
+        <% arr.reverse().forEach(user => { %>
+          <% if (user.orders && user.orders.length > 0) { %>
+            <% user.orders.reverse().forEach(order => { %>
+              <% if (order.status==="مسودة"&&order.salesEmployeeId===jwt.id) { %>
+
+              <tr>
+           
+                
+                <td><%= user.firstNamecustomer %></td>
+                <td><%= user.lastNamecustomer %></td>
+                <td><%= user.phoneNumber %></td>
+                <td><%= order.branch %></td>
+                <td><%= order.salesEmployeeName %></td>
+                <td><%= order.salesEmployeeUserName %></td>
+                <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../view/<%= user._id %>">
+                    <i class="bi bi-person-fill"></i>
+                  </a>
+                </td>
+                <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Edit order" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../review/<%= order._id %>">
+                    <i class="bi bi-receipt-cutoff"></i>
+                  </a>
+                </td>
+                <td>
+                  <a data-bs-toggle="tooltip" data-bs-title="Go to Location" data-bs-placement="top" class="btn btn-success btn-sm mx-auto" href="<%= order.location %>" target="_blank">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </a>
+                </td>
+
+                <td>
+                  <form id="delete-form-<%= order._id %>" action="/delete-order/<%= order._id %>?_method=DELETE" method="post" style="display: none;">
+                  </form>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('<%= order._id %>')"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+              <% } %>
+            <% }) %>
+          <% } %>
+        <% }) %>
+      </table>
+      </section>
+    </main>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/sidebars.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="../js/overlay.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+<script>
+  function confirmDelete(orderId) {
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'نعم، احذف!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('delete-form-' + orderId).submit();
+      }
+    })
+  }
+</script>
+  </body>
+</html>

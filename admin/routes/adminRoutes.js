@@ -34,4 +34,51 @@ router.post('/deletePermission', adminController.deletePermission);
 
 router.post('/deletePermission', adminController.deletePermission);
 router.post('/updatePermissionDefault', adminController.updatePermissionDefault);
+
+
+
+router.get('/manageUsers', adminController.getManageUsers);
+router.get('/editUser/:id', adminController.getEditUserWithPermissions);
+router.post('/deleteUser', adminController.deleteUser);
+
+
+router.get('/editUser/:id', adminController.getEditUser);
+router.post('/editUser/:id', adminController.postEditUser);
+
+
+// اعدادات الادمن 
+router.get('/manageAdmin', adminController.getManageAdmin);
+router.post('/manageAdmin', adminController.postManageAdmin);
+
+
+// عرض وتعديل اسعار الالمنيوم
+router.get('/editPrices', adminController.getPrices); // مسار لعرض الأسعار
+router.post('/editPrices', adminController.updatePrices); // مسار لتحديث الأسعار
+
+// اظهار وتعديل بيانات بدابة العد في الأوردرات المؤكدة
+router.get('/counter', adminController.getCounterPage);
+
+// مسار لتحديث lastNumber
+router.post('/update-counter', adminController.updateCounterPage);
+
+
+
+
+
+// عرض قائمة العملاء
+router.get('/customers', adminController.getCustomers);
+
+// حذف عميل معين
+router.post('/customers/delete/:id', adminController.deleteCustomer);
+
+
+// مسار عرض صفحة الطلبات
+router.get('/orders', adminController.getOrdersPage);
+
+// مسار حذف الطلب
+router.post('/orders/delete/:id', adminController.deleteOrder);
+
+
+// مسار تسجيل الخروج
+router.post('/logout', adminController.logout);
 module.exports = router;

@@ -17,7 +17,9 @@
       content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
     />
     <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
+    <title>Total-materials</title>
+  <script src="../js/overlay.js"></script>
+  <link rel="stylesheet" href="../css/overlay.css">
 
     <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <!-- استايل الي يغمق ويفتح الشاشة -->
@@ -28,27 +30,64 @@
     <link href="../css/sidebars.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/myStyle.css" />
   
-<style>
-
-/* #i8 { */
-  /* width: 100%; جعل عرض العنوان 100% */
-    /* min-height: 9rem; ارتفاع أدنى للعنوان */
-    /* line-height: 9rem; ارتفاع السطر الذي يساوي ارتفاع العنوان */
-  /* } */
-</style>
+    <style>
+      @media print {
+          /* إخفاء محتوى صفحة الويب عند الطباعة */
+          .web-content {
+              display: none;
+          }
+          /* إظهار محتوى الفاتورة عند الطباعة */
+          .print-content {
+              display: block !important;
+          }
+  
+              /* إخفاء عمود Action عند الطباعة */
+              .no-print {
+                display: none !important;
+            }
+      }
+      /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+      .print-content {
+          display: none;
+      }
+      /* تنسيقات إضافية للفاتورة */
+      .invoice-header {
+          margin-bottom: 20px;
+          text-align: center;
+      }
+      .invoice-header h1 {
+          margin-bottom: 0;
+      }
+      .invoice-table th, .invoice-table td {
+          text-align: right;
+      }
+      .total {
+          font-weight: bold;
+      }
+  /*  */
+  .print-content {
+            display: none;
+        }
+    
+  
+  </style>
 
 
   </head>
   <body>
+
+    <%- include('../components/overlay.ejs') %>
+    <span class=" web-content"> 
     <!--ايقونات  -->
     <%- include('../components/dark-light.ejs') %> 
-
+    </span> 
 
     <main class="d-flex flex-nowrap">
       <!-- الواجهه الي على اليمين -->
       <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
 
       <section class="w-100">
+        <span class=" web-content"> 
       <%- include('../components/navbar.ejs') %>
 
 
@@ -60,9 +99,13 @@
         <li class="nav-item">
           <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
         </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
+
         <li class="nav-item">
           <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
         </li>
+        <% } %>
+
         <li class="nav-item">
           <a href="../total-materials/<%= arrR._id %> "class="nav-link  active" aria-disabled="true">كميات المواد</a>
         </li>
@@ -83,13 +126,36 @@
 
 
      <!-- form-control -->
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
-      <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
+  <!-- زر الطباعة -->
 
-      <button type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></button>
-      <button type="button" class="btn btn-success">اعتماد الطلب<i class="bi bi-check2"></i></button>
+<button id="print1" type="button" class="btn btn-secondary" onclick="window.print()" >
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+</svg>
+</button>
+<!--// زر الطباعة //-->
 
+</span>
+
+<div class="container print-content">
+    <div class="invoice-header">
+        <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+        <h1>REPORT MATERIAS</h1>
+
+    </div>
+  
+  
+    
   </div>
+  <div class="invoice-details print-content">
+    <br>
+      <p>Order Number: <strong><%= arrR.orderNumber %></strong></p>
+      <p>Date:<strong><%= moment(arrR.createdAt).format('YYYY-MM-DD') %></strong></p>
+      <p>Customer Name:<strong><%= allData.firstNamecustomer %><%= allData.lastNamecustomer %></strong></p>
+      <p>Branch: <strong><%= arrR.branch %></strong></p>
+  </div>
+
 
 
   
@@ -107,14 +173,6 @@
           
         
     
-            <a
-           
-            class="btn btn-primary "
-            href="../measurement/<%= arrR._id %>"
-             type="button"
-              class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a> 
-
-
 
               
 
@@ -141,7 +199,6 @@
               <th scope="col">اللون</th>
               <th scope="col">السمك</th>
 
-              <th scope="col">Action</th>
             </tr>
           </thead>
         <% //} %>
@@ -150,8 +207,9 @@
           <!-- arr.forEach(item => {           هذا شكلة الحقيقي بسم نبغاه يرقم الصفوف ففيه ميزة في هذا الوب انك تحط المتغير بن اقواس و بعدة فاصلة وبعدة كلمة اندكس وتحط زايد واحد عشانة يبدا من الصفر وبعدة تكتب الاندس في خانة الترقيم -->
              <% arrR.motherEquationTotal.reverse().forEach((item, index) => { %> <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها -->
               <!--  -->
-<%             if (item.aluminumCode === "ROYAL 2" || item.aluminumCode === "ROYAL 3" || item.aluminumCode === "Sliding D12" || item.aluminumCode === "GOLF10" || item.aluminumCode === "Sliding S" || item.aluminumCode === "GOLF12" || item.aluminumCode === "Sliding D10+" || item.aluminumCode === "Sliding D10") {  %>
-                 <tr>
+<%             if (item.aluminumCode === "ROYAL 2" || item.aluminumCode === "ROYAL 3" || item.aluminumCode === "Sliding D12" || item.aluminumCode === "GOLF10" || item.aluminumCode === "Sliding S" || item.aluminumCode === "GOLF12" || item.aluminumCode === "slidingD10p" || item.aluminumCode === "Sliding D10") {  %>
+                  <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+                 <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                    <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                    <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                    <td><%= item.E10TF %>	</td>
@@ -169,42 +227,7 @@
                    <td><%= item.P10T %></td>
                    <td><%= //item. %></td>
                    <td><%=// moment(item.updatedAt).fromNow();  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
-                   <td>
-                     <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
-<!--                   
-                     E10TF :Number,  // الحلق
-                     F10TF :Number, // الكعب
-                     G10TF :Number, // الشنكل
-                     H10TF :Number, // الجنب
-                     I10TF :Number,// درفة الشبك
-                     J10TF :Number, //ربل درفة
-                     M10TF :Number,// زجاج
-                     N10TF :Number,// شبك حديد 2م
-                     Q10TF :Number, // زجاج الثابت
-                     K10TF :Number, // كفرات درفه 
-                     L10TF :Number, // كفرات شبك 
-                     O10TF :Number, //مسكة
-                     P10TF :Number, // سيلكون المنيوم -->
-                     <a
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Edit user"
-                       data-bs-placement="top"
-                       class="btn btn-primary btn-sm"
-                       href="./edit/<%=// item._id %>"
-                     >
-                       <i class="bi bi-pencil"></i>
-                     </a>
-                     <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-                     <button
-                       data-bs-toggle="tooltip"
-                       data-bs-title="Delete user"
-                       data-bs-placement="top"
-                       class="btn btn-danger btn-sm"
-                     >
-                       <i class="bi bi-trash"></i>
-                     </button>
-                   </form>
-                   </td>
+                 
                  </tr>
                  <%} %>
                <%}) %>
@@ -252,7 +275,8 @@
            <% arrR.motherEquationTotal.reverse().forEach((item, index) => { %> <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها -->
             <!--  -->
             <% if (item.aluminumCode === "Fixed D10" || item.aluminumCode === "Fixed D4" || item.aluminumCode === "Fixed S4" || item.aluminumCode === "Fixed S10"){ %>
-               <tr>
+        <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
+               <tr class="<%= item.delete ? 'strikethrough' : '' %>">
                  <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
                  <td><%= item.aluminumCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
                  <td><%= item.E10TF %>	</td>
@@ -312,7 +336,8 @@
     <script src="../js/sidebars.js"></script>
 
     <script src="../js/main.js"></script>
-   
+    <script src="../js/overlay.js"></script>
+
   </body>
 
 

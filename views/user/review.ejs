@@ -1,297 +1,344 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto" >
-  <head>
-   
-    <script src="../js/color-modes.js"></script>
-   
-    <link
-      rel="stylesheet"
-      href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
-    />
-    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta
-      name="author"
-      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-    />
-    <meta name="generator" content="Hugo 0.112.5" />
-    <title>Home page</title>
-
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
-    <!-- استايل الي يغمق ويفتح الشاشة -->
-    <link rel="stylesheet" href="../css/dark-light.css"/>
-   
-
-    <!-- Custom styles for this template -->
-    <link href="../css/sidebars.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../css/myStyle.css" />
-
-  </head>
-  <body>
-    <!--ايقونات  -->
-    <%- include('../components/dark-light.ejs') %> 
+<html lang="en" data-bs-theme="auto">
+<head>
+  <script src="../js/color-modes.js"></script>
+  <link rel="stylesheet" href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="" />
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+  <meta name="generator" content="Hugo 0.112.5" />
+  <title>Review</title>
 
 
-    <main class="d-flex flex-nowrap">
-      <!-- الواجهه الي على اليمين -->
-      <%- include('../components/sidebar.ejs', {currentPage:"review"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+  <link rel="stylesheet" href="../css/overlay.css">
+  <link href="../css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/dark-light.css"/>
+  <link href="../css/sidebars.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/myStyle.css" />
+  <style>
+    .strikethrough {
+      position: relative;
+      color: red;
+      text-decoration: line-through;
+    }
 
-      <section class="w-100">
+    .strikethrough::after {
+      content: "Deleted";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 0, 0, 0.1); /* اللون الأحمر الشفاف */
+      color: red;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+  </style>
+
+<style>
+  @media print {
+      /* إخفاء محتوى صفحة الويب عند الطباعة */
+      .web-content {
+          display: none;
+      }
+      /* إظهار محتوى الفاتورة عند الطباعة */
+      .print-content {
+          display: block !important;
+      }
+
+          /* إخفاء عمود Action عند الطباعة */
+          .no-print {
+            display: none !important;
+        }
+  }
+  /* إخفاء محتوى الفاتورة افتراضيًا على الشاشة */
+  .print-content {
+      display: none;
+  }
+  /* تنسيقات إضافية للفاتورة */
+  .invoice-header {
+      margin-bottom: 20px;
+      text-align: center;
+  }
+  .invoice-header h1 {
+      margin-bottom: 0;
+  }
+  .invoice-table th, .invoice-table td {
+      text-align: right;
+  }
+  .total {
+      font-weight: bold;
+  }
+/*  */
+.print-content {
+        display: none;
+    }
+
+
+</style>
+
+
+</head>
+<body>
+  <span class=" web-content"> 
+
+  <%- include('../components/overlay.ejs') %>
+
+  <%- include('../components/dark-light.ejs') %>
+</span>
+  <main class="d-flex flex-nowrap">
+    <%- include('../components/sidebar.ejs', {currentPage:"review"}) %>
+    <section class="w-100">
+      <span class=" web-content"> 
+
       <%- include('../components/navbar.ejs') %>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page">ورقة قياس</a>
+        </li>
+        <li class="nav-item">
+          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page">مجموع الأمتار</a>
+        </li>
+        <% if (permissions.some(permission => permission.name === 'price')) { %>
+        <li class="nav-item">
+          <a href="../price/<%= arrR._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
+        </li>
+        <% } %>
 
-
-      <ul class="nav nav-tabs ">
-        <li class="nav-item">
-          <a  class="nav-link active" aria-current="page" >ورقة قياس</a>
-        </li>
-      
-        <li class="nav-item">
-          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis " aria-current="page"  >مجموع الأمتار</a>
-        </li>
-        <li class="nav-item">
-          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis"  href="#">التسعيرة</a>
-        </li>
-        <li class="nav-item">
-          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
-        </li>
-        <li class="nav-item">
-          <a href="../glass-cutting/<%= arrR._id %> "class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
-        </li>
-
+        <% if (permissions.some(permission => permission.name === 'manufacturing_reports')) { %>
 
         <li class="nav-item">
-          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
+          <a href="../total-materials/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
         </li>
-
-   
         <li class="nav-item">
-          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis"  aria-disabled="true">تقرير قص الألمنيوم </a>
+          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج</a>
         </li>
+        <li class="nav-item">
+          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت</a>
+        </li>
+        <li class="nav-item">
+          <a href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم</a>
+        </li>
+        <% } %>
 
       </ul>
-
-
-     <!-- form-control -->
-   
-     <h6>id Customer:<%= idCustomer %></h6>
-     <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
-      <button <%=arrR.orderNumber?"hidden":'' %> type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
-
-     <a <%=arrR.orderNumber?"hidden":'' %> href="../view/<%=idCustomer %>" type="button" class="btn btn-secondary">البقاء في المسودة<i class="bi bi-journal-text"></i></a>
-
-      <a <%=arrR.orderNumber?'':"hidden" %> href="../view/<%=idCustomer %>" type="button" class="btn btn-secondary">العودة إلى صفحة العميل <i class="bi bi-arrow-left"></i></a>
-
-
-      <form   action="/review/<%=arrR._id %>" method="post"  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
-       
-          <input
-          name="confirming"
-           value="<%="مؤكد" %>"
-            type="hidden"
-            class="form-control"
-           
-          />
-          <input
-          name="id"
-           value="<%= arrR._id %>"
-            type="hidden"
-            class="form-control"
-           
-          />
-
-          <input
-          name="idCustomer"
-           value="<%= idCustomer %>"
-            type="hidden"
-            class="form-control"
-           
-          />
-
-          <!-- <input type="submit" value="اعتماد الطلب" class="btn btn-success"> <i class="bi bi-check2"></i></input> -->
-          <%=//idCustomer?"hidden":"submit" %>
-      <input type="<%=arrR.orderNumber?"hidden":"submit" %>" value="اعتماد الطلب" class="btn btn-success">
-     </form>
-
-
-  </div>
-
-
-
-        <table
-          style="width: 99%"
-          class="text-center mx-auto table mt-5 table-striped table-bordered"
-        >
-        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
-        <% //if (arr.length ==0) { %>
-     
-         <!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
-        <% //} %>
-
-        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-        <% //if (arr.length > 0) { %>
-          
-
-
-
-
-
-
-
-        
-   
-            <a
-           
-            class="btn btn-primary "
-            href="../measurement/<%= arrR._id %>"
-             type="button"
-              class="btn btn-primary">إضافة قياس جديد<i class="bi bi-plus-lg"></i></a>
-
-
-              <%// arrR.measurement.reverse().forEach((item, index) => { %> 
-              <% //if (arrR.length ==0) { %> 
-                <!-- <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1> -->
-               <% //} %>
-       
-               <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-               <% //if (arrR.length > 0) { %>
-
-                
-
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">height</th>
-              <th scope="col">width</th>
-              <th scope="col">fixed</th>
-              <th scope="col">Aluminum code</th>
-              <th scope="col">Aluminum color code</th>
-              <th scope="col">Glass color code</th>
-              <th scope="col">Temper</th>
-              <th scope="col">Lip</th>
-              <th scope="col">Design code</th>
-              <th scope="col">Thickness</th>
-              <th scope="col">Comments</th>
-              <th scope="col">داخلي/خارجي</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-        <% //} %>
-        <%// }) %>
-        <!--  -->
-        <tbody id="kk">
-     <!-- المحتوى الذي هنا نقلناه في الاسفل في الجافا سكربت  -->
-             
-      
-          </tbody>
-        </table>
-
-
-
-
-
-     
-
-
-      </section>
-    </main>
-    <script src="../js/bootstrap.bundle.min.js"></script>
-
-    <script src="../js/sidebars.js"></script>
-
-    <script src="../js/main.js"></script>
-   
-  </body>
-
-  <script>
-    // هذا عشان ناخذ الأيدي من الرابط لأننا نحتاج نحط ايديين في الرابط 
-        // الحصول على جزء العنوان URL المتعلق بالمسار
-    const path = window.location.pathname;
-    // تقسيم المسار بواسطة '/' للحصول على مكوناته
-    const parts = path.split('/');
-    // الحصول على الجزء المرتبط بالـ ID
-    const id = parts[parts.length - 1];
-    // يمكنك الآن استخدام قيمة الـ ID بالشكل الذي تحتاجه في تطبيقك
-    // console.log("ID:", id);
-// document.getElementById("gg").action=`/review/<%=// item._id %>-${id}?_method=DELETE`
-// الحصول على عنصر النموذج باستخدام الـ ID
-const form = document.getElementById("gg");
-  // تغيير القيمة لخاصية action
-  // form.action = `/review/<%=//item._id %>66-${id}?_method=DELETE`;
-
-  document.getElementById("kk").innerHTML=
-  
-  `
-  <% arrR.measurement.forEach((item, index) => { %>                <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها -->
-
-<!--  -->
-   <tr>
-     <th scope="row"><%= index +1 %></th>  <!-- الاندس هذا اضافه من اللوبز وكتبناه عشان يرقم الجداول الترقم يبد من صفر عشان كذا كتبنا زايد واحد-->
-     <td><%=item.W  %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-     <td><%= item.H %>	</td>
-     <td><%=// item.branch %></td>
-     <td><%= item.aluminumCode %></td>
-     <td><%=item.aluminumColorCode// moment(item.updatedAt).fromNow();  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
-     <td><%= item.glassColorCode %>	<%= //item.lastNamecustomer %></td>  <!-- نكتب متغير الوبز وبعد نتكتب السم الي في الداتا عشان يطبعة -->
-     <td><%= item.temper %>	</td>
-     <td><%= item.lip %>	</td>
-     <td><%= //item.designCode %>
-      <!-- <form class="row g-3"> -->
-        <div class="container">
-      <div  id="div110" class="row" role="group" aria-label="Basic radio toggle button group">
-        <div class="col-md-6 mx- d-block text-center">
-        <label class="checkbox-wrapper">
-            <span class="checkbox-tile">
-                <span class="checkbox-icon">
-                    <img class=" img-fluid" src="/img/windows/case7-white.png" alt="" >
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" fill="currentColor" viewBox="0 0 256 256"> -->
-                        <rect width="256" height="256" fill="none"></rect>
-                        <polygon points="56 100 56 168 128 236 128 168 200 168 56 32 200 32 200 100 56 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></polygon>
-                    </svg>
-                </span>
-                <span class="checkbox-label"><%= item.designCode %></span>
-            </span>
-        </label>
-      </div>
-    </div>
-  </div>
-    </td>
-     <td><%= item.aluminumThickness %></td>
-     
-     <td><%=  item.comments  // moment(item.updatedAt).fromNow();  %></td> <!-- الاكواد هذي من متبة لتعديل شكل التاريخ من الداتا بواسطة المانقوز  -->
-     <td><%= item.insideOrOutside %></td>
-     <td>
-       <!-- تحت في الرابط حطينا الأي دي الي  يطبعة الداتا عشان اذا ضغطنا اشتعراض للعميل يكتب رقم الايدي في الرابط -->
     
 
-       <a
-         data-bs-toggle="tooltip"
-         data-bs-title="Edit user"
-         data-bs-placement="top"
-         class="btn btn-primary btn-sm mx-auto"
-         href="../measurement/<%= item._id %>"
-       >
-         <i class="bi bi-pencil"></i>
-       </a>
-      
-       <form id="gg" style="display: inline;" action = "/review/<%=item._id %>-${id}?_method=DELETE"; method="post">
-       <button
-         data-bs-toggle="tooltip"
-         data-bs-title="Delete user"
-         data-bs-placement="top"
-         class="btn btn-danger btn-sm mt-2"
-       >
-         <i class="bi bi-trash"></i>
-       </button>
-     </form>
-     </td>
-   </tr>
-   
-   <% }) %>
-  `
+      <h6>Order Number: <%= arrR.orderNumber %></h6>
+      <div class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
+        <!-- <button id="deleteButton" <%= //arrR.orderNumber ? "hidden" : '' %> type="button" class="btn btn-danger">حذف <i class="bi bi-trash"></i></button> -->
+        <a <%= arrR.orderNumber ? "hidden" : '' %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">البقاء في المسودة <i class="bi bi-journal-text"></i></a>
+        <a <%= arrR.orderNumber ? '' : "hidden" %> href="../view/<%= idCustomer %>" type="button" class="btn btn-secondary">العودة إلى صفحة العميل <i class="bi bi-arrow-left"></i></a>
+
+        <button id="submitButton" class="btn btn-success" onclick="confirmDelete()" <%= arrR.orderNumber ? 'hidden' : '' %>>
+          اعتماد الطلب
+      </button>
 
 
-      </script>
- 
+        <form id="submit" action="/review/<%= arrR._id %>" method="post" class="grid gap-0 column-gap-3 col align-self-end" style="direction: rtl; margin: 16px;">
+          <!-- <input name="confirming" value="مؤكد" type="hidden" class="form-control" /> -->
+          <!-- <input name="confirming2" value="قيد التصنيع" type="hidden" class="form-control" /> -->
+
+          <input name="id" value="<%= arrR._id %>" type="hidden" class="form-control" />
+          <input name="idCustomer" value="<%= idCustomer %>" type="hidden" class="form-control" />
+          <input id="submitButton" type="hidden" value="اعتماد الطلب" class="btn btn-success">
+        </form>
+      </div>
+      <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
+
+      <!-- <a href="../measurement/<%= //arrR._id %>" class="btn btn-primary mt-3 mb-3">إضافة قياس جديد <i class="bi bi-plus-lg"></i></a> -->
+
+
+      <div class="d-flex flex-wrap justify-content-start gap-2 mt-3 mb-3">
+        <a href="../measurement/<%= arrR._id %>" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> سحاب
+        </a>
+        <a href="../structure-measurement/<%= arrR._id %>" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> استركتشر و تيوبات
+        </a>
+        <a href="../doors-measurement/<%= arrR._id %>" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> ابواب
+        </a>
+        <a href="../skylight-measurement/<%= arrR._id %>" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> SKY LIGT
+        </a>
+      </div>
+
+
+      <% } %>
+
+      <!-- زر الطباعة -->
+
+  <button id="print1" type="button" class="btn btn-secondary mt-5" onclick="window.print()" >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"></path>
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"></path>
+</svg>
+</button>
+<!--// زر الطباعة //-->
+
+
+</span>
+<!-- زر الطباعة -->
+
+
+<div class="container print-content">
+<div class="invoice-header">
+    <img style="width: 100px; height: 150px;" src="https://whitemetalfactory.com.sa/wp-content/uploads/2023/09/شعار-المعدن-الابيض.png" alt="">
+    <h1>مصنع المعدن الأبيض لصناعة</h1>
+    <!-- <p>خميس مشيط المدينة الصناعية</p> -->
+    <p> الفرع :<strong><%= arrR.branch %></strong></p>
+
+    <!-- <p>هاتف: 123456789</p> -->
+    <p>البريد الإلكتروني: info@whitemetalfactory.com.sa</p>
+</div>
+</div>
+      <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">height</th>
+            <th scope="col">width</th>
+            <th scope="col">fixed</th>
+            <th scope="col">Aluminum code</th>
+            <th scope="col">Aluminum color code</th>
+            <th scope="col">Glass Color Inside</th>
+
+            <th scope="col">Glass Color Outside</th>
+
+
+
+            <th scope="col">Temper</th>
+            <th scope="col">Lip</th>
+            <th scope="col">illumination</th>
+            <th scope="col">Design code</th>
+            <th scope="col">Thickness</th>
+            <th scope="col">Aluminum Size</th>
+            <th scope="col">Comments</th>
+            <th scope="col">داخلي/خارجي</th>
+            <th scope="col" class="no-print">Action</th>
+          </tr>
+        </thead>
+        <tbody id="kk">
+          <% arrR.measurement.forEach((item, index) => { %>
+            <tr id="measurement-<%= item._id %>" class="<%= item.delete ? 'strikethrough' : '' %>">
+              <th scope="row"><%= item.sequenceNumber?item.sequenceNumber:index +1 %></th>
+              <td><%= item.H %></td>
+
+              <td><%= item.W %></td>
+              <td><%= item.fixed %></td>
+              <td><%= item.aluminumCode %></td>
+              <td><%= item.aluminumColorCode %></td>
+              <td><%= item.glassColorCodeInside %></td>
+              <td><%= item.glassColorCodeOutside %></td>
+
+
+              <td><%= item.temper %></td>
+              <td><%= item.lip %></td>
+              <td><%= item.illumination %></td>
+              <td>
+                <img class="custom-image" src="<%= item.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-white">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="modalImage" src="<%= item.designCode %>" alt="Design Image" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+              
+              <td><%= item.aluminumThickness %></td>
+              <td><%= item.aluminumSize %></td>
+              <td><%= item.comments %></td>
+              <td><%= item.insideOrOutside %></td>
+              <td class="no-print">
+                <% if (permissions.some(permission => permission.name === 'add_edit_measurement')) { %>
+
+<!-- هذا الشرط عشان يتم تغير امتداد التعديل عند الأرسال هذا للاستركتشر والتيوبات -->
+                  <% if (item.aluminumCode === "FORTICKS" || item.aluminumCode === "SMART" || item.aluminumCode === "SG50"|| item.aluminumCode === "FLAT"|| item.aluminumCode === "T10CM"|| item.aluminumCode === "T8CM") { %>
+
+                    <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../structure-measurement/<%= item._id %>">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+
+
+              
+
+<!-- هذا لتعديل الابواب -->
+<%}else if (item.aluminumCode === "DOUBLE GLASS DOOR" || item.aluminumCode === "SLICES DOOR" ){%>
+  <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../doors-measurement/<%= item._id %>">
+    <i class="bi bi-pencil"></i>
+  </a>
+
+  <!-- الإسكاي لايت -->
+  <%}else if (item.aluminumCode === "SKYLIGHT" || item.aluminumCode === "SKYLIGHT FOR WALK" ){%>
+    <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../skylight-measurement/<%= item._id %>">
+      <i class="bi bi-pencil"></i>
+    </a>
+  <%}else {%>
+    <a data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top" class="btn btn-primary btn-sm mx-auto" href="../measurement/<%= item._id %>">
+      <i class="bi bi-pencil"></i>
+    </a>
+    <% } %>
+                <% } %>
+
+                <form id="delete-form-<%= item._id %>" style="display: inline;" action="/review/<%= item._id %>-<%= arrR._id %>?_method=DELETE" method="post">
+                  <button data-bs-toggle="tooltip" data-bs-title="Delete user" data-bs-placement="top" class="btn btn-danger btn-sm mt-2">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  
+</div>
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/sidebars.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="../js/overlay.js"></script>
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+
+    
+    function confirmDelete() {
+      Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "لن تتمكن من التراجع عن هذا!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'اعتماد الطلب'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('submit').submit();
+        }
+      })
+    }
+  </script>
+
+</body>
 </html>

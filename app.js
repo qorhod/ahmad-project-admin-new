@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const port = 3001;
+// const port = process.env.PORT || 3001; 
+
+const port = process.env.PORT || 80; // لسيرفر
+const HOST = '0.0.0.0'; // لسيرفر 
+
+
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
@@ -10,10 +15,34 @@ const cookieParser = require('cookie-parser');
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 const flash = require('connect-flash');
-const adminController = require('./admin/controllers/adminController'); // استيراد وحدة تحكم الأدمن
+const adminController = require('./admin/controllers/adminController');
+const multer = require('multer');
+const fs = require('fs');
+const converter = require("arabic-digits-converter"); // مكتبة تحويل الأرقام
 
 require('dotenv').config();
-require('./admin/config/passport')(passport); // تحميل إعدادات passport للأدمن
+require('./admin/config/passport')(passport);
+
+// إعدادات التحويل للأرقام غير الإنجليزية
+function convertToEnglishNumbers(data) {
+    const isNumericString = /^[٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹]+$/; // تحقق من أن النص يحتوي فقط على أرقام غير إنجليزية
+
+    if (typeof data === "string" && isNumericString.test(data)) {
+        return converter.toEnglishDigits(data); // تحويل الأرقام فقط
+    } else if (typeof data === "object" && data !== null) {
+        for (let key in data) {
+            data[key] = convertToEnglishNumbers(data[key]);
+        }
+    }
+    return data;
+}
+
+// Middleware لتطبيق التحويل على جميع الطلبات
+app.use((req, res, next) => {
+    req.body = convertToEnglishNumbers(req.body);
+    req.query = convertToEnglishNumbers(req.query);
+    next();
+});
 
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,7 +59,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.use(flash()); // استخدام connect-flash
+app.use(flash());
 
 // إعدادات passport
 app.use(passport.initialize());
@@ -50,13 +79,20 @@ liveReloadServer.server.once("connection", () => {
 // الاتصال بقاعدة البيانات
 mongoose.connect(process.env.DATABASE_PASSWORD)
   .then(() => {
-    // تهيئة الأدمن الافتراضي والصلاحيات الافتراضية
     adminController.initializeAdmin();
     adminController.initializeDefaultPermissions();
+    adminController.initializePrices();
     
-    app.listen(port, () => {
-      console.log(`http://localhost:${port}/`);
-    });
+    // app.listen(port, () => {
+    //   console.log(`http://localhost:${port}/`); // السيرف المحلي
+    // });
+
+    app.listen(port, HOST, () => { // لسيرفر 
+      console.log(`Server running on http://${HOST}:${port}/`);
+  });
+  
+
+
   })
   .catch((err) => {
     console.log(err);
@@ -71,3 +107,33 @@ app.use('/admin', adminRoutes);
 
 // استخدم مسارات أخرى
 app.use(allRoutes);
+
+// إعدادات multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// تأكد من أن مجلد 'uploads' موجود
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
+// استقبال الصورة من العميل
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  const imagePath = req.file.path;
+
+  // احفظ مسار الصورة في قاعدة البيانات هنا
+  // ...
+
+  res.json({ imagePath });
+});
+
+// خدمة الملفات الثابتة من مجلد uploads
+app.use('/uploads', express.static('uploads'));

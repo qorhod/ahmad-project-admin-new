@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang="ar" data-bs-theme="auto">
+<head>
+    <script src="/admin/public/js/theme-toggle.js"></script>
+    <link rel="stylesheet" href="/admin/public/bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="shortcut icon" href="/admin/public/img/ali.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <title>العملاء </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/admin/public/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/admin/public/css/dark-light.css"/>
+    <link href="/admin/public/css/dashboard.css" rel="stylesheet" />
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 250px;
+            background-color: var(--sidebar-bg-color);
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+        .small-sidebar {
+            width: 80px;
+        }
+        .content {
+            margin-right: 260px; /* نفس عرض الـ sidebar + 10px */
+            width: calc(100% - 270px); /* نفس عرض الـ sidebar + 20px */
+            background-color: var(--content-bg-color);
+        }
+        .small-content {
+            margin-right: 90px; /* تحديث العرض عند تصغير الشريط الجانبي */
+            width: calc(100% - 100px);
+        }
+        .navbar {
+            margin-right: 260px; /* نفس عرض الـ sidebar + 10px */
+            background-color: var(--navbar-bg-color);
+        }
+        .small-navbar {
+            margin-right: 90px; /* تحديث العرض عند تصغير الشريط الجانبي */
+        }
+        .sidebar-divider {
+            position: fixed;
+            top: 0;
+            right: 250px;
+            height: 100%;
+            width: 10px;
+            background-color: var(--divider-bg-color);
+        }
+        .small-sidebar-divider {
+            right: 80px; /* تحديث الموقع عند تصغير الشريط الجانبي */
+        }
+        .sidebar .logo-img {
+            height: 50px;
+            width: 50px;
+        }
+        .sidebar .factory-img {
+            height: 40px;
+            width: 40px;
+        }
+        .sidebar ul.nav.nav-pills {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul.nav.nav-pills .nav-item {
+            text-align: right;
+        }
+        .small-sidebar .sidebar-text,
+        .small-sidebar .ui-switch-container {
+            display: none;
+        }
+        .small-sidebar #themeToggleLabelSidebar {
+            display: none;
+        }
+        .ui-switch {
+            --switch-bg: rgb(135, 150, 165);
+            --switch-width: 30px;
+            --switch-height: 15px;
+            --circle-diameter: 20px;
+            --circle-bg: rgb(0, 56, 146);
+            --circle-inset: calc((var(--circle-diameter) - var(--switch-height)) / 2);
+        }
+        .ui-switch input {
+            display: none;
+        }
+        .slider {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: var(--switch-width);
+            height: var(--switch-height);
+            background: var(--switch-bg);
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+        }
+        .slider .circle {
+            top: calc(var(--circle-inset) * -1);
+            left: 0;
+            width: var(--circle-diameter);
+            height: var(--circle-diameter);
+            position: absolute;
+            background: var(--circle-bg);
+            border-radius: inherit;
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTkuMzA1IDEuNjY3VjMuNzVoMS4zODlWMS42NjdoLTEuMzl6bS00LjcwNyAxLjk1bC0uOTgyLjk4Mkw1LjA5IDYuMDcybC45ODItLjk4Mi0xLjQ3My0xLjQ3M3ptMTAuODAyIDBMMTMuOTI3IDUuMDlsLjk4Mi45ODIgMS40NzMtMS40NzMtLjk4Mi0uOTgyek0xMCA1LjEzOWE0Ljg3MiA0Ljg3MiAwMDAtNC44NjIgNC44NkE0Ljg3MiA0Ljg3MiAwIDAwMTAgMTQuODYyIDQuODcyIDQuODcyIDAgMDAxNC44NiAxMCA0Ljg3MiA0Ljg3MiAwIDAwMTAgNS4xMzl6bTAgMS4zODlBMy40NjIgMy40NjIgMCAwMTEzLjQ3MSAxMGEzLjQ2MiAzLjQ2MiAwIDAxLTMuNDczIDMuNDcyQTMuNDYyIDMuNDYyIDAgMDE2LjUyNyAxMCAzLjQ2MiAzLjQ2MiAwIDAxMTAgNi41Mjh6TTEuNjY1IDkuMzA1djEuMzloMi4wODN2LTEuMzlIMS42NjZ6bTE0LjU4MyB2MS4zOWgyLjA4NHYtMS4zOWgtMi4wODR6TTUuMDkgMTMuOTI4TDMuNjE2IDE1LjRsLjk4Mi45ODIgMS40NzMtMS40NzMtLjk4Mi0uOTgyeW05LjgyMGwtLjk4Mi45ODIgMS40NzMgMS40NzMuOTgyLS45ODItMS40NzMtMS40NzN6TTkuMzA1IDE2LjI1djIuMDgzaDEuMzg5VjE2LjI1aC0xLjM5eiIgLz4KPC9zdmc+");
+            background-repeat: no-repeat;
+            background-position: center center;
+            -webkit-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            -o-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+        }
+        .slider .circle::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: inherit;
+            -webkit-transition: all 500ms;
+            -o-transition: all 500ms;
+            transition: all 500ms;
+            opacity: 0;
+        }
+        .ui-switch input:checked+.slider .circle {
+            left: calc(100% - var(--circle-diameter));
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTQuMiAyLjVsLS43IDEuOC0xLjguNyAxLjguNy43IDEuOC42LTEuOEw2LjcgNWwtMS45LS43LS42LTEuOHptMTUgOC4zYTYuNyA2LjcgMCAxMS02LjYtNi42IDUuOCA1LjggMCAwMDYuNiA2LjZ6IiAvPgo8L3N2Zz4=");
+        }
+        .ui-switch input:active+.slider .circle::before {
+            -webkit-transition: 0s;
+            -o-transition: 0s;
+            transition: 0s;
+            opacity: 1;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body dir="rtl">
+    <header>
+        <%- include('components/navbar.ejs') %>
+    </header>
+    <main>
+        <div id="sidebar-divider" class="sidebar-divider"></div>
+        <%- include('components/sidebar.ejs', {currentPage:"customers"}) %>
+        <section id="content" class="content p-4 mt-4">
+            <h1 class="mt-4">إدارة العملاء</h1>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>الاسم الأول</th>
+                    <th>الاسم الأخير</th>
+                    <th>رقم الهاتف</th>
+                    <th>الجنس</th>
+                    <th>الفرع</th>
+                    <th>موظف المبيعات (ID)</th>
+                    <th>اسم موظف المبيعات</th>
+                    <th>اسم مستخدم موظف المبيعات</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% customers.forEach(function(customer) { %>
+                    <tr>
+                      <td><%= customer.firstNamecustomer %></td>
+                      <td><%= customer.lastNamecustomer %></td>
+                      <td><%= customer.phoneNumber %></td>
+                      <td><%= customer.gender %></td>
+                      <td><%= customer.branch %></td>
+                      <td><%= customer.salesEmployeeId %></td>
+                      <td><%= customer.salesEmployeeName %></td>
+                      <td><%= customer.salesEmployeeUserName %></td>
+                      <td>
+                        <button type="button" class="btn btn-delete" onclick="confirmDelete('<%= customer._id %>')">
+                          <i class="bi bi-trash"></i> حذف
+                        </button>
+                        <form id="delete-form-<%= customer._id %>" action="/admin/customers/delete/<%= customer._id %>" method="POST" style="display: none;">
+                          <input type="hidden" name="_method" value="DELETE">
+                        </form>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+        </section>
+    </main>
+    <script src="/admin/public/js/bootstrap.bundle.min.js"></script>
+    <script src="/admin/public/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebarId');
+            const content = document.getElementById('content');
+            const sidebarDivider = document.getElementById('sidebar-divider');
+            const navbar = document.querySelector('.navbar');
+            const themeToggleLabelSidebar = document.getElementById('themeToggleLabelSidebar');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('small-sidebar');
+                content.classList.toggle('small-content');
+                sidebarDivider.classList.toggle('small-sidebar-divider');
+                navbar.classList.toggle('small-navbar');
+                themeToggleLabelSidebar.classList.toggle('d-none');
+
+                // Adjust the position of the sidebar-divider based on the sidebar width
+                if (sidebar.classList.contains('small-sidebar')) {
+                    sidebarDivider.style.right = '90px'; // Update this value based on your small-sidebar width
+                } else {
+                    sidebarDivider.style.right = '250px'; // Update this value based on your normal sidebar width
+                }
+            }
+
+            const toggleButton = document.querySelector('.bi-x-circle');
+            toggleButton.addEventListener('click', toggleSidebar);
+        });
+    </script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(customerId) {
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'نعم، احذف!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('delete-form-' + customerId).submit();
+      }
+    })
+  }
+</script>
+
+
+
+</body>
+</html>

@@ -1,13 +1,17 @@
+
+
+// هذا للمصادقة عند ستجيل الدخول يعني نقدر نخلي تسجيل الدخول عنطريق قوقل او فيسبوك إلخ ولكني خليتها باليوز والرقم السري
+
 const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const Admin = require('../models/Admin');
 
 module.exports = function(passport) {
-  passport.use('admin-local', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+  passport.use('admin-local', new LocalStrategy({ usernameField: 'username' }, async (username, password, done) => {
     try {
-      const admin = await Admin.findOne({ email: email });
+      const admin = await Admin.findOne({ username: username });
       if (!admin) {
-        return done(null, false, { message: 'Incorrect email.' });
+        return done(null, false, { message: 'Incorrect username.' });
       }
       if (!admin.validPassword(password)) {
         return done(null, false, { message: 'Incorrect password.' });

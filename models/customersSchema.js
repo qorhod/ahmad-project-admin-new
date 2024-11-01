@@ -24,6 +24,7 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
     orders: [{
         orderNumber: Number,
             status: String,
+            status2: String,
             branch: String,
             location: String,
             salesEmployeeId: String,
@@ -39,14 +40,55 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
             glassThickness0: String,
             glassColorCode0: String,
           
-      
+            TAX: Number, // الضريبة 
+        // التسعيرات المحلية للطلب
+            prices: { 
+                slidingD10: Number,
+                slidingD10p: Number,
+                slidingD12: Number,
+                slidingS: Number,
+                interruptT: Number,
+                interrupt: Number,
+                fixedD10: Number,
+                fixedD4: Number,
+                fixedS10: Number,
+                fixedS4: Number,
+            
+                GOLF10: Number,
+                GOLF12: Number,
+                ROYAL2: Number,
+                ROYAL3: Number,
         
+               
+                ROYAL2: Number,
+                
+                // اسعار الستركتشر
+                SG50: Number,
+                SMART: Number,
+                FORTICKS: Number,
+            
+                // سكاي لايت
+                SKYLIGHT: Number,
+                SKYLIGHT_FOR_WALK: Number,
+            
+                // سعر التيوبات
+                T8CM: Number,
+                T10CM: Number,
+                FLAT: Number,
+            
+                // الابواب 
+                SLICES_DOOR: Number,
+                DOUBLE_GLASS_DOOR: Number
+            },
 
+            
 
 
 
       
                     measurement:[{
+                        sequenceNumber: Number, // ترقيم القياس عند تأكيده
+                        delete: Boolean, // حالة القياس هل هو محذوف طبعا لا بد ان يكون الطلب مؤكد
                         iid:String,
                         id_id:String,
                             H: Number,
@@ -57,14 +99,23 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                             aluminumThickness: Number,
                             insideOrOutside: String,
                             aluminumColorCode: String,
-
+                            aluminumSize: Number, // مقاس الألمنيوم نحتاجه فقط في الأستركتشر وال التيوبات
                             glasstype: String,
                             glassThickness: String,
-                            glassColorCode: String,
+                            glassColorCodeInside: String,
+                            glassColorCodeOutside: String,
+                            // glassColorCodeInside: {
+                            //     type: String,
+                            //     default: '11'  // القيمة الثابتة
+                            // },
+                            // glassColorCodeOutside: {
+                            //     type: String,
+                            //     default: '22'  // القيمة الثابتة
+                            // },
                             glassCode: String,
                             temper: String,
                             lip: String,
-                            
+                            illumination: String,  // الإنميشن 
                             comments: String,
 
                             totalMeters:{
@@ -80,11 +131,9 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
                                 item: String,
                                 umberOfMeters: Number,
                                 price: Number,
-                                discount: Number,
+                                
                                 total: Number,
-                                // totalBeforeTax: Number,
-                                // tax: Number,
-                                totalWithDiscount: Number,
+                            
                                 },
 
 
@@ -115,24 +164,79 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
 
                                 },
+
+
+                                cuttingTechnicianGlass: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                cuttingStatusGlass: { type: Boolean, default: false },
+                                assemblyTechnicianGlass: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                assemblyStatusGlass: { type: Boolean, default: false },
+                            
+
+
+
                                 glassCuttingReport:{
                                     H: Number,
                                     W: Number,
                                     reportTemper: Number,
                                 },
+
+
+                                                //مختصه في صففخة ترير قص لالميم ذكاء صناعي                           
+                               cuttingTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },   // هذا لكتابة ايد الفني 
+                                cuttingStatus: { type: Boolean, default: false },
+                                assemblyTechnician: { type: Schema.Types.ObjectId, ref: 'AuthUser' },
+                                assemblyStatus: { type: Boolean, default: false },
+                            
+
                                 aluminumCuttingReport:{
+                                    
                                     Q4: Number,
                                     R4: Number,
                                     S4: Number,
                                     T4: Number,
                                     U4: Number,
                                 
+                                },
+
+
+
+                                // اضافه الوحدات مثل زيادة الشبابيك في نفس الطاقة
+                                additions:{
+                                    // الاستركتشر 
+                                    Structure:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                       
+                                    },
+
+                                        // مفصلات 
+                                    Hinges:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                    },
+
+                                    // شباك رول
+                                    
+                               RollWindow:{
+                                        number: Number, // عدد الوحدات
+                                        price: Number,
+                                        totalPrice: Number,
+
+                                    }
+                                   
                                 }
 
 
 
+
+
                     }],
-                    
+                    totalAllPrice:Number, // مجموع سعر  جميع القياسات
+
                     // totalMeters:[{
                     //     H1: Number,
                     //     W1: Number,
@@ -145,12 +249,25 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
 
                     totalPrice:{ // التسعيرة
 
-                 
+                        
                     totalBeforeTax: Number,
+                    Discount: Number,
+                    totalAftereDiscount: Number,
                     tax: Number,
                     totalWithTax: Number,
                     },
                     
+
+                    totalTempers:{ // مجموع امتار  السكريت وسعره 
+
+                        
+                        MetersPrice: Number, // سعر المتر لذا الاوردر يتم تعبديه تلقائي من قامه السعار ويمكن تعديله من الواجهه
+                        totalTempersPrice: Number, // اجمالي السعر لكي الاسعار 
+                        totalTempersMeters: Number, // مجموع امتار السكريت الي في الاوردر 
+                
+                        },
+
+
 
                     motherEquationTotal:[ {
               // تجميع  العداد مع بعض بشرط نفس اسم القطاع
@@ -214,8 +331,9 @@ const userSchema = new Schema({// بناء الاسكيما مثل ما توري
  
  
 // Create a model based on that schema
-const User = mongoose.model("customer", userSchema);  //كأنه نشأ اري وداخل اري يبدا يكتب البيانات الي نبغا بصيغة ابجكت customer عشان ننشاء مكان في الداتا بيز بهذا الأسم 
+// const User = mongoose.model("customer", userSchema);  //كأنه نشأ اري وداخل اري يبدا يكتب البيانات الي نبغا بصيغة ابجكت customer عشان ننشاء مكان في الداتا بيز بهذا الأسم 
  
- 
+const User = mongoose.models.customer || mongoose.model('customer', userSchema);
+
 // export the model
 module.exports = User;  //app.js نصدر الداتا عشان نستقبلها في صفحة 

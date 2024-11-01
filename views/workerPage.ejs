@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Page</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/dark-light.css"/>
+    <link href="./css/sidebars.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/myStyle.css" />
+    <style>
+        .completed {
+            background-color: green;
+            color: white;
+        }
+        .in-progress {
+            background-color: red;
+            color: white;
+        }
+        .order-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            margin-top: 20px;
+        }
+        .custom-image {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="container">
+
+    <div class="text-center my-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Name: <%= name %></h4>
+                <h4 class="card-title">Username: <%= userName %></h4>
+                <form action="/signout" method="GET" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <% orders.forEach(order => { %>
+        <div id="order-<%= order.orders.orderNumber %>" class="order-container">
+            <h1 class="text-primary">Order Number: <%= order.orders.orderNumber %></h1>
+
+            <% let hasGlassCutting = false; %>
+            <% let hasGlassAssembly = false; %>
+            <% let hasAluminumCutting = false; %>
+            <% let hasAluminumAssembly = false; %>
+
+            <% order.orders.measurement.forEach(measurement => { %>
+                <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
+                    <% hasGlassCutting = true; %>
+                <% } %>
+                <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
+                    <% hasGlassAssembly = true; %>
+                <% } %>
+                <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
+                    <% hasAluminumCutting = true; %>
+                <% } %>
+                <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
+                    <% hasAluminumAssembly = true; %>
+                <% } %>
+            <% }) %>
+
+            <% if (hasGlassCutting || hasGlassAssembly) { %>
+                <h2 class="text-secondary">Glass Report</h2>
+            <% } %>
+
+            <% if (hasGlassCutting) { %>
+                <h3 class="text-info">Glass Cutting</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Aluminum Code</th>
+                            <th scope="col">Glass Color Inside</th>
+                            <th scope="col">Glass Color Outside</th>       
+                           <th>H</th>
+                            <th>W</th>
+                            <th>Comment</th>
+                            <th>Design</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.cuttingTechnicianGlass && measurement.cuttingTechnicianGlass.toString() === userId) { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.glassColorCodeInside || '--' %></td>
+                                    <td><%= measurement.glassColorCodeOutside || '--' %></td>                                         <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
+
+                                    <td><%= measurement.comments || '--' %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
+                                    <td>
+                                        <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="cutting">
+                                            <button type="submit" class="btn <%= measurement.cuttingStatusGlass ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatusGlass ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasGlassAssembly) { %>
+                <h3 class="text-info">Glass Double</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Aluminum Code</th>
+                            <th scope="col">Glass Color Inside</th>
+                            <th scope="col">Glass Color Outside</th>                            <th>illumination</th>
+                            <th>H</th>
+                            <th>W</th>
+                            <th>Comment</th>
+                            <th>Design</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.assemblyTechnicianGlass && measurement.assemblyTechnicianGlass.toString() === userId) { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.glassColorCodeInside || '--' %></td>
+                                    <td><%= measurement.glassColorCodeOutside || '--' %></td>                                         <td><%= measurement.illumination || '--' %></td>
+                                    <td><%=(measurement.glassCuttingReport.H && measurement.glassCuttingReport.H ? measurement.glassCuttingReport.H : '--') %></td>
+                                    <td><%=(measurement.glassCuttingReport.W && measurement.glassCuttingReport.W ? measurement.glassCuttingReport.W : '--') %></td>
+
+                                    <td><%= measurement.comments || '--' %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
+                                    <td>
+                                        <form action="/glass-cutting/update-status-glass-cutting-and-glass-double" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="double">
+                                            <button type="submit" class="btn <%= measurement.assemblyStatusGlass ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.assemblyStatusGlass ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasAluminumCutting || hasAluminumAssembly) { %>
+                <h2 class="text-secondary">Aluminum Report</h2>
+            <% } %>
+
+            <% if (hasAluminumCutting) { %>
+                <h3 class="text-info">Aluminum Cutting</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Aluminum Code</th>
+                            <th>Color Code</th>
+                            <th>Fixed</th>
+                            <th>Aluminum Thickness</th>
+                            <th>Aluminum Size</th>
+                            <th>Comments</th>
+                            <th>H(A1)*2</th>
+                            <th>W(A2)*2</th>
+                            <th>(B1)*2</th>
+                            <th>(B2)*4</th>
+                            <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
+                            <th>Design</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.cuttingTechnician && measurement.cuttingTechnician.toString() === userId) { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
+
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+
+
+
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="cutting">
+
+                                            <button type="submit" class="btn <%= measurement.cuttingStatus ? 'completed' : 'in-progress' %>">
+                                                <%= measurement.cuttingStatus ? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (hasAluminumAssembly) { %>
+                <h3 class="text-info">Aluminum Assembly</h3>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Number</th>
+                            <th>Aluminum Code</th>
+                            <th>Color Code</th>
+                            <th>Fixed</th>
+                            <th>Aluminum Thickness</th>
+                            <th>Aluminum Size</th>
+                            <th>Comments</th>
+                            <th>H(A1)*2</th>
+                            <th>W(A2)*2</th>
+                            <th>(B1)*2</th>
+                            <th>(B2)*4</th>
+                            <th>(B3)*2</th>
+                            <th>(N1)*2</th>
+                            <th>(N2)*2</th>
+                            <th>Design</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.orders.measurement.forEach(measurement => { %>
+                            <% if (measurement.assemblyTechnician && measurement.assemblyTechnician.toString() === userId) { %>
+                                <tr class="<%= measurement.delete ? 'strikethrough' : '' %>">
+                                    <td><%= measurement.sequenceNumber %></td>
+                                    <td><%= measurement.aluminumCode || '--' %></td>
+                                    <td><%= measurement.aluminumColorCode || '--' %></td>
+                                    <td><%= measurement.fixed || '--'%></td>
+                                    <td><%= measurement.aluminumThickness || '--'%></td>
+                                    <td><%= measurement.aluminumSize || '--' %></td>
+                                    <td><%= measurement.comments || '--' %></td>
+                                    <td><%= (measurement.H ? measurement.H * 2 : '--') %></td>
+                                    <td><%= (measurement.W ? measurement.W * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.U4 ? measurement.aluminumCuttingReport.U4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.T4 ? measurement.aluminumCuttingReport.T4 * 4 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.S4 ? measurement.aluminumCuttingReport.S4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.R4 ? measurement.aluminumCuttingReport.R4 * 2 : '--') %></td>
+                                    <td><%= (measurement.aluminumCuttingReport && measurement.aluminumCuttingReport.Q4 ? measurement.aluminumCuttingReport.Q4 * 2 : '--') %></td>
+                                    <td>
+                                        <img class="custom-image" src="<%= measurement.designCode %>" alt="Design Image" data-bs-toggle="modal" data-bs-target="#imageModal" data-image-src="<%= measurement.designCode %>">
+                                    </td>
+                                    <td>
+                                        <form action="/aluminum-cutting/update-status-aluminum-cutting-and-aluminum-assembly" method="POST" onsubmit="saveScrollPosition('<%= order.orders.orderNumber %>')">
+                                            <input type="hidden" name="orderId" value="<%= measurement.iid %>">
+                                            <input type="hidden" name="measurementId" value="<%= measurement._id %>">
+                                            <input type="hidden" name="taskType" value="assembly">
+
+                                            <button type="submit" class="btn <%= measurement.assemblyStatus ? 'completed' : 'in-progress' %>">
+                                                
+                                                <%= measurement.assemblyStatus? 'Completed' : 'In Progress' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    <% }) %>
+
+    <!-- المودال لعرض الصورة بشكل كامل -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">عرض الصورة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Design Image" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // حدث عند فتح المودال
+            document.addEventListener('click', function(event) {
+                if (event.target.matches('.custom-image')) {
+                    var imageSrc = event.target.getAttribute('data-image-src');
+                    var modalImage = document.getElementById('modalImage');
+                    modalImage.src = imageSrc;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
