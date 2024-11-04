@@ -12,8 +12,7 @@ const session = require('express-session');
 const passport = require('passport');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
-const livereload = require('livereload');
-const connectLivereload = require('connect-livereload');
+
 const flash = require('connect-flash');
 const adminController = require('./admin/controllers/adminController');
 const multer = require('multer');
@@ -65,16 +64,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// إعدادات live reload
-const liveReloadServer = livereload.createServer();
-liveReloadServer.watch(path.join(__dirname, 'public'));
-liveReloadServer.watch(path.join(__dirname, 'admin/public'));
-app.use(connectLivereload());
-liveReloadServer.server.once("connection", () => {
-  setTimeout(() => {
-    liveReloadServer.refresh("/");
-  }, 100);
-});
+
 
 // الاتصال بقاعدة البيانات
 mongoose.connect(process.env.DATABASE_PASSWORD)
