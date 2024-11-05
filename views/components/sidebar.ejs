@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sidebar Example</title>
-  <link rel="stylesheet" href="path/to/bootstrap.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
   <style>
     .print-content {
@@ -25,6 +24,7 @@
         margin-bottom: 20px;
         text-align: center;
     }
+
     .invoice-header h1 {
         margin-bottom: 0;
     }
@@ -36,7 +36,7 @@
     }
 
     .sidebar {
-        position: absolute;
+        position: fixed; /* تغيير إلى fixed لضمان الامتداد من أعلى إلى أسفل الصفحة */
         left: 0;
         top: 0;
         width: 250px;
@@ -130,10 +130,10 @@
 
 <body>
   <!-- زر إظهار/إخفاء الشريط الجانبي -->
-  <button id="sidebarToggle" class="sidebar-toggle">☰ القائمة</button>
+  <button id="sidebarToggle" class="sidebar-toggle no-print">☰ القائمة</button>
 
   <!-- الشريط الجانبي -->
-  <div id="sidebarId" class="sidebar sidebar-visible">
+  <div id="sidebarId" class="sidebar">
        <br>       <br>
 
 
