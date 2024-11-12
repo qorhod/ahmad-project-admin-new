@@ -60,10 +60,14 @@
               <label for="glassColorCodeInside" class="form-label">: لون الزجاج الداخلي</label>
               <select  type="radio" name="glassColorCodeInside" id="glassColorCodeInside" class="form-select">
                 <option value="<%=arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCodeInside%>" selected hidden disabled><%= arrM.glassColorCode0?arrM.glassColorCode0:arrM.glassColorCodeInside%></option>
+                <option value="--">--</option>
+
                 <option value="شفاف/transparent">شفاف/transparent</option>
-                <option value="C1+">C1+</option>
+                <option value="رمل/sand">رمل/sand</option>
+
                 <option value="C1">C1</option>
                 <option value="C2">C2</option>
+                <option value="C2+">C2+</option>
                 <option value="C3">C3</option>
                 <option value="C4">C4</option>
                 <option value="C5">C5</option>

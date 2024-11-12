@@ -17,6 +17,22 @@
   <link rel="stylesheet" href="../css/dark-light.css"/>
   <link href="../css/sidebars.css" rel="stylesheet" />
   <link rel="stylesheet" href="../css/myStyle.css" />
+  
+  <style>
+    /* لتخصيص لون وسماكة الخطوط الفاصلة */
+    .custom-table {
+      border-width: 2px; /* سماكة الخط الخارجي للجدول */
+      border-color: #000000; /* لون الخط */
+    }
+  
+    .custom-table th, 
+    .custom-table td {
+      border-width: 2px; /* زيادة سماكة الخط الفاصل بين الأعمدة والصفوف */
+      border-color: #000000; /* لون الخط الفاصل */
+      font-weight: bold; /* جعل النصوص سميكة */
+    }
+  </style>
+  
   <style>
     .strikethrough {
       position: relative;
@@ -203,7 +219,7 @@
     <p>البريد الإلكتروني: info@whitemetalfactory.com.sa</p>
 </div>
 </div>
-      <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+      <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered custom-table">
         <thead>
           <tr>
             <th scope="col">#</th>
