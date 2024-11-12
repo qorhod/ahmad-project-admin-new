@@ -955,9 +955,9 @@
   // إضافة مستمع لحدث التغيير
   checkbox.addEventListener('change', function() {
       if (this.checked) {
-          this.value = "داخلي";
+          this.value = "Inside";
       } else {
-          this.value = "خارجي";
+          this.value = "Outside";
       }
       console.log(this.value);
   });
@@ -1171,7 +1171,7 @@ if (checkbox0 && checkbox0.value === "<%=arrM.insideOrOutside%>") {
   checkbox0.checked =true;
   
 } else {
-  document.getElementById('cb5').value = "<%=arrM.insideOrOutside?arrM.insideOrOutside:'خارجي'%>";
+  document.getElementById('cb5').value = "<%=arrM.insideOrOutside?arrM.insideOrOutside:'Outside'%>";
 
   checkbox0.checked =false  ; // لاحظ هذا السطر
 }
