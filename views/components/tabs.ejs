@@ -1,0 +1,81 @@
+
+
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<!-- استايل الي يغمق ويفتح الشاشة -->
+<link rel="stylesheet" href="../css/dark-light.css"/>
+
+
+
+
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a href="/review/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'review' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-current="page">
+        ورقة قياس
+      </a>
+    </li>
+  
+    <li class="nav-item">
+      <a href="../total-meters/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'total-meters' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-current="page">
+        مجموع الأمتار
+      </a>
+    </li>
+  
+    <% if (permissions.some(permission => permission.name === 'price')) { %>
+    <li class="nav-item">
+      <a href="../price/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'price' ? 'active' : 'text-secondary-emphasis' %>">
+        التسعيرة
+      </a>
+    </li>
+    <% } %>
+  
+    <li class="nav-item">
+      <a href="../total-materials/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'total-materials' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-disabled="true">
+        كميات المواد
+      </a>
+    </li>
+  
+    <li class="nav-item">
+      <a href="../glass-cutting/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'glass-cutting' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-disabled="true">
+        تقرير قص الزجاج
+      </a>
+    </li>
+  
+    <li class="nav-item">
+      <a href="../report-temper/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'report-temper' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-disabled="true">
+        تقرير السكريت
+      </a>
+    </li>
+  
+    <li class="nav-item">
+      <a href="../aluminum-cutting/<%= arrR._id %>" 
+         class="nav-link <%= currentPage === 'aluminum-cutting' ? 'active' : 'text-secondary-emphasis' %>" 
+         aria-disabled="true">
+        تقرير قص الألمنيوم
+      </a>
+    </li>
+  </ul>
+  
+  <style>
+    [data-bs-theme="light"] .nav-link.active {
+      color: #000 !important; /* اللون الأسود */
+      font-weight: 600; /* سمك الخط */
+    }
+  
+    [data-bs-theme="dark"] .nav-link.active {
+      color: inherit; /* اللون الافتراضي */
+      font-weight: normal; /* الخط العادي */
+    }
+  </style>
+  

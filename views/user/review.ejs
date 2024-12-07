@@ -118,36 +118,16 @@
       <span class=" web-content"> 
 
       <%- include('../components/navbar.ejs') %>
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page">ورقة قياس</a>
-        </li>
-        <li class="nav-item">
-          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page">مجموع الأمتار</a>
-        </li>
-        <% if (permissions.some(permission => permission.name === 'price')) { %>
-        <li class="nav-item">
-          <a href="../price/<%= arrR._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
-        </li>
-        <% } %>
 
-        <% if (permissions.some(permission => permission.name === 'manufacturing_reports')) { %>
+      <%- include('../components/tabs.ejs', { 
+        currentPage: 'review', 
+        arrR: arrR, 
+        permissions: permissions 
+      }) %>
 
-        <li class="nav-item">
-          <a href="../total-materials/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">كميات المواد</a>
-        </li>
-        <li class="nav-item">
-          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج</a>
-        </li>
-        <li class="nav-item">
-          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت</a>
-        </li>
-        <li class="nav-item">
-          <a href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم</a>
-        </li>
-        <% } %>
 
-      </ul>
+
+
     
 
       <h6>Order Number: <%= arrR.orderNumber %></h6>
@@ -241,7 +221,7 @@
             <th scope="col">Thickness</th>
             <th scope="col">Aluminum Size</th>
             <th scope="col">Comments</th>
-            <th scope="col">داخلي/خارجي</th>
+            <th scope="col">inside/outside</th>
             <th scope="col" class="no-print">Action</th>
           </tr>
         </thead>

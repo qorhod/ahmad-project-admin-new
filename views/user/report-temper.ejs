@@ -95,39 +95,14 @@
       <%- include('../components/navbar.ejs') %>
 
 
-      <ul class="nav nav-tabs ">
-        <li class="nav-item">
-          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
-        </li>
+
+      <%- include('../components/tabs.ejs', { 
+        currentPage: 'report-temper', 
+        arrR: arrR, 
+        permissions: permissions 
+      }) %>
+
       
-        <li class="nav-item">
-          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
-        </li>
-        <% if (permissions.some(permission => permission.name === 'price')) { %>
-        <li class="nav-item">
-          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
-        </li>
-        <% } %>
-
-        <li class="nav-item">
-          <a href="../total-materials/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">كميات المواد</a>
-        </li>
-        <li class="nav-item">
-          <a href="../glass-cutting/<%= arrR._id %> "class="nav-link text-secondary-emphasis " aria-disabled="true">تقرير قص الزجاج </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="../report-temper/<%= arrR._id %>" class="nav-link  active" aria-disabled="true">تقرير السكريت   </a>
-          </li>
-
-   
-        <li class="nav-item">
-          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
-        </li>
-
-      </ul>
-
-
      <!-- form-control -->
      <!-- <div  class="grid gap-0 column-gap-3 col align-self-end " style=" direction: rtl; margin: 16px;">
       <button type="button" class="btn btn-danger ">حذف <i class="bi bi-trash"></i></button>
@@ -209,7 +184,7 @@
             <% arrR.measurement.forEach((item, index) => { %>  <!-- طريقة ثانية للفور لوب تكتب اسم الأري الي انشأنها مع القت ركوس الي في صفحة الاب و ارسلنها باسم الأري وكتبتها مثل ماتشوف والمتغير محمل بقاعرة البينات كاملة وكلمة الايتم انا كتبهتها كمتغير للوبز ولو ماكتبنا الاستدعأت الي تحت راح يكرر الي ي في الوب عدد المعلومات الي في الداتا كلها-->
              
               <!-- شرط عشان ما يطلع إلى التمبر -->
-              <% if (item.temper==="YAS") { %> 
+              <% if (item.temper==="YES") { %> 
                
               <!-- هذا الكلاس في الاسفل عشان المشح بعد التأكيد يجي على الصف احمر -->
                  <tr class="<%= item.delete ? 'strikethrough' : '' %>">

@@ -91,38 +91,12 @@
       <%- include('../components/navbar.ejs') %>
 
 
-      <ul class="nav nav-tabs ">
-        <li class="nav-item">
-          <a href="/review/<%= arrR._id %>" class="nav-link text-secondary-emphasis  " aria-current="page" >ورقة قياس</a>
-        </li>
-      
-        <li class="nav-item">
-          <a href="../total-meters/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-current="page"  >مجموع الأمتار</a>
-        </li>
-        <% if (permissions.some(permission => permission.name === 'price')) { %>
 
-        <li class="nav-item">
-          <a href="../price/<%= arrR._id %>"class="nav-link text-secondary-emphasis "  href="#">التسعيرة</a>
-        </li>
-        <% } %>
-
-        <li class="nav-item">
-          <a href="../total-materials/<%= arrR._id %> "class="nav-link  active" aria-disabled="true">كميات المواد</a>
-        </li>
-        <li class="nav-item">
-          <a href="../glass-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الزجاج </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="../report-temper/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير السكريت   </a>
-        </li>
-
-   
-        <li class="nav-item">
-          <a  href="../aluminum-cutting/<%= arrR._id %>" class="nav-link text-secondary-emphasis" aria-disabled="true">تقرير قص الألمنيوم </a>
-        </li>
-
-      </ul>
+      <%- include('../components/tabs.ejs', { 
+        currentPage: 'total-materials', 
+        arrR: arrR, 
+        permissions: permissions 
+      }) %>
 
 
      <!-- form-control -->

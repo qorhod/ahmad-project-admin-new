@@ -251,20 +251,20 @@ function calculateResults(data) {
     let resultW;
 
     if (aluminumCode === "Sliding D10") {
-        resultH = lip === "YAS" ? h + 5 : h;
-        resultW = lip === "YAS" ? w + 5 : w;
+        resultH = lip === "YES" ? h + 5 : h;
+        resultW = lip === "YES" ? w + 5 : w;
     } else if (aluminumCode === "Sliding D12") {
-        resultH = lip === "YAS" ? h + 10 : h;
-        resultW = lip === "YAS" ? w + 10 : w;
+        resultH = lip === "YES" ? h + 10 : h;
+        resultW = lip === "YES" ? w + 10 : w;
     } else if (aluminumCode === "GOLF10") {
-        resultH = lip === "YAS" ? h + 6 : h;
-        resultW = lip === "YAS" ? w + 6 : w;
+        resultH = lip === "YES" ? h + 6 : h;
+        resultW = lip === "YES" ? w + 6 : w;
     } else if (["ROYAL 2", "ROYAL 3", "Fixed S10", "Fixed D10", "Sliding S", "GOLF12", "slidingD10p", "Fixed D4"].includes(aluminumCode)) {
-        resultH = lip === "YAS" ? h + 8 : h;
-        resultW = lip === "YAS" ? w + 8 : w;
+        resultH = lip === "YES" ? h + 8 : h;
+        resultW = lip === "YES" ? w + 8 : w;
     } else if (aluminumCode === "Fixed S4") {
-        resultH = lip === "YAS" ? h + 5.6 : h;
-        resultW = lip === "YAS" ? w + 5.6 : w;
+        resultH = lip === "YES" ? h + 5.6 : h;
+        resultW = lip === "YES" ? w + 5.6 : w;
             }else if (["SG50","SMART","FORTICKS"].includes(aluminumCode)) {
                 resultH = h;
                 resultW = w;
@@ -1707,6 +1707,91 @@ function aluminumCuttingReport(M4,B10,C10,) {
 
 
 
+// async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
+//     try {
+//         // البحث عن الطلب باستخدام معرف الطلب
+//         const order = await User.findOne({ "orders._id": orderId });
+
+//         if (!order) {
+//             throw new Error('Order not found');
+//         }
+
+//         // العثور على الطلب المحدد بناءً على orderId
+//         const selectedOrder = order.orders.find(o => o._id.equals(orderId));
+
+//         if (!selectedOrder) {
+//             throw new Error('Specified order not found');
+//         }
+
+//         // حساب مجموع reportTemper من جميع القياسات
+//         let totalTempersMeters = 0;
+//         selectedOrder.measurement.forEach(measure => {
+//             // التحقق من حالة delete قبل حساب reportTemper
+//             if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+//                 if (measure.glassCuttingReport) {
+//                     console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                     console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
+
+//                     // التحقق من أن reportTemper ليس null أو undefined وأنه رقم
+//                     if (measure.glassCuttingReport.reportTemper != null && typeof measure.glassCuttingReport.reportTemper === 'number') {
+//                         console.log(`Adding reportTemper: ${measure.glassCuttingReport.reportTemper}`);
+//                         totalTempersMeters += measure.glassCuttingReport.reportTemper;
+//                     } else {
+//                         console.log(`Skipping measurement due to missing or invalid reportTemper`);
+//                     }
+//                 } else {
+//                     console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
+//                 }
+//             } else {
+//                 console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+//             }
+//         });
+
+//         console.log(`Total tempers meters calculated: ${totalTempersMeters}`);
+
+//         // تعيين MetersPrice باستخدام newMetersPrice إذا كان موجودًا، أو السعر في totalTempers، أو السعر الافتراضي
+//         let metersPrice;
+        
+//         if (newMetersPrice !== undefined) {
+//             // إذا تم تمرير newMetersPrice، نستخدمه مباشرة
+//             metersPrice = newMetersPrice;
+//             console.log(`Using provided newMetersPrice: ${metersPrice}`);
+//         } else if (selectedOrder.totalTempers && selectedOrder.totalTempers.MetersPrice !== undefined && selectedOrder.totalTempers.MetersPrice !== null) {
+//             // استخدام MetersPrice الموجود في totalTempers إذا كان يحتوي على قيمة
+//             metersPrice = selectedOrder.totalTempers.MetersPrice;
+//             console.log(`Using existing MetersPrice from order's totalTempers: ${metersPrice}`);
+//         } else {
+//             // جلب السعر الافتراضي من جدول Prices إذا لم يكن موجودًا في totalTempers
+//             const defaultPrice = await Prices.findOne({});
+//             if (!defaultPrice || !defaultPrice.price.TempersPriceMeters) {
+//                 throw new Error('Default tempers meter price not found');
+//             }
+//             metersPrice = defaultPrice.price.TempersPriceMeters;
+//             console.log(`Using default MetersPrice from Prices table: ${metersPrice}`);
+//         }
+
+//         // حساب السعر الإجمالي
+//         const totalTempersPrice = totalTempersMeters * metersPrice;
+
+//         // تحديث الحقول في قاعدة البيانات، بما في ذلك MetersPrice (بغض النظر عن مصدره)
+//         await User.updateOne(
+//             { "orders._id": orderId },
+//             {
+//                 $set: {
+//                     "orders.$.totalTempers.totalTempersMeters": totalTempersMeters,
+//                     "orders.$.totalTempers.totalTempersPrice": totalTempersPrice,
+//                     "orders.$.totalTempers.MetersPrice": metersPrice // تحديث السعر دائماً سواء كان موجودًا مسبقًا أو تم تحديثه
+//                 }
+//             }
+//         );
+
+//         console.log('Total tempers meters and price updated successfully:', totalTempersMeters, totalTempersPrice);
+//         return { totalTempersMeters, totalTempersPrice }; // نعيد القيم لاستخدامها إذا لزم الأمر
+//     } catch (err) {
+//         console.error("Error:", err.message);
+//     }
+// }
+
 async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) {
     try {
         // البحث عن الطلب باستخدام معرف الطلب
@@ -1726,8 +1811,10 @@ async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) 
         // حساب مجموع reportTemper من جميع القياسات
         let totalTempersMeters = 0;
         selectedOrder.measurement.forEach(measure => {
-            // التحقق من حالة delete قبل حساب reportTemper
-            if (measure.delete !== true) { // إذا كان delete غير موجود أو false، نقوم بالحساب
+            console.log("gggggg",measure.temper)
+            // التحقق من حالة delete وقيمة temper قبل حساب reportTemper
+            if (measure.delete !== true && measure.delete !== "true" && measure.temper === "YES") { 
+                // إذا كان delete غير موجود أو false و temper يساوي YES، نقوم بالحساب
                 if (measure.glassCuttingReport) {
                     console.log(`glassCuttingReport found for measurement with ID: ${measure._id}`);
                     console.log(`reportTemper value: ${measure.glassCuttingReport.reportTemper}`);
@@ -1743,7 +1830,7 @@ async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) 
                     console.log(`No glassCuttingReport found for measurement with ID: ${measure._id}`);
                 }
             } else {
-                console.log(`Skipping measurement due to delete flag being true for ID: ${measure._id}`);
+                console.log(`Skipping measurement due to delete flag being true or temper being NO for ID: ${measure._id}`);
             }
         });
 

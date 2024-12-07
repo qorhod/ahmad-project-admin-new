@@ -112,31 +112,12 @@
           <span class="web-content"> 
 
             <%- include('../components/navbar.ejs') %>
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a href="/review/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">ورقة قياس</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../total-meters/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">مجموع الأمتار</a>
-                </li>
-                <% if (permissions.some(permission => permission.name === 'price')) { %>
-                <li class="nav-item">
-                    <a href="../price/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">التسعيرة</a>
-                </li>
-                <% } %>
-                <li class="nav-item">
-                    <a href="../total-materials/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">كميات المواد</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../glass-cutting/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">تقرير قص الزجاج</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../report-temper/<%= foundOrder._id %>" class="nav-link text-secondary-emphasis">تقرير السكريت</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page">تقرير قص الألمنيوم</a>
-                </li>
-            </ul>
+
+            <%- include('../components/tabs.ejs', { 
+                currentPage: 'aluminum-cutting', 
+                arrR: foundOrder, 
+                permissions: permissions 
+              }) %>    
 
 
             <button id="print1" type="button" class="btn btn-secondary" onclick="window.print()">

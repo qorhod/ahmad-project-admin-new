@@ -1,103 +1,103 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
   <head>
-   
     <script src="./js/color-modes.js"></script>
-   
-    <link
-      rel="stylesheet"
-      href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
-    />
+    <link rel="stylesheet" href="./bootstrap-icons-1.10.5/font/bootstrap-icons.min.css" />
     <link rel="shortcut icon" href="./img/ali.png" type="image/x-icon">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
-    <meta
-      name="author"
-      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-    />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
     <meta name="generator" content="Hugo 0.112.5" />
     <title>Home page</title>
 
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <!-- استايل الي يغمق ويفتح الشاشة -->
     <link rel="stylesheet" href="./css/dark-light.css"/>
-   
-
-    <!-- Custom styles for this template -->
     <link href="./css/sidebars.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/myStyle.css" />
-  
   </head>
   <body data-skip="<%= arr.length %>">
-    <!--ايقونات  -->
     <%- include('./components/dark-light.ejs') %> 
 
-
     <main class="d-flex flex-nowrap">
-      <!-- الواجهه الي على اليمين -->
-      <%- include('./components/sidebar.ejs', {currentPage:"index"}) %> <!--ونحط عليها شرط هناك اذا من الندس حط الطلمة لون ازر واذا ماهو من الاندكس لا تحط شي طبعا استقبلناها هناك تقدر تشوفها sidebar.ejs طبعا الي بعد الفاصله ميزه من الاي جي اس عشان نرسل كي وفاليو لصفحة -->
+      <%- include('./components/sidebar.ejs', {currentPage:"index"}) %>
 
       <section class="w-100">
-      <%- include('./components/navbar.ejs') %>
+        <%- include('./components/navbar.ejs') %>
 
-        <table
-          style="width: 99%"
-          class="text-center mx-auto table mt-5 table-striped table-bordered"
-        >
-        <!-- هذا الشرط عشان اذا طول الاري حقة الداتا فاضية يطبع لات توجد بينات -->
-        <% if (arr.length ==0) { %> 
-         <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
-        <% } %>
+        <!-- شريط الفلترة -->
+        <div class="container mt-4">
+          <form id="filter-form" class="row g-3">
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="firstNamecustomer" placeholder="اسم العميل">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="phoneNumber" placeholder="رقم الجوال">
+            </div>
+            <div class="col-md-4">
+              <select id="branch" class="form-select">
+                <option value="" selected>اختر الفرع</option>
+                <option value="خميس مشيط">خميس مشيط</option>
+                <option value="جازان">جازان</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <input type="date" class="form-control" id="createdAt">
+            </div>
+            <div class="col-md-4">
+              <input type="number" class="form-control" id="orderNumber" placeholder="رقم الطلب">
+            </div>
+            <div class="col-12">
+              <button type="button" id="filter-btn" class="btn btn-primary">تصفية</button>
+            </div>
+          </form>
+        </div>
 
-        <!-- هذا الشرط عشان يعرض الصف العلوي من الجدول اذا فيه بينات في قاعدة البينات -->
-        <% if (arr.length > 0) { %>
-          
-        
-   
-
-
-
-  
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Full Name</th>
-              <th scope="col">Branch</th>
-              <th scope="col">Last updated</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <%}%>
+        <!-- الجدول -->
+        <table style="width: 99%" class="text-center mx-auto table mt-5 table-striped table-bordered">
+          <% if (arr.length == 0) { %>
+            <h1 style="text-align: center; margin-top: 4rem;">لا توجد بيانات</h1>
+          <% } %>
+          <% if (arr.length > 0) { %>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Branch</th>
+                <th scope="col">Customer Add Date</th>
+                <th scope="col">Last updated</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+          <% } %>
           <tbody id="kk" data-skip="<%= arr.length %>">
-            <% arr.reverse().forEach((item, index) => { %> 
+            <% arr.forEach((item, index) => { %>
               <tr class="user-item" data-id="<%= item._id %>">
-                <th scope="row"><%= index + 1 %></th> 
-                <td><%= item.firstNamecustomer %> <%= item.lastNamecustomer %></td>  
-                <td><%= item.branch %></td> 
-                <td><%= moment(item.updatedAt).fromNow(); %></td> 
-                <td>
-                  <a class="btn btn-primary btn-sm" href="/view/<%= item._id %>" 
-                    data-bs-toggle="tooltip" data-bs-title="View details" data-bs-placement="top">
-                    <i class="bi bi-arrow-right"></i>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= item.firstNamecustomer %> <%= item.lastNamecustomer %></td>
+                <td><%= item.branch %></td>
 
+                <td>
+                  <%= moment(item.createdAt).format('YYYY-MM-DD') %> 
+                </td>
+
+                <td>
+                  <%= moment(item.updatedAt).format('YYYY-MM-DD') %> 
+                  (<%= moment(item.updatedAt).fromNow() %>)
+                </td>
+                <td>
+                  <a class="btn btn-primary btn-sm" href="/view/<%= item._id %>" data-bs-toggle="tooltip" data-bs-title="View details" data-bs-placement="top">
+                    <i class="bi bi-arrow-right"></i>
                   </a>
-                  <a class="btn btn-primary btn-sm" href="./edit/<%= item._id %>" 
-                    data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top">
+                  <a class="btn btn-primary btn-sm" href="./edit/<%= item._id %>" data-bs-toggle="tooltip" data-bs-title="Edit user" data-bs-placement="top">
                     <i class="bi bi-pencil"></i>
                   </a>
-                  <!-- <form style="display: inline;" action="/edit/<%= //item._id %>?_method=DELETE" method="post">
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" 
-                      data-bs-title="Delete user" data-bs-placement="top">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form> -->
                 </td>
               </tr>
             <% }) %>
           </tbody>
         </table>
-        
+
         <button id="load-more-btn" class="btn btn-primary btn-lg d-block mx-auto my-4" data-limit="<%= limit %>" data-skip="<%= skip %>">
           <i class="bi bi-plus-circle"></i> عرض المزيد
         </button>
@@ -105,50 +105,74 @@
         <script src="./js/bootstrap.bundle.min.js"></script>
         <script src="./js/sidebars.js"></script>
         <script src="./js/main.js"></script>
-      
+
         <script>
           const userTable = document.getElementById('kk');
-          let skip = parseInt(userTable.getAttribute('data-skip')); // يحصل على عدد العناصر الموجودة حاليًا من data-skip على الجدول
+          let skip = parseInt(userTable.getAttribute('data-skip'));
           let limit = 10;
-        
+
           const loadMoreBtn = document.getElementById('load-more-btn');
-        
+          const filterBtn = document.getElementById('filter-btn');
+
           function loadMoreUsers() {
             fetch(`/home?limit=${limit}&skip=${skip}`)
               .then(response => response.text())
               .then(html => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html;
-        
                 const newUsers = tempDiv.querySelectorAll('.user-item');
-                const userList = document.getElementById('kk'); // تأكد من أن `kk` هو المعرف الصحيح للجسم الجدول
-        
-                let currentRowCount = userList.rows.length; // عدد الصفوف الحالية في الجدول
-        
+                const userList = document.getElementById('kk');
+                let currentRowCount = userList.rows.length;
                 newUsers.forEach(userItem => {
                   const userId = userItem.getAttribute('data-id');
                   if (!userList.querySelector(`[data-id="${userId}"]`)) {
-                    currentRowCount++; // زيادة الترقيم بناءً على عدد الصفوف الحالية
-                    userItem.querySelector('th').textContent = currentRowCount; // تحديث الترقيم
+                    currentRowCount++;
+                    userItem.querySelector('th').textContent = currentRowCount;
                     userList.appendChild(userItem);
                   }
                 });
-        
                 if (newUsers.length < limit) {
                   loadMoreBtn.style.display = 'none';
                 } else {
                   skip += limit;
-                  userTable.setAttribute('data-skip', skip); // تحديث قيمة data-skip على الجدول
+                  userTable.setAttribute('data-skip', skip);
                 }
               })
-              .catch(err => console.log(err));
+              .catch(err => console.error(err));
           }
-        
-          loadMoreBtn.addEventListener('click', () => {
-            loadMoreUsers();
-          });
+
+          function applyFilters() {
+            const params = new URLSearchParams();
+            const firstNamecustomer = document.getElementById('firstNamecustomer').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const branch = document.getElementById('branch').value;
+            const createdAt = document.getElementById('createdAt').value;
+            const orderNumber = document.getElementById('orderNumber').value;
+
+            if (firstNamecustomer) params.append('firstNamecustomer', firstNamecustomer);
+            if (phoneNumber) params.append('phoneNumber', phoneNumber);
+            if (branch) params.append('branch', branch);
+            if (createdAt) params.append('createdAt', createdAt);
+            if (orderNumber) params.append('orderNumber', orderNumber);
+
+            fetch(`/home?${params.toString()}`)
+              .then(response => response.text())
+              .then(html => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const newUsers = tempDiv.querySelectorAll('.user-item');
+                const userList = document.getElementById('kk');
+                userList.innerHTML = '';
+                newUsers.forEach(userItem => userList.appendChild(userItem));
+                loadMoreBtn.style.display = newUsers.length < limit ? 'none' : 'block';
+              })
+              .catch(err => console.error(err));
+          }
+
+          loadMoreBtn.addEventListener('click', loadMoreUsers);
+          filterBtn.addEventListener('click', applyFilters);
         </script>
-      </body>
-    
- 
+      </section>
+    </main>
+  </body>
 </html>
