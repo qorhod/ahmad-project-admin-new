@@ -1394,23 +1394,23 @@ function totalMotherEquation(order) {
                 if (C4 === "Sliding D12") {
                     valueA = (C10 / 2) - 8.75;
                     valueB = B10 - 15;
-                    valueC = ((valueA * valueB) * 2)/10000
+                    valueC = ((valueA * valueB) * 4)/10000
                 } else if (C4 === "GOLF10") {
                     valueA = (C10 / 2) - 9;
                     valueB = B10 - 16.4;
-                    valueC = ((valueA * valueB) * 2)/10000
+                    valueC = ((valueA * valueB) * 4)/10000
                 } else if (C4 === "GOLF12") {
                     valueA = (C10 / 2) - 9;
                     valueB = B10 - 16.4;
-                    valueC = ((valueA * valueB) * 2)/10000
+                    valueC = ((valueA * valueB) * 4)/10000
                 } else if (C4 === "Sliding D10") {
                     valueA = (C10 / 2) - 8.8;
                     valueB = B10 - 16;
-                    valueC = ((valueA * valueB) * 2)/10000
+                    valueC = ((valueA * valueB) * 4)/10000
                 } else if (C4 === "ROYAL 2") {
                     valueA = (C10 / 2) - 6;
                     valueB = B10 - 19.6;
-                    valueC = ((valueA * valueB) * 2)/10000
+                    valueC = ((valueA * valueB) * 4)/10000
                 } else if (C4 === "slidingD10p") {
                     valueA = (C10 / 2) - 8.8;
                     valueB = B10 - 16;
@@ -1434,7 +1434,7 @@ function totalMotherEquation(order) {
                 } else if (C4 === "Sliding S") {
                     valueA = (C10 / 2) - 6.7;
                     valueB = B10 - 14.5;
-                    valueC = (valueA * valueB)/10000;  // Skip the calculation for valueC
+                    valueC = (valueA * valueB) * 2/10000;  // Skip the calculation for valueC
                 } else {
                     // Return default values or handle other cases
                     valueA = 0;
@@ -1811,7 +1811,6 @@ async function calculateTotalTempersMeters(orderId, newMetersPrice = undefined) 
         // حساب مجموع reportTemper من جميع القياسات
         let totalTempersMeters = 0;
         selectedOrder.measurement.forEach(measure => {
-            console.log("gggggg",measure.temper)
             // التحقق من حالة delete وقيمة temper قبل حساب reportTemper
             if (measure.delete !== true && measure.delete !== "true" && measure.temper === "YES") { 
                 // إذا كان delete غير موجود أو false و temper يساوي YES، نقوم بالحساب

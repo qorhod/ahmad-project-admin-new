@@ -3138,11 +3138,63 @@ console.log(token)
 //     });
 // });
 
-router.get('/home', requireAuth, restrictFactoryWorker, (req, res) => {
+// router.get('/home', requireAuth, restrictFactoryWorker, (req, res) => {
+//   const limit = parseInt(req.query.limit) || 30; // تعيين الحد الافتراضي إلى 30
+//   const skip = parseInt(req.query.skip) || 0;   // تعيين قيمة skip الافتراضية إلى 0
+
+//   // إعداد شروط البحث بناءً على استفسارات المستخدم
+//   const filters = {};
+//   if (req.query.firstNamecustomer) {
+//     filters.firstNamecustomer = { $regex: req.query.firstNamecustomer, $options: 'i' }; // البحث النصي بالحروف الكبيرة والصغيرة
+//   }
+//   if (req.query.phoneNumber) {
+//     filters.phoneNumber = req.query.phoneNumber; // مطابقة رقم الجوال
+//   }
+//   if (req.query.createdAt) {
+//     // البحث ضمن تاريخ معين
+//     const date = new Date(req.query.createdAt);
+//     filters.createdAt = {
+//       $gte: date,                    // بداية اليوم
+//       $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000) // نهاية اليوم
+//     };
+//   }
+//   if (req.query.orderNumber) {
+//     filters['orders.orderNumber'] = parseInt(req.query.orderNumber); // مطابقة رقم الطلب
+//   }
+//   if (req.query.branch) {
+//     filters.branch = req.query.branch; // مطابقة الفرع
+//   }
+
+//   // استعلام البحث
+//   User.find(filters)
+//     .sort({ createdAt: -1 }) // ترتيب تنازلي بناءً على الأحدث
+//     .skip(skip)
+//     .limit(limit)
+//     .then((result) => {
+//       const user = res.locals.user;
+//       const hasMore = result.length === limit; // تحقق إذا كانت هناك المزيد من البيانات
+
+//       res.render("index", {
+//         arr: result,                // تمرير النتائج إلى القالب
+//         moment: moment,             // تمرير مكتبة moment لتنسيق التواريخ
+//         permissions: user ? user.permissions : [],
+//         hasMore: hasMore,           // تمرير ما إذا كانت هناك المزيد من البيانات
+//         skip: skip + limit,         // زيادة قيمة skip للطلب التالي
+//         limit: limit,               // تمرير limit للقالب
+//         filters: req.query          // تمرير الفلاتر الحالية لعرضها في الواجهة إذا لزم الأمر
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).send('Something went wrong');
+//     });
+// });
+
+
+router.get('/home', requireAuth, restrictFactoryWorker, async (req, res) => {
   const limit = parseInt(req.query.limit) || 30; // تعيين الحد الافتراضي إلى 30
   const skip = parseInt(req.query.skip) || 0;   // تعيين قيمة skip الافتراضية إلى 0
 
-  // إعداد شروط البحث بناءً على استفسارات المستخدم
   const filters = {};
   if (req.query.firstNamecustomer) {
     filters.firstNamecustomer = { $regex: req.query.firstNamecustomer, $options: 'i' }; // البحث النصي بالحروف الكبيرة والصغيرة
@@ -3165,30 +3217,35 @@ router.get('/home', requireAuth, restrictFactoryWorker, (req, res) => {
     filters.branch = req.query.branch; // مطابقة الفرع
   }
 
-  // استعلام البحث
-  User.find(filters)
-    .sort({ createdAt: -1 }) // ترتيب تنازلي بناءً على الأحدث
-    .skip(skip)
-    .limit(limit)
-    .then((result) => {
-      const user = res.locals.user;
-      const hasMore = result.length === limit; // تحقق إذا كانت هناك المزيد من البيانات
+  try {
+    // حساب العدد الإجمالي للوثائق
+    const totalCount = await User.countDocuments(filters);
 
-      res.render("index", {
-        arr: result,                // تمرير النتائج إلى القالب
-        moment: moment,             // تمرير مكتبة moment لتنسيق التواريخ
-        permissions: user ? user.permissions : [],
-        hasMore: hasMore,           // تمرير ما إذا كانت هناك المزيد من البيانات
-        skip: skip + limit,         // زيادة قيمة skip للطلب التالي
-        limit: limit,               // تمرير limit للقالب
-        filters: req.query          // تمرير الفلاتر الحالية لعرضها في الواجهة إذا لزم الأمر
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send('Something went wrong');
+    // جلب البيانات مع الفلاتر
+    const result = await User.find(filters)
+      .sort({ createdAt: -1 }) // ترتيب تنازلي بناءً على الأحدث
+      .skip(skip)
+      .limit(limit);
+
+    const user = res.locals.user;
+    const hasMore = result.length === limit; // تحقق إذا كانت هناك المزيد من البيانات
+
+    res.render("index", {
+      arr: result,                // تمرير النتائج إلى القالب
+      totalCount: totalCount,     // العدد الإجمالي للوثائق
+      moment: moment,             // تمرير مكتبة moment لتنسيق التواريخ
+      permissions: user ? user.permissions : [],
+      hasMore: hasMore,           // تمرير ما إذا كانت هناك المزيد من البيانات
+      skip: skip ,         // زيادة قيمة skip للطلب التالي
+      limit: limit,               // تمرير limit للقالب
+      filters: req.query          // تمرير الفلاتر الحالية لعرضها في الواجهة إذا لزم الأمر
     });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Something went wrong');
+  }
 });
+
 
 
 
